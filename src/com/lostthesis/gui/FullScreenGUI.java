@@ -34,25 +34,23 @@ public class FullScreenGUI extends JFrame {
     private int screenHeight;
     
     public FullScreenGUI() {
-        // Ottieni dimensioni schermo
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-        DisplayMode dm = gd.getDisplayMode();
-        screenWidth = dm.getWidth();
-        screenHeight = dm.getHeight();
+        // Dimensioni finestra (non fullscreen)
+        screenWidth = 1024;
+        screenHeight = 768;
         
-        // Setup finestra fullscreen
-        setTitle("LOST THESIS - L'Isola Misteriosa");
+        // Setup finestra normale
+        setTitle("✈️ LOST THESIS - L'Isola Misteriosa");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setUndecorated(true);
-        setResizable(false);
+        setResizable(true);
+        setSize(screenWidth, screenHeight);
+        setLocationRelativeTo(null); // Centra la finestra
         
         // Inizializza renderer
-        renderer = new FullScreenRenderer(screenWidth, screenHeight);
+        renderer = new FullScreenRenderer(screenWidth, screenHeight - 70);
         
         // Pannello di gioco
         gamePanel = new GamePanel();
-        gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight - 70));
         
         // Layout principale
         setLayout(new BorderLayout());
@@ -62,8 +60,8 @@ public class FullScreenGUI extends JFrame {
         JPanel controlPanel = createControlPanel();
         add(controlPanel, BorderLayout.SOUTH);
         
-        // Fullscreen
-        gd.setFullScreenWindow(this);
+        // Mostra finestra
+        setVisible(true);
         
         // Key bindings
         setupKeyBindings();

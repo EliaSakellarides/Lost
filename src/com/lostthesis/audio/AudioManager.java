@@ -1,0 +1,82 @@
+package com.lostthesis.audio;
+
+import javax.sound.sampled.*;
+import java.io.*;
+import java.net.URL;
+
+/**
+ * Gestisce la riproduzione audio per Lost Thesis
+ */
+public class AudioManager {
+    private Clip backgroundMusic;
+    private boolean musicEnabled;
+    private float volume;
+    
+    public AudioManager() {
+        this.musicEnabled = true;
+        this.volume = 0.5f;
+    }
+    
+    public void playBackgroundMusic(String filename) {
+        if (!musicEnabled) return;
+        
+        try {
+            stopBackgroundMusic();
+            
+            // Cerca il file audio
+            InputStream audioStream = getClass().getResourceAsStream("/assets/music/" + filename);
+            if (audioStream == null) {
+                // Prova percorso alternativo
+                File audioFile = new File("assets/music/" + filename);
+                if (audioFile.exists()) {
+                    audioStream = new FileInputStream(audioFile);
+                }
+            }
+            
+            if (audioStream != null) {
+                AudioInputStream ais = AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(audioStream));
+                backgroundMusic = AudioSystem.getClip();
+                backgroundMusic.open(ais);
+                setVolume(volume);
+                backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+                backgroundMusic.start();
+            }
+        } catch (Exception e) {
+            // Audio non disponibile, continua senza musica
+            System.out.println("Audio non disponibile: " + e.getMessage());
+        }
+    }
+    
+    public void stopBackgroundMusic() {
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+            backgroundMusic.stop();
+            backgroundMusic.close();
+        }
+    }
+    
+    public void setVolume(float vol) {
+        this.volume = Math.max(0f, Math.min(1f, vol));
+        if (backgroundMusic != null) {
+            try {
+                FloatControl gainControl = (FloatControl) 
+                    backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
+                float range = gainControl.getMaximum() - gainControl.getMinimum();
+                float gain = (range * volume) + gainControl.getMinimum();
+                gainControl.setValue(gain);
+            } catch (Exception e) {
+                // Controllo volume non disponibile
+            }
+        }
+    }
+    
+    public void toggleMusic() {
+        musicEnabled = !musicEnabled;
+        if (!musicEnabled) {
+            stopBackgroundMusic();
+        }
+    }
+    
+    public boolean isMusicEnabled() { return musicEnabled; }
+    public float getVolume() { return volume; }
+}

@@ -29,6 +29,19 @@ public class GameEngine {
     // I numeri misteriosi di LOST
     private static final int[] NUMBERS = {4, 8, 15, 16, 23, 42};
     
+    // TIMER per eventi temporizzati (stile guida Colombini)
+    private int smokeMonsterTimer = 0;      // Mostro di fumo si avvicina
+    private int dynamiteTimer = 0;          // Dinamite attivata
+    private int othersTimer = 0;            // Gli Altri ti cercano
+    private boolean dynamiteActive = false;
+    private boolean smokeMonsterNearby = false;
+    
+    // Variabili di stato per eventi (v1...v9 dalla guida)
+    private boolean hatchOpened = false;
+    private boolean blackRockExplored = false;
+    private boolean jacobMet = false;
+    private boolean templeBathed = false;
+    
     public GameEngine() {
         this.allRooms = new HashMap<>();
         this.gameLog = new ArrayList<>();
@@ -48,6 +61,9 @@ public class GameEngine {
         createStoryChapters();
         player.setCurrentRoom(startRoom);
         gameRunning = true;
+        
+        // 🎵 Avvia la sigla di LOST! (suona per 15 secondi, poi fade out)
+        audioManager.playBackgroundMusic("lost___opening_titles.wav", false, 15000);
         
         addLog("═══════════════════════════════════════════════════");
         addLog("  ✈️ LOST THESIS - L'ISOLA MISTERIOSA ✈️");
@@ -513,10 +529,35 @@ public class GameEngine {
                 
                 case "prendi":
                 case "raccogli":
+                case "afferra":
+                case "piglia":
+                case "take":
                     if (currentChapter == 12) { // Capitolo della TESI
                         return answerChapter("prendi");
                     }
                     return takeItemFromRoom(target);
+                    
+                case "lascia":
+                case "posa":
+                case "metti":
+                case "drop":
+                    return dropItem(target);
+                    
+                case "guarda":
+                case "osserva":
+                case "esamina":
+                case "ispeziona":
+                case "look":
+                    return lookAt(target);
+                    
+                case "mangia":
+                case "bevi":
+                    return eatOrDrink(target);
+                    
+                case "attiva":
+                case "accendi":
+                case "carica":
+                    return activateItem(target);
                     
                 case "usa":
                     return player.useItem(target);
@@ -629,11 +670,7 @@ public class GameEngine {
             
             if (currentChapter >= storyChapters.size()) {
                 gameWon = true;
-                success += "🎆🎆🎆 HAI VINTO! 🎆🎆🎆\n\n" +
-                          "Sei fuggito dall'isola con l'aereo!\n" +
-                          "La TESI ti ha mostrato la via!\n\n" +
-                          "🎓 Ora puoi finalmente laurearti!\n\n" +
-                          "GRAZIE PER AVER GIOCATO!";
+                success += getEpicEnding();
             } else {
                 success += "Premi AVANTI per continuare...";
             }
@@ -692,15 +729,369 @@ public class GameEngine {
                "═══════════════════════════════════════\n" +
                "🔘 A, B, C - Scegli un'opzione\n" +
                "➡️ AVANTI - Continua la storia\n" +
-               "📦 prendi [oggetto] - Raccogli\n" +
+               "📦 prendi/raccogli - Raccogli oggetto\n" +
+               "👁️ guarda/esamina - Osserva oggetto\n" +
                "🎒 inventario - Vedi oggetti\n" +
                "❤️ stato - Vedi salute\n" +
+               "🍎 mangia/bevi - Usa cibo/bevande\n" +
+               "💣 attiva - Attiva oggetto\n" +
                "❓ aiuto - Questo messaggio\n" +
                "═══════════════════════════════════════";
     }
     
+    // ═══════════════════════════════════════════════════════════════
+    // NUOVI METODI ISPIRATI ALLA GUIDA COLOMBINI
+    // ═══════════════════════════════════════════════════════════════
+    
+    /**
+     * Lascia un oggetto nella stanza corrente
+     */
+    private String dropItem(String itemName) {
+        if (itemName.isEmpty()) {
+            return "❌ Cosa vuoi lasciare?";
+        }
+        Item item = player.removeItem(itemName);
+        if (item == null) {
+            return "❌ Non hai '" + itemName + "' nell'inventario.";
+        }
+        player.getCurrentRoom().addItem(item);
+        return "✅ Hai lasciato: " + item.getName();
+    }
+    
+    /**
+     * Guarda/esamina un oggetto - risposte dettagliate!
+     */
+    private String lookAt(String target) {
+        if (target.isEmpty()) {
+            // Guarda la stanza
+            return player.getCurrentRoom().getFullDescription();
+        }
+        
+        // Cerca nell'inventario
+        Item item = player.getItem(target);
+        if (item == null) {
+            // Cerca nella stanza
+            item = player.getCurrentRoom().getItem(target);
+        }
+        
+        if (item != null) {
+            return getDetailedDescription(item);
+        }
+        
+        // Risposte speciali per elementi dell'ambiente
+        return lookAtEnvironment(target);
+    }
+    
+    /**
+     * Descrizioni dettagliate oggetti (come consigliato dalla guida)
+     */
+    private String getDetailedDescription(Item item) {
+        String name = item.getName().toLowerCase();
+        
+        if (name.contains("dinamite")) {
+            return "🧨 DINAMITE INSTABILE\n" +
+                   "Vecchi candelotti dalla Roccia Nera.\n" +
+                   "ATTENZIONE: Potrebbero esplodere!\n" +
+                   "💡 Usa 'attiva dinamite' per innescarla.";
+        }
+        if (name.contains("bussola")) {
+            return "🧭 UNA VECCHIA BUSSOLA\n" +
+                   "L'ago punta sempre a Nord... o forse no?\n" +
+                   "Sull'isola, le bussole impazziscono.\n" +
+                   "C'è un'incisione: '4 8 15 16 23 42'";
+        }
+        if (name.contains("mappa") && name.contains("dharma")) {
+            return "🗺️ MAPPA DHARMA INITIATIVE\n" +
+                   "Mostra le stazioni segrete dell'isola:\n" +
+                   "• IL CIGNO (The Swan) - Pulsante\n" +
+                   "• LA PERLA (The Pearl) - Osservazione\n" +
+                   "• LA FIAMMA (The Flame) - Comunicazioni\n" +
+                   "• L'IDRA (Hydra) - Esperimenti";
+        }
+        if (name.contains("chiave")) {
+            return "🔑 CHIAVE DI SICUREZZA\n" +
+                   "Una chiave metallica con il logo DHARMA.\n" +
+                   "Potrebbe aprire qualcosa di importante...";
+        }
+        if (name.contains("cibo") && name.contains("dharma")) {
+            return "🥫 SCATOLETTE DHARMA\n" +
+                   "Cibo in scatola degli anni '70.\n" +
+                   "Etichetta: 'DHARMA Initiative - Ranch Composite'\n" +
+                   "Scadenza: 1977 (gulp!)\n" +
+                   "💡 Usa 'mangia cibo' per recuperare salute.";
+        }
+        if (name.contains("diario")) {
+            return "📖 DIARIO DEL CAPITANO\n" +
+                   "Dalla nave Roccia Nera, anno 1867.\n" +
+                   "'...un'onda gigantesca ci ha portato\n" +
+                   "nell'entroterra dell'isola. Questo luogo\n" +
+                   "è maledetto. Ho visto il fumo nero...'";
+        }
+        if (name.contains("tesi")) {
+            return "📜 LA TESI PERDUTA\n" +
+                   "Il documento più importante dell'isola!\n" +
+                   "Contiene:\n" +
+                   "• Coordinate della pista nascosta\n" +
+                   "• Istruzioni per l'aereo\n" +
+                   "• Il codice: 108 / 2 = 54\n" +
+                   "🎓 Con questa puoi FUGGIRE e LAUREARTI!";
+        }
+        if (name.contains("kit") || name.contains("medico")) {
+            return "🏥 KIT DI PRONTO SOCCORSO\n" +
+                   "Recuperato dai rottami dell'Oceanic 815.\n" +
+                   "Contiene bende, disinfettante e antidolorifici.\n" +
+                   "💡 Usa 'usa kit' per curarti.";
+        }
+        if (name.contains("acqua")) {
+            return "💧 BOTTIGLIA D'ACQUA\n" +
+                   "Acqua potabile dai rottami dell'aereo.\n" +
+                   "Essenziale per sopravvivere sull'isola.\n" +
+                   "💡 Usa 'bevi acqua' per idratarti.";
+        }
+        
+        // Descrizione generica
+        return "👁️ " + item.getName().toUpperCase() + "\n" + item.getDescription();
+    }
+    
+    /**
+     * Guarda elementi dell'ambiente (non oggetti)
+     */
+    private String lookAtEnvironment(String target) {
+        target = target.toLowerCase();
+        
+        // Risposte atmosferiche per l'ambiente
+        if (target.contains("cielo") || target.contains("sky")) {
+            return "☁️ Il cielo è stranamente luminoso.\n" +
+                   "A volte sembra che l'isola sia... fuori dal tempo.";
+        }
+        if (target.contains("mare") || target.contains("oceano")) {
+            return "🌊 L'oceano si estende all'infinito.\n" +
+                   "Nessuna nave all'orizzonte. Nessun aereo.\n" +
+                   "Sei davvero solo qui.";
+        }
+        if (target.contains("giungla") || target.contains("alberi")) {
+            return "🌴 La giungla è fitta e ostile.\n" +
+                   "Senti strani rumori... ticchettii meccanici.\n" +
+                   "Qualcosa di GROSSO si muove là dentro.";
+        }
+        if (target.contains("mostro") || target.contains("fumo")) {
+            return "🌫️ Non vedi nulla... ma lo SENTI.\n" +
+                   "TICK... TICK... TICK...\n" +
+                   "Il Mostro di Fumo è sempre in agguato.";
+        }
+        if (target.contains("numeri") || target.contains("4 8 15")) {
+            return "🔢 I NUMERI MALEDETTI\n" +
+                   "4 - 8 - 15 - 16 - 23 - 42\n" +
+                   "Somma: 108\n" +
+                   "Sono ovunque sull'isola...";
+        }
+        if (target.contains("jacob")) {
+            return "👤 Jacob è il protettore dell'isola.\n" +
+                   "Vive al Faro e osserva i candidati.\n" +
+                   "'L'isola ti ha scelto.'";
+        }
+        if (target.contains("altri") || target.contains("others")) {
+            return "👥 Gli Altri vivono sull'isola da anni.\n" +
+                   "Guidati da Ben Linus.\n" +
+                   "Non fidarti di loro.";
+        }
+        
+        // Risposte ironiche per comandi strani (come suggerito dalla guida!)
+        if (target.contains("me") || target.contains("stesso")) {
+            return "🪞 Ti guardi: sei un sopravvissuto.\n" +
+                   "Sporco, stanco, ma ancora vivo.\n" +
+                   "Ce la farai!";
+        }
+        
+        return "❓ Non noti nulla di particolare riguardo a '" + target + "'.";
+    }
+    
+    /**
+     * Mangia o bevi qualcosa
+     */
+    private String eatOrDrink(String target) {
+        if (target.isEmpty()) {
+            return getIronicResponse("mangia");
+        }
+        Item item = player.getItem(target);
+        if (item == null) {
+            return "❌ Non hai '" + target + "' nell'inventario.";
+        }
+        if (item.getType() != Item.ItemType.CIBO && item.getType() != Item.ItemType.MEDICINA) {
+            return getIronicResponse("mangia " + target);
+        }
+        return player.useItem(target);
+    }
+    
+    /**
+     * Attiva un oggetto (es. dinamite)
+     */
+    private String activateItem(String target) {
+        if (target.isEmpty()) {
+            return "❓ Cosa vuoi attivare?";
+        }
+        
+        if (target.toLowerCase().contains("dinamite")) {
+            if (!player.hasItem("dinamite")) {
+                return "❌ Non hai dinamite!";
+            }
+            if (dynamiteActive) {
+                return "⚠️ La dinamite è già innescata!\n" +
+                       "TICK... TICK... TICK...\n" +
+                       "Lasciala da qualche parte, VELOCE!";
+            }
+            dynamiteActive = true;
+            dynamiteTimer = 5; // 5 turni prima dell'esplosione
+            return "🧨💥 HAI INNESCATO LA DINAMITE!\n" +
+                   "TICK... TICK... TICK...\n" +
+                   "Hai 5 turni per metterti al sicuro!\n" +
+                   "💡 Lasciala con 'lascia dinamite' e SCAPPA!";
+        }
+        
+        return "❓ Non puoi attivare '" + target + "'.";
+    }
+    
+    /**
+     * Risposte ironiche per comandi impossibili (come suggerisce la guida!)
+     */
+    private String getIronicResponse(String command) {
+        command = command.toLowerCase();
+        
+        if (command.contains("mangia") && command.contains("roccia")) {
+            return "🪨 Hmm, no. Non sei COSÌ affamato... ancora.";
+        }
+        if (command.contains("mangia") && command.contains("sabbia")) {
+            return "🏖️ La sabbia non è nel menu oggi.";
+        }
+        if (command.contains("mangia") && command.contains("dinamite")) {
+            return "🧨 Pessima idea. PESSIMA.";
+        }
+        if (command.contains("mangia")) {
+            return "🤔 Non puoi mangiare quello.\n" +
+                   "Prova con il cibo DHARMA!";
+        }
+        if (command.contains("vola") || command.contains("fly")) {
+            return "🦅 Sei un sopravvissuto, non un uccello.\n" +
+                   "Ma c'è un aereo sulla pista nascosta...";
+        }
+        if (command.contains("nuota") && command.contains("via")) {
+            return "🌊 L'oceano è infinito.\n" +
+                   "Moriresti prima di vedere terra.";
+        }
+        if (command.contains("uccidi") && command.contains("mostro")) {
+            return "🌫️ Non puoi uccidere il Mostro di Fumo.\n" +
+                   "Puoi solo SCAPPARE.";
+        }
+        if (command.contains("parla") && command.contains("albero")) {
+            return "🌴 L'albero non risponde.\n" +
+                   "(Forse la sanità mentale sta calando...)";
+        }
+        
+        return "❓ Non capisco cosa vuoi fare.";
+    }
+    
+    /**
+     * Processa i timer ad ogni turno (come nella guida Colombini)
+     */
+    private void processTimers() {
+        // Timer dinamite
+        if (dynamiteTimer > 0) {
+            dynamiteTimer--;
+            if (dynamiteTimer == 0 && dynamiteActive) {
+                explodeDynamite();
+            }
+        }
+        
+        // Timer mostro di fumo (casuale)
+        if (smokeMonsterTimer > 0) {
+            smokeMonsterTimer--;
+            if (smokeMonsterTimer == 0) {
+                smokeMonsterNearby = true;
+            }
+        }
+    }
+    
+    /**
+     * Esplosione dinamite
+     */
+    private void explodeDynamite() {
+        // Trova dove è la dinamite
+        Item dinamite = player.getItem("dinamite");
+        if (dinamite != null) {
+            // Se ce l'hai in mano... BOOM!
+            player.removeHealth(100);
+            addLog("💥💥💥 BOOM! 💥💥💥\n" +
+                   "La dinamite è esplosa TRA LE TUE MANI!\n" +
+                   "Non avresti dovuto tenerla...\n\n" +
+                   "☠️ SEI MORTO ☠️");
+            gameRunning = false;
+        } else {
+            // Esplode nella stanza dove l'hai lasciata
+            addLog("💥 BOOM! 💥\n" +
+                   "Senti un'esplosione in lontananza.\n" +
+                   "Qualcosa è stato distrutto...");
+        }
+        dynamiteActive = false;
+    }
+    
     private void addLog(String message) {
         gameLog.add(message);
+    }
+    
+    /**
+     * FINALE EPICO - Come suggerisce la guida Colombini:
+     * "Dopo che uno ha speso sangue, sudore e lacrime per risolvere 
+     * l'avventura, ha diritto ad aspettarsi qualcosa di più gratificante"
+     */
+    private String getEpicEnding() {
+        StringBuilder ending = new StringBuilder();
+        
+        ending.append("\n");
+        ending.append("═══════════════════════════════════════════════════════\n");
+        ending.append("     ✈️🌅 L I B E R T À 🌅✈️\n");
+        ending.append("═══════════════════════════════════════════════════════\n\n");
+        
+        ending.append("L'aereo decolla, lasciandosi alle spalle l'isola.\n\n");
+        
+        ending.append("Sotto di te, la giungla diventa sempre più piccola.\n");
+        ending.append("Il Mostro di Fumo ruggisce impotente.\n");
+        ending.append("Il Tempio, la Stazione Il Cigno, la Roccia Nera...\n");
+        ending.append("tutto scompare all'orizzonte.\n\n");
+        
+        ending.append("🌊 L'oceano infinito si stende davanti a te.\n");
+        ending.append("Finalmente LIBERO.\n\n");
+        
+        ending.append("═══════════════════════════════════════════════════════\n\n");
+        
+        ending.append("📜 Stringi la TESI tra le mani.\n");
+        ending.append("Quella tesi che ti ha salvato la vita.\n");
+        ending.append("Quella tesi che ti ha mostrato la via.\n\n");
+        
+        ending.append("🎓 E ora... puoi finalmente LAUREARTI!\n\n");
+        
+        ending.append("═══════════════════════════════════════════════════════\n");
+        ending.append("          🏆 HAI COMPLETATO LOST THESIS! 🏆\n");
+        ending.append("═══════════════════════════════════════════════════════\n\n");
+        
+        // Statistiche finali
+        ending.append("📊 LE TUE STATISTICHE:\n");
+        ending.append("   ⏱️ Giorni sull'isola: ").append(player.getDaysOnIsland()).append("\n");
+        ending.append("   ❤️ Salute finale: ").append(player.getHealth()).append("/100\n");
+        ending.append("   🧠 Sanità mentale: ").append(player.getSanity()).append("/100\n");
+        ending.append("   🎒 Oggetti raccolti: ").append(player.getInventory().size()).append("\n\n");
+        
+        ending.append("═══════════════════════════════════════════════════════\n");
+        ending.append("   \"L'isola non ha finito con te, ").append(player.getName()).append(".\"\n");
+        ending.append("                           - Jacob\n");
+        ending.append("═══════════════════════════════════════════════════════\n\n");
+        
+        ending.append("              🎮 GRAZIE PER AVER GIOCATO! 🎮\n\n");
+        
+        ending.append("        Creato con ❤️ seguendo la Guida Colombini\n");
+        ending.append("        'Avventure - Guida pratica alla creazione\n");
+        ending.append("         di giochi di avventura' (Jackson, 1985)\n");
+        
+        return ending.toString();
     }
     
     public String getLastLog() {

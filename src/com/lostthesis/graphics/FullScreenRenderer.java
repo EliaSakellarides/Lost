@@ -167,20 +167,116 @@ public class FullScreenRenderer {
         g.setColor(BORDER_COLOR);
         g.drawLine(0, barY, screenWidth, barY);
         
-        // Testo status
-        g.setColor(TEXT_COLOR);
-        g.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        // Parsing dello statusInfo per estrarre valori
+        // Formato: "❤️ 85%  |  🧠 90%  |  📅 Giorno 1  |  📍 SPIAGGIA"
+        int health = 100;
+        int sanity = 100;
+        int day = 1;
+        String location = "";
         
         if (statusInfo != null && !statusInfo.isEmpty()) {
-            g.drawString(statusInfo, 20, barY + 30);
+            try {
+                // Estrai salute
+                int hStart = statusInfo.indexOf("❤️") + 3;
+                int hEnd = statusInfo.indexOf("%");
+                if (hStart > 2 && hEnd > hStart) {
+                    health = Integer.parseInt(statusInfo.substring(hStart, hEnd).trim());
+                }
+                // Estrai sanità
+                int sStart = statusInfo.indexOf("🧠") + 3;
+                int sEnd = statusInfo.indexOf("%", sStart);
+                if (sStart > 2 && sEnd > sStart) {
+                    sanity = Integer.parseInt(statusInfo.substring(sStart, sEnd).trim());
+                }
+                // Estrai giorno
+                int dStart = statusInfo.indexOf("Giorno ") + 7;
+                int dEnd = statusInfo.indexOf(" ", dStart);
+                if (dStart > 6 && dEnd > dStart) {
+                    day = Integer.parseInt(statusInfo.substring(dStart, dEnd).trim());
+                }
+                // Estrai location
+                int lStart = statusInfo.indexOf("📍") + 3;
+                if (lStart > 2) {
+                    location = statusInfo.substring(lStart).trim();
+                }
+            } catch (Exception e) {
+                // Ignora errori di parsing
+            }
         }
         
-        // Istruzioni a destra
-        String instructions = "[A/B/C] Scegli  |  [AVANTI] Continua  |  [ESC] Esci";
+        int xPos = 20;
+        
+        // === CUORICINI SALUTE ===
+        g.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        int totalHearts = 10;
+        int fullHearts = health / 10;
+        int halfHeart = (health % 10 >= 5) ? 1 : 0;
+        
+        for (int i = 0; i < totalHearts; i++) {
+            if (i < fullHearts) {
+                g.setColor(new Color(255, 80, 80)); // Cuore pieno - rosso
+                g.drawString("❤", xPos + i * 18, barY + 22);
+            } else if (i == fullHearts && halfHeart == 1) {
+                g.setColor(new Color(255, 150, 150)); // Mezzo cuore
+                g.drawString("💔", xPos + i * 18, barY + 22);
+            } else {
+                g.setColor(new Color(80, 80, 80)); // Cuore vuoto - grigio
+                g.drawString("♡", xPos + i * 18, barY + 22);
+            }
+        }
+        
+        // Numero salute
+        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setColor(new Color(255, 150, 150));
+        g.drawString(health + "%", xPos + totalHearts * 18 + 5, barY + 20);
+        
+        // === BARRA SANITÀ MENTALE ===
+        int sanityBarX = xPos + totalHearts * 18 + 60;
+        int sanityBarWidth = 100;
+        int sanityBarHeight = 12;
+        
+        g.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        g.setColor(new Color(150, 150, 255));
+        g.drawString("🧠", sanityBarX - 20, barY + 20);
+        
+        // Sfondo barra sanità
+        g.setColor(new Color(50, 50, 70));
+        g.fillRoundRect(sanityBarX, barY + 10, sanityBarWidth, sanityBarHeight, 5, 5);
+        
+        // Riempimento barra sanità
+        Color sanityColor;
+        if (sanity > 70) sanityColor = new Color(100, 150, 255);
+        else if (sanity > 40) sanityColor = new Color(255, 200, 100);
+        else sanityColor = new Color(255, 100, 100);
+        
+        int fillWidth = (int) (sanityBarWidth * sanity / 100.0);
+        g.setColor(sanityColor);
+        g.fillRoundRect(sanityBarX, barY + 10, fillWidth, sanityBarHeight, 5, 5);
+        
+        // Bordo barra
+        g.setColor(new Color(100, 100, 150));
+        g.drawRoundRect(sanityBarX, barY + 10, sanityBarWidth, sanityBarHeight, 5, 5);
+        
+        // Percentuale sanità
+        g.setFont(new Font("SansSerif", Font.BOLD, 10));
+        g.setColor(Color.WHITE);
+        g.drawString(sanity + "%", sanityBarX + sanityBarWidth/2 - 10, barY + 20);
+        
+        // === GIORNO E LOCATION ===
+        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setColor(new Color(255, 220, 100));
+        g.drawString("📅 Giorno " + day, sanityBarX + sanityBarWidth + 30, barY + 20);
+        
+        g.setColor(new Color(150, 200, 150));
+        g.drawString("📍 " + location, sanityBarX + sanityBarWidth + 120, barY + 20);
+        
+        // === ISTRUZIONI ===
+        g.setFont(new Font("Monospaced", Font.PLAIN, 10));
+        String instructions = "[A/B/C] Scegli | [INVIO] Avanti";
         FontMetrics fm = g.getFontMetrics();
         int instWidth = fm.stringWidth(instructions);
-        g.setColor(new Color(150, 150, 150));
-        g.drawString(instructions, screenWidth - instWidth - 20, barY + 30);
+        g.setColor(new Color(120, 120, 120));
+        g.drawString(instructions, screenWidth - instWidth - 15, barY + 20);
     }
     
     private void renderLogo(Graphics2D g) {

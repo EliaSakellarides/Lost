@@ -14,10 +14,20 @@ public class AudioManager {
     
     public AudioManager() {
         this.musicEnabled = true;
-        this.volume = 0.5f;
+        this.volume = 1.0f;  // Volume al massimo!
     }
     
     public void playBackgroundMusic(String filename) {
+        playBackgroundMusic(filename, true, 0);
+    }
+    
+    /**
+     * Riproduce musica con opzioni
+     * @param filename nome del file audio
+     * @param loop se true ripete in loop, altrimenti una volta sola
+     * @param stopAfterMs ferma dopo N millisecondi (0 = mai)
+     */
+    public void playBackgroundMusic(String filename, boolean loop, int stopAfterMs) {
         if (!musicEnabled) return;
         
         try {
@@ -39,13 +49,53 @@ public class AudioManager {
                 backgroundMusic = AudioSystem.getClip();
                 backgroundMusic.open(ais);
                 setVolume(volume);
-                backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+                
+                if (loop) {
+                    backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+                }
                 backgroundMusic.start();
+                
+                // Ferma dopo N millisecondi se specificato
+                if (stopAfterMs > 0) {
+                    new Thread(() -> {
+                        try {
+                            Thread.sleep(stopAfterMs);
+                            fadeOutAndStop(2000); // Fade out di 2 secondi
+                        } catch (InterruptedException e) {
+                            // Interrotto
+                        }
+                    }).start();
+                }
             }
         } catch (Exception e) {
             // Audio non disponibile, continua senza musica
             System.out.println("Audio non disponibile: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Fade out graduale e poi stop
+     */
+    public void fadeOutAndStop(int durationMs) {
+        if (backgroundMusic == null || !backgroundMusic.isRunning()) return;
+        
+        new Thread(() -> {
+            try {
+                float originalVolume = volume;
+                int steps = 20;
+                int stepDelay = durationMs / steps;
+                
+                for (int i = steps; i >= 0; i--) {
+                    setVolume(originalVolume * i / steps);
+                    Thread.sleep(stepDelay);
+                }
+                
+                stopBackgroundMusic();
+                setVolume(originalVolume); // Ripristina volume per prossima volta
+            } catch (Exception e) {
+                stopBackgroundMusic();
+            }
+        }).start();
     }
     
     public void stopBackgroundMusic() {

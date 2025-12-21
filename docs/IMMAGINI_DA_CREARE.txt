@@ -1,0 +1,111 @@
+# IMMAGINI DA CREARE PER LOST THESIS
+# Guida per la generazione delle immagini AI
+
+## Stile Generale
+Tutte le immagini devono essere in stile pixel art, con:
+- Palette colori limitata (16-32 colori)
+- Atmosfera misteriosa/survival
+- Riferimenti alla serie TV LOST
+- Dimensioni consigliate: 800x600 o 1024x768
+
+---
+
+## CAPITOLI DELLA STORIA (17 immagini)
+
+### 1. cap1_crash.png
+**Prompt:** "Pixel art scene of a plane crash on a tropical island beach. Wreckage of Oceanic 815 scattered on golden sand, palm trees, survivors in shock, smoke rising, tropical jungle in background. LOST TV show style. Dramatic atmosphere."
+
+### 2. cap2_survivors.png
+**Prompt:** "Pixel art scene of 48 survivors camping on a tropical beach at sunset. Makeshift tents, campfire, people gathered, plane debris in background, ocean waves. LOST style survival camp atmosphere."
+
+### 3. cap3_smoke.png
+**Prompt:** "Pixel art scene of the smoke monster in tropical jungle. Mysterious black smoke between trees, terrified person hiding behind tree, dark atmosphere, jungle foliage. LOST smoke monster encounter."
+
+### 4. cap4_caves.png
+**Prompt:** "Pixel art scene of tropical island caves with fresh water stream. Underground cave system, dripping water, mysterious light, explorer with torch discovering the caves. LOST TV show style."
+
+### 5. cap5_hunt.png
+**Prompt:** "Pixel art scene of hunting wild boars in tropical jungle. Dense vegetation, makeshift spear, wild boar, hunter stalking prey, jungle atmosphere. LOST island survival style."
+
+### 6. cap6_hatch_discovery.png
+**Prompt:** "Pixel art scene of discovering a mysterious metal hatch buried in jungle floor. Dharma Initiative hatch covered with leaves and dirt, person brushing away debris, mysterious symbols. LOST TV show style."
+
+### 7. cap7_blackrock.png
+**Prompt:** "Pixel art scene of an old wooden sailing ship stranded in the middle of jungle. Black Rock slave ship, broken masts, dark interior visible, crates of dynamite. LOST style mysterious shipwreck."
+
+### 8. cap8_open_hatch.png
+**Prompt:** "Pixel art scene of using dynamite to open a metal hatch. Explosion effect, hatch door blowing open, smoke and debris, tropical jungle background. LOST dramatic moment style."
+
+### 9. cap9_swan.png
+**Prompt:** "Pixel art scene of the Swan Station interior. 1970s bunker aesthetic, computer terminal, countdown timer, button console, Dharma Initiative logos, man named Desmond. LOST TV show style underground bunker."
+
+### 10. cap10_others.png
+**Prompt:** "Pixel art scene of being captured by the Others on tropical island. Group of mysterious people in primitive clothing, torches at night, prisoner tied up, jungle camp. LOST Others hostile encounter."
+
+### 11. cap11_flashback.png
+**Prompt:** "Pixel art scene of Sydney airport terminal. Gate for Oceanic Flight 815, passengers waiting, airport interior, departure boards, protagonist looking at boarding pass. LOST flashback style memory scene."
+
+### 12. cap12_raft.png
+**Prompt:** "Pixel art scene of building a wooden raft on tropical beach. Survivors constructing escape raft with logs and vines, ocean in background, sunset colors. LOST raft escape attempt style."
+
+### 13. cap13_thesis.png
+**Prompt:** "Pixel art scene of finding important documents in abandoned Dharma station. Papers with coordinates scattered, old computer screens, protagonist discovering crucial thesis/documents. LOST mystery discovery style."
+
+### 14. cap14_runway.png
+**Prompt:** "Pixel art scene of a hidden runway on tropical island. Overgrown concrete airstrip in jungle clearing, old airplane visible, mysterious Dharma construction. LOST island secret location style."
+
+### 15. cap15_prep.png
+**Prompt:** "Pixel art scene of repairing an old airplane on jungle runway. Characters working on propeller plane, tools scattered, makeshift repairs, hope of escape. LOST survival engineering style."
+
+### 16. cap16_escape.png
+**Prompt:** "Pixel art scene of dramatic airplane takeoff from island. Small plane on runway with jungle on sides, danger approaching from behind, tense escape moment. LOST finale escape style."
+
+### 17. cap17_freedom.png
+**Prompt:** "Pixel art scene of airplane flying away from tropical island. Bird's eye view of mysterious island getting smaller, plane in foreground, ocean horizon, freedom and hope. LOST happy ending style."
+
+---
+
+## STANZE/LOCAZIONI BASE (immagini opzionali di fallback)
+
+### beach.png
+**Prompt:** "Pixel art tropical beach scene. Golden sand, palm trees, ocean waves, plane wreckage debris, blue sky with clouds. LOST island beach peaceful atmosphere."
+
+### jungle.png
+**Prompt:** "Pixel art dense tropical jungle scene. Tall trees, vines, mysterious shadows, sunlight filtering through canopy, exotic plants. LOST island jungle exploration."
+
+### camp.png
+**Prompt:** "Pixel art survivor camp on beach. Tents made from tarps, campfire pit, airplane seats used as furniture, supplies organized. LOST beach camp at golden hour."
+
+### caves.png
+**Prompt:** "Pixel art underground cave system. Fresh water pool, stalactites, torchlight illumination, safe haven atmosphere. LOST caves shelter location."
+
+### hatch.png
+**Prompt:** "Pixel art Swan Station hatch entrance. Metal door with Dharma logo in jungle floor, mysterious glow from inside. LOST hatch iconic location."
+
+### swan_station.png
+**Prompt:** "Pixel art retro-futuristic underground bunker. 1970s technology, computers, living quarters, Dharma Initiative aesthetic. LOST Swan Station interior."
+
+### blackrock.png
+**Prompt:** "Pixel art old sailing ship in jungle. Rotting wooden hull, broken masts, mysterious cargo hold. LOST Black Rock shipwreck."
+
+### runway.png
+**Prompt:** "Pixel art hidden airstrip in jungle. Overgrown concrete runway, old plane, mysterious construction. LOST Hydra Island runway."
+
+---
+
+## NOTE TECNICHE
+
+1. Salva tutte le immagini in: assets/images/
+2. Formato: PNG con trasparenza se necessario
+3. Naming: usa esattamente i nomi file indicati sopra
+4. Dopo aver creato le immagini, ricompila il gioco con: ./scripts/compile.sh
+5. Testa con: ./scripts/run.sh
+
+## ORDINE DI PRIORITÀ
+
+1. ⭐ cap1_crash.png - cap17_freedom.png (17 immagini capitoli)
+2. 📍 beach.png, jungle.png, caves.png (3 location base)
+3. 🔧 Altre immagini di fallback opzionali
+
+---
+Ultimo aggiornamento: Struttura 17 capitoli survival-focused

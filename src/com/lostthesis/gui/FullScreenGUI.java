@@ -29,6 +29,7 @@ public class FullScreenGUI extends JFrame {
     private String currentText = "";
     private String currentTitle = "";
     private String currentLocation = "spiaggia";
+    private String currentImageKey = "spiaggia"; // Chiave immagine da mostrare (capitolo o location)
     
     // Dimensioni schermo
     private int screenWidth;
@@ -1868,6 +1869,9 @@ public class FullScreenGUI extends JFrame {
         currentText = response;
         currentLocation = engine.getCurrentRoomKey();
         
+        // Usa l'immagine del capitolo corrente
+        currentImageKey = engine.getCurrentChapterImageKey();
+        
         // Aggiorna titolo se siamo in un capitolo
         if (response.contains("CAP.")) {
             int start = response.indexOf(": ");
@@ -1917,8 +1921,8 @@ public class FullScreenGUI extends JFrame {
                     currentLocation.toUpperCase());
             }
             
-            // Render
-            renderer.render(g2d, currentLocation, currentText, currentTitle, status);
+            // Render - usa l'immagine del capitolo corrente
+            renderer.render(g2d, currentImageKey, currentText, currentTitle, status);
         }
     }
     

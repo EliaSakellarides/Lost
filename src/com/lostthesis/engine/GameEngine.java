@@ -82,6 +82,10 @@ public class GameEngine {
     private void createStoryChapters() {
         storyChapters.clear();
         
+        // ═══════════════════════════════════════════════════════════════
+        // CAPITOLI RIVISITATI - Focus su SOPRAVVIVENZA e cronologia LOST
+        // ═══════════════════════════════════════════════════════════════
+        
         // CAPITOLO 1: LO SCHIANTO
         Map<String, String> cap1Choices = new HashMap<>();
         cap1Choices.put("A", "Aiutare i feriti");
@@ -100,7 +104,7 @@ public class GameEngine {
             "Essere un eroe è sempre la scelta giusta!"
         ));
         
-        // CAPITOLO 2: I SOPRAVVISSUTI
+        // CAPITOLO 2: I SOPRAVVISSUTI - Organizzare il campo
         Map<String, String> cap2Choices = new HashMap<>();
         cap2Choices.put("A", "48");
         cap2Choices.put("B", "23");
@@ -113,240 +117,284 @@ public class GameEngine {
             "Kate raccoglie provviste dai rottami.\n" +
             "Sawyer sta già litigando con qualcuno...\n\n" +
             "Qualcuno chiede: 'Quanti siamo sopravvissuti?'\n\n" +
-            "❓ Quanti passeggeri sono sopravvissuti allo schianto? (Suggerimento: è uno dei NUMERI)",
+            "❓ Quanti passeggeri sono sopravvissuti allo schianto?",
             cap2Choices,
             "A",
             "48 sopravvissuti iniziali!"
         ));
         
-        // CAPITOLO 3: IL MOSTRO DI FUMO
+        // CAPITOLO 3: IL MOSTRO DI FUMO - Prima apparizione
         Map<String, String> cap3Choices = new HashMap<>();
         cap3Choices.put("A", "Corri via!");
         cap3Choices.put("B", "Resta immobile");
-        cap3Choices.put("C", "Affrontalo");
+        cap3Choices.put("C", "Arrampicati su un albero");
         storyChapters.add(new Level(
             "cap3_smoke",
             "Il Mostro di Fumo",
-            "🌫️ NELLA GIUNGLA...\n\n" +
-            "Stai esplorando quando senti un rumore terrificante.\n" +
+            "🌫️ LA PRIMA NOTTE NELLA GIUNGLA...\n\n" +
+            "Stai cercando legna quando senti un rumore terrificante.\n" +
             "TICK... TICK... TICK... *RUGGITO MECCANICO*\n\n" +
-            "Una colonna di FUMO NERO si avvicina!\n" +
-            "È il MOSTRO dell'isola!\n\n" +
+            "Gli alberi si piegano, qualcosa di ENORME si avvicina!\n" +
+            "Una colonna di FUMO NERO emerge dalla vegetazione!\n\n" +
             "❓ Cosa fai?",
             cap3Choices,
             "B",
-            "Il mostro non attacca chi sta fermo..."
+            "Il mostro non attacca chi sta fermo... sembra studiare le sue prede."
         ));
         
-        // CAPITOLO 4: LA BOTOLA
+        // CAPITOLO 4: LE GROTTE - Trovare acqua (NUOVO)
         Map<String, String> cap4Choices = new HashMap<>();
-        cap4Choices.put("A", "4");
-        cap4Choices.put("B", "8");
-        cap4Choices.put("C", "15");
+        cap4Choices.put("A", "Trasferirsi alle grotte");
+        cap4Choices.put("B", "Restare sulla spiaggia");
+        cap4Choices.put("C", "Dividere il gruppo");
         storyChapters.add(new Level(
-            "cap4_hatch",
-            "La Botola",
-            "🚪 Hai trovato una BOTOLA nel terreno!\n\n" +
-            "È coperta di terra e foglie.\n" +
-            "C'è una scritta: 'QUARANTINE' e un logo: DHARMA.\n\n" +
-            "Per aprirla devi inserire un codice...\n\n" +
-            "❓ Qual è il primo numero della sequenza DHARMA?",
+            "cap4_caves",
+            "Le Grotte",
+            "💧 GIORNO 3 - EMERGENZA ACQUA\n\n" +
+            "L'acqua delle bottiglie sta finendo.\n" +
+            "Jack ha trovato delle GROTTE con acqua dolce!\n\n" +
+            "Ma sono nella giungla, lontano dalla spiaggia...\n" +
+            "Lontano dai possibili soccorsi.\n\n" +
+            "Il gruppo è diviso. Cosa proponi?\n\n" +
+            "❓ Qual è la scelta migliore per sopravvivere?",
             cap4Choices,
-            "A",
-            "4-8-15-16-23-42!"
+            "C",
+            "Dividere il gruppo: alcuni alle grotte per l'acqua, altri sulla spiaggia per i soccorsi!"
         ));
         
-        // CAPITOLO 5: IL CIGNO
+        // CAPITOLO 5: LA CACCIA - Trovare cibo (NUOVO)
+        Map<String, String> cap5Choices = new HashMap<>();
+        cap5Choices.put("A", "Cacciare i cinghiali");
+        cap5Choices.put("B", "Pescare nel mare");
+        cap5Choices.put("C", "Raccogliere frutta");
         storyChapters.add(new Level(
-            "cap5_swan",
-            "La Stazione Il Cigno",
-            "🦢 Scendi nella stazione sotterranea.\n\n" +
-            "Trovi un uomo, DESMOND, che vive qui da anni.\n" +
-            "'Brother! Finalmente qualcuno!'\n" +
-            "'Devi premere il pulsante ogni 108 minuti!'\n" +
-            "'Altrimenti... il mondo finisce!'\n\n" +
-            "Sul computer c'è scritto: 4 8 15 16 23 42\n\n" +
-            "❓ Quanto fa la somma dei numeri DHARMA?",
+            "cap5_hunt",
+            "La Caccia",
+            "🐗 GIORNO 5 - IL CIBO SCARSEGGIA\n\n" +
+            "Le provviste dell'aereo sono quasi finite.\n" +
+            "Locke ha visto dei CINGHIALI nella giungla.\n" +
+            "Jin sa pescare. Hurley ha trovato alberi di frutta.\n\n" +
+            "Servono proteine per sopravvivere a lungo termine.\n\n" +
+            "❓ Come procurarsi il cibo?",
+            cap5Choices,
+            "A",
+            "I cinghiali sono la fonte di proteine più affidabile sull'isola!"
+        ));
+        
+        // CAPITOLO 6: LA BOTOLA - Scoperta (non aperta)
+        Map<String, String> cap6Choices = new HashMap<>();
+        cap6Choices.put("A", "Provare ad aprirla");
+        cap6Choices.put("B", "Lasciare perdere");
+        cap6Choices.put("C", "Cercare un altro modo");
+        storyChapters.add(new Level(
+            "cap6_hatch",
+            "La Botola",
+            "🚪 GIORNO 8 - LA SCOPERTA DI LOCKE\n\n" +
+            "Locke e Boone hanno trovato qualcosa nella giungla!\n" +
+            "Una BOTOLA di metallo sepolta nel terreno.\n\n" +
+            "C'è scritto 'QUARANTINE' e un simbolo: DHARMA.\n" +
+            "È sigillata, impossibile aprirla a mani nude.\n\n" +
+            "Locke è ossessionato. Vuole sapere cosa c'è sotto.\n\n" +
+            "❓ Cosa consigli?",
+            cap6Choices,
+            "C",
+            "Serve qualcosa di potente per aprirla... come degli ESPLOSIVI!"
+        ));
+        
+        // CAPITOLO 7: LA ROCCIA NERA - Cercare dinamite
+        Map<String, String> cap7Choices = new HashMap<>();
+        cap7Choices.put("A", "Prendere la dinamite");
+        cap7Choices.put("B", "È troppo pericoloso");
+        cap7Choices.put("C", "Prenderne solo un po'");
+        storyChapters.add(new Level(
+            "cap7_blackrock",
+            "La Roccia Nera",
+            "⚓ LA NAVE NELLA GIUNGLA\n\n" +
+            "Rousseau vi ha parlato della ROCCIA NERA.\n" +
+            "Una nave del 1800 arenata nel mezzo dell'isola!\n\n" +
+            "All'interno trovate... DINAMITE!\n" +
+            "Vecchia, instabile, ma potente abbastanza.\n\n" +
+            "⚠️ ATTENZIONE: È estremamente pericolosa!\n" +
+            "Un movimento sbagliato e... BOOM!\n\n" +
+            "❓ Vale la pena rischiare?",
+            cap7Choices,
+            "C",
+            "Prenderne poca e con MOLTA cautela... un candelotto basta!"
+        ));
+        
+        // CAPITOLO 8: APRIRE LA BOTOLA
+        storyChapters.add(new Level(
+            "cap8_openhatch",
+            "Aprire la Botola",
+            "💥 IL MOMENTO DELLA VERITÀ\n\n" +
+            "Siete tornati alla botola con la dinamite.\n" +
+            "Locke posiziona l'esplosivo con cura.\n" +
+            "Tutti si allontanano...\n\n" +
+            "Hurley nota qualcosa sulla botola: dei NUMERI!\n" +
+            "'Aspetta! Quei numeri... 4 8 15 16 23 42!'\n" +
+            "'Sono i numeri MALEDETTI!'\n\n" +
+            "Ma Locke ha già acceso la miccia...\n\n" +
+            "❓ Qual è la somma di questi numeri?",
             Arrays.asList("108", "centootto"),
             "4+8+15+16+23+42 = ?"
         ));
         
-        // CAPITOLO 6: GLI ALTRI
-        Map<String, String> cap6Choices = new HashMap<>();
-        cap6Choices.put("A", "Ben Linus");
-        cap6Choices.put("B", "John Locke");
-        cap6Choices.put("C", "Jacob");
+        // CAPITOLO 9: IL CIGNO - Desmond
+        Map<String, String> cap9Choices = new HashMap<>();
+        cap9Choices.put("A", "Premere il pulsante");
+        cap9Choices.put("B", "Non premere");
+        cap9Choices.put("C", "Chiedere spiegazioni");
         storyChapters.add(new Level(
-            "cap6_others",
-            "Gli Altri",
-            "👥 Sei stato catturato dagli ALTRI!\n\n" +
-            "Ti portano in un villaggio nascosto.\n" +
-            "Sembrano vivere sull'isola da molto tempo.\n\n" +
-            "Un uomo con occhiali ti interroga:\n" +
-            "'Sappiamo tutto di te. Sappiamo perché sei qui.'\n" +
-            "'L'isola ti ha scelto.'\n\n" +
-            "❓ Chi è il leader degli Altri?",
-            cap6Choices,
+            "cap9_swan",
+            "La Stazione Il Cigno",
+            "🦢 DENTRO LA BOTOLA\n\n" +
+            "Scendete nella stazione sotterranea.\n" +
+            "Trovi un uomo, DESMOND, che vive qui da 3 anni!\n\n" +
+            "'Brother! Finalmente qualcuno!'\n" +
+            "'Devo premere il pulsante ogni 108 minuti!'\n" +
+            "'Se non lo faccio... il mondo finisce!'\n\n" +
+            "Un timer sta per scadere: 00:01:30\n" +
+            "Il computer mostra: 4 8 15 16 23 42\n\n" +
+            "❓ Il timer sta per scadere! Cosa fai?",
+            cap9Choices,
             "A",
-            "L'uomo misterioso con gli occhiali..."
+            "Meglio non rischiare... per ora!"
         ));
         
-        // CAPITOLO 7: IL TEMPIO
-        Map<String, String> cap7Choices = new HashMap<>();
-        cap7Choices.put("A", "Bere l'acqua");
-        cap7Choices.put("B", "Rifiutare");
-        cap7Choices.put("C", "Scappare");
-        storyChapters.add(new Level(
-            "cap7_temple",
-            "Il Tempio",
-            "🏛️ Arrivi al TEMPIO nascosto.\n\n" +
-            "I guardiani del tempio ti portano davanti a una vasca.\n" +
-            "'L'acqua del tempio può guarirti...'\n" +
-            "'Ma ha un prezzo.'\n\n" +
-            "L'acqua è scura e misteriosa.\n\n" +
-            "❓ Cosa fai?",
-            cap7Choices,
-            "A",
-            "L'isola richiede fede..."
-        ));
-        
-        // CAPITOLO 8: I FLASHBACK
-        Map<String, String> cap8Choices = new HashMap<>();
-        cap8Choices.put("A", "815");
-        cap8Choices.put("B", "316");
-        cap8Choices.put("C", "777");
-        storyChapters.add(new Level(
-            "cap8_flashback",
-            "I Flashback",
-            "💭 FLASHBACK - PRIMA DELLO SCHIANTO\n\n" +
-            "Ti ricordi di quando sei salito sull'aereo.\n" +
-            "L'aeroporto di Sydney era affollato.\n" +
-            "Avevi con te una tesi importante...\n" +
-            "Dovevi consegnarla a Los Angeles.\n\n" +
-            "❓ Qual era il numero del volo Oceanic?",
-            cap8Choices,
-            "A",
-            "Oceanic Flight..."
-        ));
-        
-        // CAPITOLO 9: LA ROCCIA NERA
-        storyChapters.add(new Level(
-            "cap9_blackrock",
-            "La Roccia Nera",
-            "⚓ Trovi una NAVE nel mezzo della giungla!\n\n" +
-            "È una vecchia nave schiavista: LA ROCCIA NERA.\n" +
-            "Come è arrivata qui, in mezzo all'isola?!\n\n" +
-            "All'interno trovi... DINAMITE!\n" +
-            "E un vecchio diario con una mappa.\n" +
-            "La mappa mostra una 'PISTA DI ATTERRAGGIO SEGRETA'!\n\n" +
-            "❓ Quanti anni ha questa nave? (1800s - anno corrente circa 1867)",
-            Arrays.asList("1867", "150", "centocinquanta"),
-            "Nave del 1800..."
-        ));
-        
-        // CAPITOLO 10: JACOB
+        // CAPITOLO 10: GLI ALTRI - Cattura
         Map<String, String> cap10Choices = new HashMap<>();
-        cap10Choices.put("A", "Il Protettore dell'isola");
-        cap10Choices.put("B", "Un prigioniero");
-        cap10Choices.put("C", "Un'illusione");
+        cap10Choices.put("A", "Collaborare");
+        cap10Choices.put("B", "Resistere");
+        cap10Choices.put("C", "Cercare di fuggire");
         storyChapters.add(new Level(
-            "cap10_jacob",
-            "Jacob",
-            "🕯️ Nella notte vedi una figura luminosa.\n\n" +
-            "Un uomo vestito di bianco ti parla:\n" +
-            "'Sei qui per un motivo, " + "' + player.getName() + '" + ".'\n" +
-            "'L'isola ti ha scelto.'\n" +
-            "'Ma devi scegliere tu se restare... o andare.'\n\n" +
-            "❓ Chi è Jacob?",
+            "cap10_others",
+            "Gli Altri",
+            "👥 CATTURATO!\n\n" +
+            "Durante una spedizione, vieni catturato dagli ALTRI!\n" +
+            "Ti portano in un villaggio nascosto.\n\n" +
+            "Un uomo con occhiali ti interroga:\n" +
+            "'Mi chiamo Ben. Sappiamo tutto di te.'\n" +
+            "'Sappiamo perché sei su quest'isola.'\n" +
+            "'La domanda è: tu lo sai?'\n\n" +
+            "❓ Come reagisci?",
             cap10Choices,
-            "A",
-            "Il guardiano dell'isola..."
+            "C",
+            "Mai fidarsi degli Altri... cerca un modo per scappare!"
         ));
         
-        // CAPITOLO 11: L'UOMO IN NERO
+        // CAPITOLO 11: LA FUGA DAGLI ALTRI
         Map<String, String> cap11Choices = new HashMap<>();
-        cap11Choices.put("A", "Rifiutare");
-        cap11Choices.put("B", "Accettare");
-        cap11Choices.put("C", "Chiedere tempo");
+        cap11Choices.put("A", "Attraverso la giungla");
+        cap11Choices.put("B", "Seguire il fiume");
+        cap11Choices.put("C", "Verso la costa");
         storyChapters.add(new Level(
-            "cap11_mib",
-            "L'Uomo in Nero",
-            "🖤 L'UOMO IN NERO appare davanti a te.\n\n" +
-            "Ha l'aspetto di John Locke, ma... non è lui.\n" +
-            "'Vuoi lasciare quest'isola?'\n" +
-            "'Posso aiutarti. Devi solo fare una cosa per me.'\n" +
-            "'Uccidi Jacob.'\n\n" +
-            "❓ Cosa rispondi?",
+            "cap11_escape_others",
+            "La Fuga",
+            "🏃 DEVI SCAPPARE!\n\n" +
+            "Riesci a liberarti dalle corde durante la notte.\n" +
+            "Il villaggio è silenzioso, le guardie distratte.\n\n" +
+            "Hai tre vie di fuga possibili:\n" +
+            "• La giungla - pericolosa ma diretta\n" +
+            "• Il fiume - più lungo ma facile da seguire\n" +
+            "• La costa - esposto ma familiare\n\n" +
+            "Il Mostro di Fumo è stato visto nella giungla...\n\n" +
+            "❓ Quale strada prendi?",
             cap11Choices,
-            "A",
-            "Mai fidarsi dell'Uomo in Nero!"
+            "B",
+            "Il fiume ti riporterà al campo... e l'acqua copre le tue tracce!"
         ));
         
-        // CAPITOLO 12: IL FARO
+        // CAPITOLO 12: LA ZATTERA - Tentativo via mare (NUOVO)
         Map<String, String> cap12Choices = new HashMap<>();
-        cap12Choices.put("A", "23");
-        cap12Choices.put("B", "42");
-        cap12Choices.put("C", "108");
+        cap12Choices.put("A", "Aiutare con la zattera");
+        cap12Choices.put("B", "Restare sull'isola");
+        cap12Choices.put("C", "Cercare un'altra via");
         storyChapters.add(new Level(
-            "cap12_lighthouse",
-            "Il Faro",
-            "🗼 Trovi un antico FARO sull'isola!\n\n" +
-            "All'interno c'è uno specchio magico.\n" +
-            "Ruotando la ruota, lo specchio mostra... LA TUA CASA!\n\n" +
-            "Sulla ruota ci sono nomi con numeri.\n" +
-            "Il tuo nome è associato a un numero...\n\n" +
-            "❓ Qual è il numero di Jack Shephard?",
+            "cap12_raft",
+            "La Zattera",
+            "⛵ IL PIANO DI MICHAEL\n\n" +
+            "Michael sta costruendo una ZATTERA per fuggire!\n" +
+            "Jin, Sawyer e Walt partiranno con lui.\n\n" +
+            "'Raggiungeremo le rotte marittime commerciali!'\n" +
+            "'Qualcuno ci troverà!'\n\n" +
+            "Ma l'oceano è immenso e pericoloso.\n" +
+            "E se ci fosse un'altra via?\n\n" +
+            "❓ Cosa fai?",
             cap12Choices,
-            "A",
-            "Uno dei numeri DHARMA..."
+            "C",
+            "La zattera è rischiosa... forse c'è un modo migliore!"
         ));
         
-        // CAPITOLO 13: LA SCOPERTA DELLA TESI
+        // CAPITOLO 13: I FLASHBACK - Ricordi
+        Map<String, String> cap13Choices = new HashMap<>();
+        cap13Choices.put("A", "815");
+        cap13Choices.put("B", "316");
+        cap13Choices.put("C", "777");
         storyChapters.add(new Level(
-            "cap13_thesis",
+            "cap13_flashback",
+            "Flashback",
+            "💭 QUELLA NOTTE... UN SOGNO\n\n" +
+            "Ti ricordi di quando sei salito sull'aereo.\n" +
+            "L'aeroporto di Sydney era affollato.\n\n" +
+            "Avevi con te una TESI importante...\n" +
+            "Dovevi consegnarla a Los Angeles per la laurea.\n" +
+            "Era il tuo lavoro di anni!\n\n" +
+            "La tesi... DOVE L'HAI MESSA?\n" +
+            "Forse è ancora nei rottami dell'aereo?\n\n" +
+            "❓ Qual era il numero del volo Oceanic?",
+            cap13Choices,
+            "A",
+            "Oceanic Flight 815!"
+        ));
+        
+        // CAPITOLO 14: LA SCOPERTA DELLA TESI
+        storyChapters.add(new Level(
+            "cap14_thesis",
             "La Scoperta",
             "📜 NEL BUNKER DHARMA...\n\n" +
-            "Trovi una stanza segreta dietro una parete!\n" +
-            "All'interno c'è un documento polveroso:\n\n" +
-            "📖 'TESI: COORDINATE PER LA FUGA'\n" +
-            "'Autore: Un sopravvissuto, anno 1977'\n\n" +
-            "La tesi contiene le coordinate della pista segreta!\n" +
-            "E le istruzioni per far funzionare l'aereo!\n\n" +
-            "❓ Hai trovato la TESI! Digita 'prendi' per raccoglierla.",
-            Arrays.asList("prendi", "raccogli", "ok", "si"),
-            "Raccoglila!"
+            "Esplori la stazione Il Cigno più a fondo.\n" +
+            "Trovi una stanza segreta dietro una parete!\n\n" +
+            "All'interno... documenti DHARMA!\n" +
+            "E tra questi... una MAPPA!\n\n" +
+            "📖 'COORDINATE: PISTA DI ATTERRAGGIO HYDRA'\n" +
+            "'Per emergenze. Aereo funzionante.'\n\n" +
+            "C'è un AEREO nascosto sull'isola!\n\n" +
+            "❓ Digita 'prendi' per prendere la mappa!",
+            Arrays.asList("prendi", "raccogli", "ok", "si", "a"),
+            "Prendila!"
         ));
         
-        // CAPITOLO 14: LA PISTA NASCOSTA
-        Map<String, String> cap14Choices = new HashMap<>();
-        cap14Choices.put("A", "Nord dell'isola");
-        cap14Choices.put("B", "Centro dell'isola");
-        cap14Choices.put("C", "Sud dell'isola");
+        // CAPITOLO 15: LA PISTA NASCOSTA
+        Map<String, String> cap15Choices = new HashMap<>();
+        cap15Choices.put("A", "Andare subito");
+        cap15Choices.put("B", "Prepararsi bene");
+        cap15Choices.put("C", "Portare tutti");
         storyChapters.add(new Level(
-            "cap14_runway",
+            "cap15_runway",
             "La Pista Nascosta",
-            "🛬 Segui le coordinate della TESI.\n\n" +
-            "Attraversi la giungla per giorni.\n" +
-            "Il Mostro di Fumo ti insegue.\n" +
-            "Gli Altri cercano di fermarti.\n\n" +
+            "🛬 LA SPERANZA!\n\n" +
+            "Segui le coordinate della mappa.\n" +
+            "Attraversi territori pericolosi.\n" +
+            "Il Mostro di Fumo ruggisce in lontananza.\n\n" +
             "Ma finalmente... LA VEDI!\n" +
-            "Una pista di atterraggio nascosta tra le palme!\n" +
-            "E un piccolo AEREO!\n\n" +
-            "❓ Dove si trova la pista secondo la mappa?",
-            cap14Choices,
-            "A",
-            "La bussola punta a nord..."
+            "Una pista di atterraggio nascosta!\n" +
+            "E un piccolo AEREO Cessna sotto un telo!\n\n" +
+            "❓ Come procedi?",
+            cap15Choices,
+            "B",
+            "Meglio prepararsi: carburante, provviste, e verificare l'aereo!"
         ));
         
-        // CAPITOLO 15: PREPARAZIONE AL VOLO
+        // CAPITOLO 16: PREPARAZIONE AL VOLO
         storyChapters.add(new Level(
-            "cap15_prep",
+            "cap16_prep",
             "Preparazione al Volo",
-            "✈️ L'AEREO È QUI!\n\n" +
-            "È un piccolo Cessna, danneggiato ma riparabile.\n" +
-            "Grazie alle istruzioni della TESI, sai come farlo partire.\n\n" +
-            "Devi inserire il codice di accensione.\n" +
-            "La TESI dice: 'Il codice è la somma dei numeri diviso 2'\n\n" +
+            "✈️ L'AEREO!\n\n" +
+            "È un Cessna 172, danneggiato ma riparabile.\n" +
+            "Trovi un manuale con le istruzioni di avvio.\n\n" +
+            "Serve un codice per sbloccare l'accensione.\n" +
+            "Sul manuale c'è scritto:\n" +
+            "'Codice: somma DHARMA diviso 2'\n\n" +
             "4 + 8 + 15 + 16 + 23 + 42 = 108\n" +
             "108 / 2 = ?\n\n" +
             "❓ Qual è il codice di accensione?",
@@ -354,41 +402,43 @@ public class GameEngine {
             "108 diviso 2..."
         ));
         
-        // CAPITOLO 16: LA FUGA
-        Map<String, String> cap16Choices = new HashMap<>();
-        cap16Choices.put("A", "Decollare subito!");
-        cap16Choices.put("B", "Aspettare gli altri");
-        cap16Choices.put("C", "Tornare indietro");
+        // CAPITOLO 17: LA FUGA FINALE
+        Map<String, String> cap17Choices = new HashMap<>();
+        cap17Choices.put("A", "Decollare ORA!");
+        cap17Choices.put("B", "Aspettare gli altri");
+        cap17Choices.put("C", "Tornare indietro");
         storyChapters.add(new Level(
-            "cap16_escape",
+            "cap17_escape",
             "La Fuga",
-            "🛫 IL MOTORE SI ACCENDE!\n\n" +
-            "L'aereo vibra, pronto a partire.\n" +
-            "Ma il Mostro di Fumo si avvicina!\n" +
-            "Gli Altri corrono verso la pista!\n\n" +
-            "Hai solo pochi secondi!\n\n" +
+            "🛫 IL MOMENTO È ARRIVATO!\n\n" +
+            "Il motore si accende! L'elica gira!\n" +
+            "Ma qualcosa non va...\n\n" +
+            "Il MOSTRO DI FUMO appare dalla giungla!\n" +
+            "Gli ALTRI corrono verso la pista!\n" +
+            "Ben grida: 'NON PUOI ANDARTENE!'\n\n" +
+            "Hai solo pochi secondi per decidere!\n\n" +
             "❓ Cosa fai?",
-            cap16Choices,
+            cap17Choices,
             "A",
-            "Non c'è tempo da perdere!"
+            "Non c'è tempo! DECOLLA!"
         ));
         
-        // CAPITOLO 17: FINALE - LIBERTÀ
+        // CAPITOLO 18: LIBERTÀ - FINALE
         storyChapters.add(new Level(
-            "cap17_freedom",
+            "cap18_freedom",
             "Libertà",
             "🌅 CE L'HAI FATTA!\n\n" +
             "L'aereo decolla, lasciandoti alle spalle l'isola.\n" +
-            "Il Mostro di Fumo ruggisce impotente.\n" +
-            "Gli Altri ti guardano volare via.\n\n" +
+            "Il Mostro di Fumo ruggisce impotente sotto di te.\n" +
+            "Gli Altri diventano puntini sulla pista.\n\n" +
             "Sotto di te, l'isola diventa sempre più piccola...\n" +
             "Finché non scompare all'orizzonte.\n\n" +
-            "Stringi la TESI tra le mani.\n" +
-            "Ce l'hai fatta. Sei libero.\n\n" +
-            "🎓 E ora... puoi finalmente laurearti!\n\n" +
-            "❓ Digita 'fine' per concludere la tua avventura.",
-            Arrays.asList("fine", "finito", "ok", "si"),
-            "È finita!"
+            "🌊 L'oceano infinito si stende davanti a te.\n" +
+            "Sei LIBERO. Finalmente LIBERO!\n\n" +
+            "🎓 E la tua TESI? Ce l'hai fatta!\n\n" +
+            "❓ Digita 'fine' per concludere.",
+            Arrays.asList("fine", "finito", "ok", "si", "a"),
+            "È finita... o forse no?"
         ));
     }
 
@@ -1103,6 +1153,32 @@ public class GameEngine {
             return player.getCurrentRoom().getKey();
         }
         return "spiaggia";
+    }
+    
+    /**
+     * Restituisce la chiave dell'immagine da mostrare per il capitolo corrente.
+     * Usato dalla GUI per caricare l'immagine corretta.
+     */
+    public String getCurrentChapterImageKey() {
+        if (currentChapter >= storyChapters.size()) {
+            return "cap17_freedom"; // Finale
+        }
+        Level chapter = storyChapters.get(currentChapter);
+        return chapter.getKey(); // cap1_crash, cap2_survivors, ecc.
+    }
+    
+    /**
+     * Restituisce il numero del capitolo corrente (1-based per display)
+     */
+    public int getCurrentChapterNumber() {
+        return currentChapter + 1;
+    }
+    
+    /**
+     * Restituisce il totale dei capitoli
+     */
+    public int getTotalChapters() {
+        return storyChapters.size();
     }
     
     public Player getPlayer() { return player; }

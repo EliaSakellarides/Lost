@@ -2,6 +2,7 @@ package com.lostthesis.engine;
 
 import com.lostthesis.model.*;
 import com.lostthesis.audio.AudioManager;
+import com.lostthesis.minigames.*;
 import java.util.*;
 
 /**
@@ -41,6 +42,12 @@ public class GameEngine {
     private boolean blackRockExplored = false;
     private boolean jacobMet = false;
     private boolean templeBathed = false;
+
+    // Mini giochi
+    private MiniGame activeMiniGame;
+    private Map<String, MiniGame> miniGames;
+    private boolean miniGameIntroShown;
+    private boolean miniGameOutroShown;
     
     public GameEngine() {
         this.allRooms = new HashMap<>();
@@ -53,6 +60,15 @@ public class GameEngine {
         this.currentChapterCompleted = false;
         this.currentChapterStarted = false;
         this.audioManager = new AudioManager();
+        this.activeMiniGame = null;
+        this.miniGameIntroShown = false;
+        this.miniGameOutroShown = false;
+        this.miniGames = new HashMap<>();
+        miniGames.put("smoke_chase", new SmokeMonsterChase());
+        miniGames.put("jungle_tracking", new JungleTrackingGame());
+        miniGames.put("dynamite_defusal", new DynamiteDefusalGame());
+        miniGames.put("frequency_tuning", new FrequencyTuningGame());
+        miniGames.put("morse_code", new MorseCodeGame());
     }
     
     public void initializeGame(String playerName) {
@@ -123,12 +139,12 @@ public class GameEngine {
             "48 sopravvissuti iniziali!"
         ));
         
-        // CAPITOLO 3: IL MOSTRO DI FUMO - Prima apparizione
+        // CAPITOLO 3: IL MOSTRO DI FUMO - Prima apparizione + MINI GIOCO
         Map<String, String> cap3Choices = new HashMap<>();
         cap3Choices.put("A", "Corri via!");
         cap3Choices.put("B", "Resta immobile");
         cap3Choices.put("C", "Arrampicati su un albero");
-        storyChapters.add(new Level(
+        Level cap3 = new Level(
             "cap3_smoke",
             "Il Mostro di Fumo",
             "🌫️ LA PRIMA NOTTE NELLA GIUNGLA...\n\n" +
@@ -140,7 +156,9 @@ public class GameEngine {
             cap3Choices,
             "B",
             "Il mostro non attacca chi sta fermo... sembra studiare le sue prede."
-        ));
+        );
+        cap3.setMiniGameKey("smoke_chase");
+        storyChapters.add(cap3);
         
         // CAPITOLO 4: LE GROTTE - Trovare acqua (NUOVO)
         Map<String, String> cap4Choices = new HashMap<>();
@@ -162,12 +180,12 @@ public class GameEngine {
             "Dividere il gruppo: alcuni alle grotte per l'acqua, altri sulla spiaggia per i soccorsi!"
         ));
         
-        // CAPITOLO 5: LA CACCIA - Trovare cibo (NUOVO)
+        // CAPITOLO 5: LA CACCIA - Trovare cibo + MINI GIOCO
         Map<String, String> cap5Choices = new HashMap<>();
         cap5Choices.put("A", "Cacciare i cinghiali");
         cap5Choices.put("B", "Pescare nel mare");
         cap5Choices.put("C", "Raccogliere frutta");
-        storyChapters.add(new Level(
+        Level cap5 = new Level(
             "cap5_hunt",
             "La Caccia",
             "🐗 GIORNO 5 - IL CIBO SCARSEGGIA\n\n" +
@@ -179,7 +197,9 @@ public class GameEngine {
             cap5Choices,
             "A",
             "I cinghiali sono la fonte di proteine più affidabile sull'isola!"
-        ));
+        );
+        cap5.setMiniGameKey("jungle_tracking");
+        storyChapters.add(cap5);
         
         // CAPITOLO 6: LA BOTOLA - Scoperta (non aperta)
         Map<String, String> cap6Choices = new HashMap<>();
@@ -201,12 +221,12 @@ public class GameEngine {
             "Serve qualcosa di potente per aprirla... come degli ESPLOSIVI!"
         ));
         
-        // CAPITOLO 7: LA ROCCIA NERA - Cercare dinamite
+        // CAPITOLO 7: LA ROCCIA NERA - Cercare dinamite + MINI GIOCO
         Map<String, String> cap7Choices = new HashMap<>();
         cap7Choices.put("A", "Prendere la dinamite");
         cap7Choices.put("B", "È troppo pericoloso");
         cap7Choices.put("C", "Prenderne solo un po'");
-        storyChapters.add(new Level(
+        Level cap7 = new Level(
             "cap7_blackrock",
             "La Roccia Nera",
             "⚓ LA NAVE NELLA GIUNGLA\n\n" +
@@ -220,7 +240,9 @@ public class GameEngine {
             cap7Choices,
             "C",
             "Prenderne poca e con MOLTA cautela... un candelotto basta!"
-        ));
+        );
+        cap7.setMiniGameKey("dynamite_defusal");
+        storyChapters.add(cap7);
         
         // CAPITOLO 8: APRIRE LA BOTOLA
         storyChapters.add(new Level(
@@ -239,12 +261,12 @@ public class GameEngine {
             "4+8+15+16+23+42 = ?"
         ));
         
-        // CAPITOLO 9: IL CIGNO - Desmond
+        // CAPITOLO 9: IL CIGNO - Desmond + MINI GIOCO
         Map<String, String> cap9Choices = new HashMap<>();
         cap9Choices.put("A", "Premere il pulsante");
         cap9Choices.put("B", "Non premere");
         cap9Choices.put("C", "Chiedere spiegazioni");
-        storyChapters.add(new Level(
+        Level cap9 = new Level(
             "cap9_swan",
             "La Stazione Il Cigno",
             "🦢 DENTRO LA BOTOLA\n\n" +
@@ -259,7 +281,9 @@ public class GameEngine {
             cap9Choices,
             "A",
             "Meglio non rischiare... per ora!"
-        ));
+        );
+        cap9.setMiniGameKey("frequency_tuning");
+        storyChapters.add(cap9);
         
         // CAPITOLO 10: GLI ALTRI - Cattura
         Map<String, String> cap10Choices = new HashMap<>();
@@ -347,8 +371,8 @@ public class GameEngine {
             "Oceanic Flight 815!"
         ));
         
-        // CAPITOLO 14: LA SCOPERTA DELLA TESI
-        storyChapters.add(new Level(
+        // CAPITOLO 14: LA SCOPERTA DELLA TESI + MINI GIOCO
+        Level cap14 = new Level(
             "cap14_thesis",
             "La Scoperta",
             "📜 NEL BUNKER DHARMA...\n\n" +
@@ -362,7 +386,9 @@ public class GameEngine {
             "❓ Digita 'prendi' per prendere la mappa!",
             Arrays.asList("prendi", "raccogli", "ok", "si", "a"),
             "Prendila!"
-        ));
+        );
+        cap14.setMiniGameKey("morse_code");
+        storyChapters.add(cap14);
         
         // CAPITOLO 15: LA PISTA NASCOSTA
         Map<String, String> cap15Choices = new HashMap<>();
@@ -551,7 +577,12 @@ public class GameEngine {
         String[] parts = cmd.split("\\s+", 2);
         String action = parts[0];
         String target = parts.length > 1 ? parts[1] : "";
-        
+
+        // Se c'è un mini gioco attivo, delega l'input
+        if (activeMiniGame != null) {
+            return processMiniGameInput(command.trim());
+        }
+
         // Modalità narrativa
         if (narrativeMode) {
             // Gestione pulsanti rapidi A, B, C
@@ -703,28 +734,36 @@ public class GameEngine {
         boolean correct = chapter.checkAnswer(answer);
         
         if (correct) {
+            String success = "✅ CORRETTO!\n\n";
+
+            // Se il capitolo ha un mini gioco, avvialo PRIMA di avanzare
+            if (chapter.hasMiniGame()) {
+                // Non avanzare il capitolo, il mini gioco lo fara' al termine
+                currentChapterCompleted = false;
+                String miniGameResult = startMiniGame(chapter.getMiniGameKey());
+                return success + miniGameResult;
+            }
+
             currentChapter++;
             currentChapterCompleted = true;
             currentChapterStarted = false;
-            
-            String success = "✅ CORRETTO!\n\n";
-            
+
             // Aggiungi la TESI all'inventario nel capitolo giusto
             if (currentChapter == 13) {
-                Item tesi = new Item("TESI", 
+                Item tesi = new Item("TESI",
                     "📜 La TESI perduta! Contiene le coordinate per fuggire dall'isola!",
                     true, Item.ItemType.TESI, 0, -1);
                 player.addItem(tesi);
                 success += "📜 Hai ottenuto la TESI!\n\n";
             }
-            
+
             if (currentChapter >= storyChapters.size()) {
                 gameWon = true;
                 success += getEpicEnding();
             } else {
                 success += "Premi AVANTI per continuare...";
             }
-            
+
             return success;
         } else {
             return "❌ Risposta sbagliata!\n💡 Suggerimento: " + chapter.getHint();
@@ -773,6 +812,202 @@ public class GameEngine {
         }
     }
     
+    // ═══════════════════════════════════════════════════════════════
+    // SISTEMA MINI GIOCHI
+    // ═══════════════════════════════════════════════════════════════
+
+    private String processMiniGameInput(String input) {
+        if (activeMiniGame == null) return "";
+
+        String result;
+        String upper = input.toUpperCase().trim();
+
+        // Bottoni A/B/C vanno come button input
+        if (upper.equals("A") || upper.equals("B") || upper.equals("C")) {
+            result = activeMiniGame.handleButtonInput(upper);
+        } else if (upper.equals("AVANTI") || upper.equals("CONTINUA")) {
+            // Se il mini gioco è finito, avanti chiude il mini gioco
+            MiniGameState mgState = activeMiniGame.getState();
+            if (mgState == MiniGameState.WON || mgState == MiniGameState.LOST) {
+                return endMiniGame();
+            }
+            result = activeMiniGame.getCurrentDisplay();
+        } else if (upper.equals("SKIP") || upper.equals("SALTA")) {
+            // Skip con penalità
+            activeMiniGame = null;
+            miniGameIntroShown = false;
+            player.removeHealth(10);
+            return "Hai saltato il mini gioco.\n" +
+                   "Penalita': -10 salute.\n\n" +
+                   "Premi AVANTI per continuare la storia...";
+        } else {
+            // Testo libero
+            result = activeMiniGame.handleTextInput(input);
+        }
+
+        // Controlla se il mini gioco è terminato
+        MiniGameState mgState = activeMiniGame.getState();
+        if (mgState == MiniGameState.WON || mgState == MiniGameState.LOST) {
+            result += "\n\nPremi AVANTI per continuare...";
+        }
+
+        return result;
+    }
+
+    public String startMiniGame(String miniGameKey) {
+        MiniGame game = miniGames.get(miniGameKey);
+        if (game == null) return "Mini gioco non trovato: " + miniGameKey;
+
+        game.reset();
+        activeMiniGame = game;
+        miniGameIntroShown = true;
+
+        return getMiniGameIntroText(miniGameKey) + "\n\n" +
+               game.getInstructions() + "\n\n" +
+               game.getCurrentDisplay();
+    }
+
+    private String endMiniGame() {
+        if (activeMiniGame == null) return "";
+
+        MiniGameState mgState = activeMiniGame.getState();
+        String miniGameKey = null;
+        for (Map.Entry<String, MiniGame> entry : miniGames.entrySet()) {
+            if (entry.getValue() == activeMiniGame) {
+                miniGameKey = entry.getKey();
+                break;
+            }
+        }
+
+        String result;
+        if (mgState == MiniGameState.WON) {
+            result = getMiniGameVictoryText(miniGameKey);
+            // Completa il capitolo corrente
+            currentChapter++;
+            currentChapterCompleted = true;
+            currentChapterStarted = false;
+        } else {
+            result = getMiniGameDefeatText(miniGameKey);
+            // Offri retry o skip
+            result += "\n\nIl gioco continua comunque.\n";
+            currentChapter++;
+            currentChapterCompleted = true;
+            currentChapterStarted = false;
+        }
+
+        activeMiniGame = null;
+        miniGameIntroShown = false;
+
+        if (currentChapter >= storyChapters.size()) {
+            gameWon = true;
+            result += getEpicEnding();
+        } else {
+            result += "\nPremi AVANTI per continuare la storia...";
+        }
+
+        return result;
+    }
+
+    private String getMiniGameIntroText(String key) {
+        switch (key) {
+            case "smoke_chase":
+                return "========================================\n" +
+                       "  MINI GIOCO: FUGA DAL MOSTRO!\n" +
+                       "========================================\n\n" +
+                       "Il Mostro di Fumo ti ha trovato!\n" +
+                       "TICK... TICK... TICK...\n" +
+                       "Devi fuggire ADESSO!";
+            case "jungle_tracking":
+                return "========================================\n" +
+                       "  MINI GIOCO: CACCIA NELLA GIUNGLA!\n" +
+                       "========================================\n\n" +
+                       "Locke ha visto le tracce di un cinghiale.\n" +
+                       "Segui le tracce per catturare la preda!";
+            case "dynamite_defusal":
+                return "========================================\n" +
+                       "  MINI GIOCO: DISINNESCO DINAMITE!\n" +
+                       "========================================\n\n" +
+                       "La dinamite della Roccia Nera e' instabile!\n" +
+                       "Devi disinnescarne una per usarla in sicurezza.";
+            case "frequency_tuning":
+                return "========================================\n" +
+                       "  MINI GIOCO: SINTONIZZA LA RADIO!\n" +
+                       "========================================\n\n" +
+                       "Nella stazione Il Cigno c'e' una radio.\n" +
+                       "Trova la frequenza giusta per ricevere il messaggio!";
+            case "morse_code":
+                return "========================================\n" +
+                       "  MINI GIOCO: CODICE MORSE!\n" +
+                       "========================================\n\n" +
+                       "La radio trasmette un messaggio in codice Morse!\n" +
+                       "Decodificalo per scoprire le coordinate segrete!";
+            default:
+                return "MINI GIOCO!";
+        }
+    }
+
+    private String getMiniGameVictoryText(String key) {
+        switch (key) {
+            case "smoke_chase":
+                return "Sei riuscito a sfuggire al Mostro di Fumo!\n" +
+                       "Il tuo cuore batte all'impazzata, ma sei salvo.\n" +
+                       "Ora sai che il Mostro non e' invincibile.";
+            case "jungle_tracking":
+                return "Il cinghiale e' stato catturato!\n" +
+                       "Stasera il campo avra' carne fresca.\n" +
+                       "Locke e' impressionato dalle tue abilita'.";
+            case "dynamite_defusal":
+                return "La dinamite e' stata disinnescata!\n" +
+                       "Ora puoi trasportarla in sicurezza.\n" +
+                       "Con questa potrai aprire la botola!";
+            case "frequency_tuning":
+                return "La radio e' sintonizzata!\n" +
+                       "Il messaggio rivela informazioni preziose\n" +
+                       "sulla stazione e sui numeri DHARMA.";
+            case "morse_code":
+                return "Il messaggio Morse e' stato decodificato!\n" +
+                       "COORDINATE PER PISTA - ora sai dove\n" +
+                       "si trova la pista di atterraggio nascosta!";
+            default:
+                return "Mini gioco completato!";
+        }
+    }
+
+    private String getMiniGameDefeatText(String key) {
+        switch (key) {
+            case "smoke_chase":
+                return "Il Mostro di Fumo ti ha raggiunto...\n" +
+                       "Ma per qualche ragione ti ha lasciato andare.\n" +
+                       "Sei ferito, ma vivo. (-10 salute)";
+            case "jungle_tracking":
+                return "La preda e' scappata nella giungla.\n" +
+                       "Oggi niente carne fresca al campo.\n" +
+                       "Dovrete accontentarvi di frutta.";
+            case "dynamite_defusal":
+                return "La dinamite non e' stata disinnescata.\n" +
+                       "Dovrai trasportarla con molta cautela.\n" +
+                       "Ogni movimento potrebbe essere l'ultimo...";
+            case "frequency_tuning":
+                return "La radio si e' surriscaldata e si e' spenta.\n" +
+                       "Non sei riuscito a sintonizzarla.\n" +
+                       "Ma forse troverai le informazioni altrove.";
+            case "morse_code":
+                return "Non sei riuscito a decodificare il messaggio.\n" +
+                       "Pero' hai capito qualcosa sulle coordinate.\n" +
+                       "Forse la mappa DHARMA aiutera'.";
+            default:
+                return "Mini gioco fallito.";
+        }
+    }
+
+    public MiniGame getActiveMiniGame() {
+        return activeMiniGame;
+    }
+
+    public boolean hasMiniGameActive() {
+        return activeMiniGame != null;
+    }
+
     private String getHelpText() {
         return "═══════════════════════════════════════\n" +
                "  ✈️ LOST THESIS - COMANDI ✈️\n" +

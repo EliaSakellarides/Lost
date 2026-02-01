@@ -12,6 +12,7 @@ public class Level {
     private List<String> acceptableAnswers;
     private String hint;
     private Map<String, String> choices; // A -> risposta, B -> risposta, C -> risposta
+    private String miniGameKey; // chiave del mini gioco opzionale (es. "smoke_chase")
 
     public Level(String key, String title, String prompt, List<String> acceptableAnswers, String hint) {
         this.key = key;
@@ -40,6 +41,9 @@ public class Level {
     public String getHint() { return hint; }
     public Map<String, String> getChoices() { return choices; }
     public boolean hasChoices() { return choices != null && !choices.isEmpty(); }
+    public String getMiniGameKey() { return miniGameKey; }
+    public void setMiniGameKey(String miniGameKey) { this.miniGameKey = miniGameKey; }
+    public boolean hasMiniGame() { return miniGameKey != null && !miniGameKey.isEmpty(); }
 
     public boolean checkAnswer(String answer) {
         if (answer == null) return false;

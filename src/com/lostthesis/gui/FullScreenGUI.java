@@ -2,6 +2,7 @@ package com.lostthesis.gui;
 
 import com.lostthesis.engine.GameEngine;
 import com.lostthesis.graphics.FullScreenRenderer;
+import com.lostthesis.minigames.MiniGame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,11 @@ public class FullScreenGUI extends JFrame {
     private String currentLocation = "spiaggia";
     private String currentImageKey = "spiaggia"; // Chiave immagine da mostrare (capitolo o location)
     
+    // Etichette originali dei bottoni
+    private static final String DEFAULT_BTN_A = "A";
+    private static final String DEFAULT_BTN_B = "B";
+    private static final String DEFAULT_BTN_C = "C";
+
     // Dimensioni schermo
     private int screenWidth;
     private int screenHeight;
@@ -366,6 +372,34 @@ public class FullScreenGUI extends JFrame {
         return button;
     }
     
+    /**
+     * Cambia le etichette dei pulsanti A/B/C (usato dai mini giochi)
+     */
+    public void setButtonLabels(String a, String b, String c) {
+        if (btnA != null) btnA.setText(a);
+        if (btnB != null) btnB.setText(b);
+        if (btnC != null) btnC.setText(c);
+    }
+
+    /**
+     * Ripristina le etichette originali dei pulsanti A/B/C
+     */
+    public void resetButtonLabels() {
+        setButtonLabels(DEFAULT_BTN_A, DEFAULT_BTN_B, DEFAULT_BTN_C);
+    }
+
+    /**
+     * Aggiorna le etichette dei bottoni in base al mini gioco attivo
+     */
+    private void updateButtonLabelsForMiniGame() {
+        if (engine != null && engine.hasMiniGameActive()) {
+            MiniGame mg = engine.getActiveMiniGame();
+            setButtonLabels(mg.getButtonALabel(), mg.getButtonBLabel(), mg.getButtonCLabel());
+        } else {
+            resetButtonLabels();
+        }
+    }
+
     private void setupKeyBindings() {
         // ESC per uscire
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -1864,14 +1898,14 @@ public class FullScreenGUI extends JFrame {
     
     private void processInput(String input) {
         if (engine == null) return;
-        
+
         String response = engine.processCommand(input);
         currentText = response;
         currentLocation = engine.getCurrentRoomKey();
-        
+
         // Usa l'immagine del capitolo corrente
         currentImageKey = engine.getCurrentChapterImageKey();
-        
+
         // Aggiorna titolo se siamo in un capitolo
         if (response.contains("CAP.")) {
             int start = response.indexOf(": ");
@@ -1880,7 +1914,10 @@ public class FullScreenGUI extends JFrame {
                 currentTitle = response.substring(start + 2, end);
             }
         }
-        
+
+        // Aggiorna etichette bottoni per mini giochi
+        updateButtonLabelsForMiniGame();
+
         gamePanel.repaint();
         
         // Controlla fine gioco

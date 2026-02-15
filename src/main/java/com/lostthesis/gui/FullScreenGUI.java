@@ -3,6 +3,11 @@ package com.lostthesis.gui;
 import com.lostthesis.engine.GameEngine;
 import com.lostthesis.graphics.FullScreenRenderer;
 import com.lostthesis.minigames.MiniGame;
+import com.lostthesis.save.GameSave;
+import com.lostthesis.save.GameSaveInstance;
+import com.lostthesis.save.GameState;
+
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -145,6 +150,9 @@ public class FullScreenGUI extends JFrame {
         JButton btnHelp = createStyledButton("❓", buttonFont, buttonBg, buttonFg);
         JButton btnExit = createStyledButton("🚪", buttonFont, new Color(100, 50, 50), buttonFg);
         
+        JButton btnSave = createStyledButton("💾", buttonFont, buttonBg, buttonFg);
+        btnSave.addActionListener(e -> showSaveDialog());
+
         btnInventory.addActionListener(e -> processInput("inventario"));
         btnStatus.addActionListener(e -> processInput("stato"));
         btnHelp.addActionListener(e -> processInput("aiuto"));
@@ -166,6 +174,7 @@ public class FullScreenGUI extends JFrame {
         panel.add(Box.createHorizontalStrut(20));
         panel.add(inputField);
         panel.add(Box.createHorizontalStrut(20));
+        panel.add(btnSave);
         panel.add(btnInventory);
         panel.add(btnStatus);
         panel.add(btnHelp);
@@ -514,7 +523,21 @@ public class FullScreenGUI extends JFrame {
         content.add(nameField);
         content.add(Box.createVerticalStrut(25));
         content.add(startBtn);
-        
+
+        // Bottone carica partita (solo se ci sono salvataggi)
+        if (GameSave.hasSaves()) {
+            content.add(Box.createVerticalStrut(10));
+            JButton loadBtn = createStyledButton("📂 CARICA PARTITA",
+                new Font("SansSerif", Font.BOLD, 14),
+                new Color(70, 70, 100), Color.WHITE);
+            loadBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            loadBtn.addActionListener(e -> {
+                dialog.dispose();
+                showLoadDialog();
+            });
+            content.add(loadBtn);
+        }
+
         // Bordo
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(new Color(100, 150, 100));
@@ -1886,6 +1909,98 @@ public class FullScreenGUI extends JFrame {
         }
     }
     
+    /**
+     * Dialog per salvare la partita
+     */
+    private void showSaveDialog() {
+        if (engine == null) return;
+
+        String slotName = JOptionPane.showInputDialog(this,
+            "Nome del salvataggio:",
+            "💾 Salva Partita",
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (slotName == null || slotName.trim().isEmpty()) return;
+        slotName = slotName.trim().replaceAll("[^a-zA-Z0-9_-]", "_");
+
+        boolean ok = GameSave.save(engine, slotName);
+        if (ok) {
+            JOptionPane.showMessageDialog(this,
+                "Partita salvata nello slot '" + slotName + "'!",
+                "💾 Salvato!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Errore durante il salvataggio!",
+                "❌ Errore", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Dialog per caricare una partita salvata
+     */
+    private void showLoadDialog() {
+        List<GameSaveInstance> saves = GameSave.listSaves();
+        if (saves.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Nessun salvataggio trovato.",
+                "📂 Carica Partita", JOptionPane.INFORMATION_MESSAGE);
+            SwingUtilities.invokeLater(this::askPlayerName);
+            return;
+        }
+
+        String[] options = new String[saves.size()];
+        for (int i = 0; i < saves.size(); i++) {
+            options[i] = saves.get(i).getDisplayText();
+        }
+
+        String choice = (String) JOptionPane.showInputDialog(this,
+            "Scegli un salvataggio da caricare:",
+            "📂 Carica Partita",
+            JOptionPane.PLAIN_MESSAGE,
+            null, options, options[0]);
+
+        if (choice == null) {
+            SwingUtilities.invokeLater(this::askPlayerName);
+            return;
+        }
+
+        // Trova lo slot selezionato
+        GameSaveInstance selected = null;
+        for (GameSaveInstance s : saves) {
+            if (s.getDisplayText().equals(choice)) {
+                selected = s;
+                break;
+            }
+        }
+
+        if (selected == null) return;
+
+        GameState state = GameSave.load(selected.getSlotName());
+        if (state == null) {
+            JOptionPane.showMessageDialog(this,
+                "Errore nel caricamento!",
+                "❌ Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Inizializza engine e carica lo stato
+        engine = new GameEngine();
+        engine.loadGameState(state);
+
+        currentLocation = engine.getCurrentRoomKey();
+        currentImageKey = engine.getCurrentChapterImageKey();
+        currentText = "✅ Partita caricata!\n\n" +
+            "👤 " + engine.getPlayer().getName() +
+            " | Cap. " + engine.getCurrentChapterNumber() +
+            "/" + engine.getTotalChapters() +
+            " | ❤️ " + engine.getPlayer().getHealth() +
+            " | 🧠 " + engine.getPlayer().getSanity() + "\n\n" +
+            "Premi AVANTI per continuare...";
+        currentTitle = "📂 PARTITA CARICATA";
+
+        gamePanel.repaint();
+    }
+
     /**
      * Carica un'immagine dal classpath (src/main/resources/images/)
      */

@@ -4,6 +4,8 @@ import com.lostthesis.model.*;
 import com.lostthesis.audio.AudioManager;
 import com.lostthesis.minigames.*;
 import com.lostthesis.save.GameState;
+import com.lostthesis.save.GameSave;
+import com.lostthesis.save.GameSaveInstance;
 import com.lostthesis.save.ItemData;
 import java.util.*;
 
@@ -656,7 +658,18 @@ public class GameEngine {
                 case "aiuto":
                 case "help":
                     return getHelpText();
-                    
+
+                case "salva":
+                case "save":
+                    return saveGame(target.isEmpty() ? "salvataggio1" : target);
+
+                case "load":
+                case "caricapartita":
+                    if (target.isEmpty()) {
+                        return listSaves();
+                    }
+                    return loadGame(target);
+
                 default:
                     // Prova come risposta diretta
                     return answerChapter(cmd);
@@ -1022,6 +1035,8 @@ public class GameEngine {
                "❤️ stato - Vedi salute\n" +
                "🍎 mangia/bevi - Usa cibo/bevande\n" +
                "💣 attiva - Attiva oggetto\n" +
+               "💾 salva [nome] - Salva partita\n" +
+               "📂 load [nome] - Carica partita\n" +
                "❓ aiuto - Questo messaggio\n" +
                "═══════════════════════════════════════";
     }
@@ -1423,6 +1438,47 @@ public class GameEngine {
     public boolean isGameWon() { return gameWon; }
     public boolean isGameRunning() { return gameRunning; }
     public AudioManager getAudioManager() { return audioManager; }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COMANDI SALVA / CARICA
+    // ═══════════════════════════════════════════════════════════════
+
+    private String saveGame(String slotName) {
+        boolean ok = GameSave.save(this, slotName);
+        if (ok) {
+            return "💾 Partita salvata nello slot '" + slotName + "'!\n" +
+                   "Usa 'carica " + slotName + "' per ricaricarla.";
+        }
+        return "❌ Errore durante il salvataggio!";
+    }
+
+    private String loadGame(String slotName) {
+        GameState state = GameSave.load(slotName);
+        if (state == null) {
+            return "❌ Nessun salvataggio trovato con nome '" + slotName + "'.\n" +
+                   "Usa 'carica' per vedere i salvataggi disponibili.";
+        }
+        loadGameState(state);
+        return "✅ Partita caricata dallo slot '" + slotName + "'!\n" +
+               "👤 " + player.getName() + " | Cap. " + getCurrentChapterNumber() +
+               "/" + getTotalChapters() + " | ❤️ " + player.getHealth() +
+               " | 🧠 " + player.getSanity() + "\n\n" +
+               "Premi AVANTI per continuare...";
+    }
+
+    private String listSaves() {
+        List<GameSaveInstance> saves = GameSave.listSaves();
+        if (saves.isEmpty()) {
+            return "📂 Nessun salvataggio trovato.\n" +
+                   "Usa 'salva [nome]' per salvare la partita.";
+        }
+        StringBuilder sb = new StringBuilder("📂 SALVATAGGI DISPONIBILI:\n\n");
+        for (GameSaveInstance save : saves) {
+            sb.append("  💾 ").append(save.getDisplayText()).append("\n");
+        }
+        sb.append("\nUsa 'carica [nome]' per caricare un salvataggio.");
+        return sb.toString();
+    }
 
     // Getter per il sistema di salvataggio
     public int getCurrentChapter() { return currentChapter; }

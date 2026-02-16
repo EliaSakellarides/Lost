@@ -52,7 +52,7 @@ public class FullScreenGUI extends JFrame {
         screenWidth = 1024;
         screenHeight = 768;
 
-        setTitle("\u2708\uFE0F LOST THESIS - L'Isola Misteriosa");
+        setTitle("\u2708\uFE0F LOST THESIS - L'Isola Misteriosa [Alpha 0.1]");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         setSize(screenWidth, screenHeight);

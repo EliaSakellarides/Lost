@@ -10,7 +10,7 @@ import javax.swing.*;
  * Trova la TESI per fuggire dall'isola con l'aereo!
  * 
  * @author Elia Sakellarides
- * @version 1.0
+ * @version Alpha 0.1
  */
 public class Main {
     public static void main(String[] args) {

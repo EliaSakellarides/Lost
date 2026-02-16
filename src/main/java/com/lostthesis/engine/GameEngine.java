@@ -33,6 +33,9 @@ public class GameEngine {
     
     // I numeri misteriosi di LOST
     private static final int[] NUMBERS = {4, 8, 15, 16, 23, 42};
+
+    // Parser comandi con alias
+    private final CommandParser commandParser;
     
     // TIMER per eventi temporizzati (stile guida Colombini)
     private int smokeMonsterTimer = 0;      // Mostro di fumo si avvicina
@@ -64,6 +67,7 @@ public class GameEngine {
         this.currentChapterCompleted = false;
         this.currentChapterStarted = false;
         this.audioManager = new AudioManager();
+        this.commandParser = new CommandParser();
         this.activeMiniGame = null;
         this.miniGameIntroShown = false;
         this.miniGameOutroShown = false;
@@ -576,106 +580,92 @@ public class GameEngine {
         if (!gameRunning) {
             return "Il gioco è terminato!";
         }
-        
-        String cmd = command.trim().toLowerCase();
-        String[] parts = cmd.split("\\s+", 2);
-        String action = parts[0];
-        String target = parts.length > 1 ? parts[1] : "";
 
         // Se c'è un mini gioco attivo, delega l'input
         if (activeMiniGame != null) {
             return processMiniGameInput(command.trim());
         }
 
+        String cmd = command.trim().toLowerCase();
+
         // Modalità narrativa
         if (narrativeMode) {
-            // Gestione pulsanti rapidi A, B, C
-            if (action.equals("a") || action.equals("b") || action.equals("c")) {
-                return processChoice(action.toUpperCase());
+            // Gestione pulsanti rapidi A, B, C (prima del parser)
+            if (cmd.equals("a") || cmd.equals("b") || cmd.equals("c")) {
+                return processChoice(cmd.toUpperCase());
             }
-            
-            switch (action) {
-                case "avanti":
-                case "continua":
-                case "":
+
+            // Comando speciale: mostra tutti gli alias
+            if (cmd.equals("alias") || cmd.equals("aliases") || cmd.equals("sinonimi")) {
+                return commandParser.getAliasHelpText();
+            }
+
+            // Parsing con alias
+            CommandParser.ParsedCommand parsed = commandParser.parse(cmd);
+            String target = parsed.getTarget();
+
+            switch (parsed.getType()) {
+                case AVANTI:
                     return startNextChapter();
-                    
-                case "rispondi":
+
+                case RISPONDI:
                     if (target.isEmpty()) {
                         return "Devi scrivere una risposta!";
                     }
                     return answerChapter(target);
-                
-                case "scegli":
+
+                case SCEGLI:
                     if (target.isEmpty()) {
                         return "Devi scegliere A, B o C!";
                     }
                     return processChoice(target.trim().toUpperCase());
-                
-                case "prendi":
-                case "raccogli":
-                case "afferra":
-                case "piglia":
-                case "take":
-                    if (currentChapter == 12) { // Capitolo della TESI
+
+                case PRENDI:
+                    if (currentChapter == 12) {
                         return answerChapter("prendi");
                     }
                     return takeItemFromRoom(target);
-                    
-                case "lascia":
-                case "posa":
-                case "metti":
-                case "drop":
+
+                case LASCIA:
                     return dropItem(target);
-                    
-                case "guarda":
-                case "osserva":
-                case "esamina":
-                case "ispeziona":
-                case "look":
+
+                case GUARDA:
                     return lookAt(target);
-                    
-                case "mangia":
-                case "bevi":
+
+                case MANGIA:
                     return eatOrDrink(target);
-                    
-                case "attiva":
-                case "accendi":
-                case "carica":
+
+                case ATTIVA:
                     return activateItem(target);
-                    
-                case "usa":
+
+                case USA:
                     return player.useItem(target);
-                    
-                case "inventario":
-                case "zaino":
+
+                case INVENTARIO:
                     return player.getInventoryString();
-                    
-                case "stato":
-                case "status":
+
+                case STATO:
                     return player.getStatus();
-                    
-                case "aiuto":
-                case "help":
+
+                case AIUTO:
                     return getHelpText();
 
-                case "salva":
-                case "save":
+                case SALVA:
                     return saveGame(target.isEmpty() ? "salvataggio1" : target);
 
-                case "load":
-                case "caricapartita":
+                case CARICA_PARTITA:
                     if (target.isEmpty()) {
                         return listSaves();
                     }
                     return loadGame(target);
 
+                case SCONOSCIUTO:
                 default:
-                    // Prova come risposta diretta
+                    // Prova come risposta diretta al capitolo
                     return answerChapter(cmd);
             }
         }
-        
+
         return "Comando non riconosciuto. Scrivi 'aiuto' per i comandi.";
     }
     
@@ -1027,17 +1017,21 @@ public class GameEngine {
         return "═══════════════════════════════════════\n" +
                "  ✈️ LOST THESIS - COMANDI ✈️\n" +
                "═══════════════════════════════════════\n" +
-               "🔘 A, B, C - Scegli un'opzione\n" +
-               "➡️ AVANTI - Continua la storia\n" +
-               "📦 prendi/raccogli - Raccogli oggetto\n" +
-               "👁️ guarda/esamina - Osserva oggetto\n" +
-               "🎒 inventario - Vedi oggetti\n" +
-               "❤️ stato - Vedi salute\n" +
-               "🍎 mangia/bevi - Usa cibo/bevande\n" +
-               "💣 attiva - Attiva oggetto\n" +
-               "💾 salva [nome] - Salva partita\n" +
-               "📂 load [nome] - Carica partita\n" +
-               "❓ aiuto - Questo messaggio\n" +
+               "🔘 A, B, C      - Scegli un'opzione\n" +
+               "➡️ avanti        - Continua la storia\n" +
+               "📦 prendi [obj]  - Raccogli oggetto (p)\n" +
+               "📤 lascia [obj]  - Lascia oggetto (l)\n" +
+               "👁️ guarda [obj]  - Osserva oggetto (g/x)\n" +
+               "🔧 usa [obj]     - Usa un oggetto (u)\n" +
+               "🍎 mangia [obj]  - Mangia/bevi\n" +
+               "💣 attiva [obj]  - Attiva oggetto\n" +
+               "🎒 inventario    - Vedi oggetti (i)\n" +
+               "❤️ stato         - Vedi salute (st/hp)\n" +
+               "💾 salva [nome]  - Salva partita\n" +
+               "📂 load [nome]   - Carica partita\n" +
+               "❓ aiuto         - Questo messaggio (h)\n" +
+               "═══════════════════════════════════════\n" +
+               "💡 Scrivi 'alias' per tutti i sinonimi\n" +
                "═══════════════════════════════════════";
     }
     

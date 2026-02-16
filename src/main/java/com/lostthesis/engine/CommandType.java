@@ -19,5 +19,6 @@ public enum CommandType {
     AIUTO,
     SALVA,
     CARICA_PARTITA,
+    MAPPA,
     SCONOSCIUTO
 }

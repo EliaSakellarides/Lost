@@ -660,6 +660,9 @@ public class GameEngine {
                 case AIUTO:
                     return getHelpText();
 
+                case MAPPA:
+                    return "##MAPPA##";
+
                 case SALVA:
                     return saveGame(target.isEmpty() ? "salvataggio1" : target);
 
@@ -1041,6 +1044,7 @@ public class GameEngine {
                "❤️ stato         - Vedi salute (st/hp)\n" +
                "💾 salva [nome]  - Salva partita\n" +
                "📂 load [nome]   - Carica partita\n" +
+               "🗺️ mappa         - Mappa dell'isola (m)\n" +
                "❓ aiuto         - Questo messaggio (h)\n" +
                "═══════════════════════════════════════\n" +
                "💡 Scrivi 'alias' per tutti i sinonimi\n" +

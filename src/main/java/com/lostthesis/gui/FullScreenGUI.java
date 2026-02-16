@@ -170,6 +170,10 @@ public class FullScreenGUI extends JFrame {
         JButton btnSave = GuiButtonFactory.create("\uD83D\uDCBE", buttonFont, buttonBg, buttonFg);
         btnSave.addActionListener(e -> showSaveDialog());
 
+        JButton btnMap = GuiButtonFactory.create("\uD83D\uDDFA\uFE0F", buttonFont, buttonBg, buttonFg);
+        btnMap.setToolTipText("Mappa dell'isola");
+        btnMap.addActionListener(e -> showMapDialog());
+
         btnInventory.addActionListener(e -> processInput("inventario"));
         btnStatus.addActionListener(e -> processInput("stato"));
         btnHelp.addActionListener(e -> processInput("aiuto"));
@@ -191,6 +195,7 @@ public class FullScreenGUI extends JFrame {
         panel.add(inputField);
         panel.add(Box.createHorizontalStrut(20));
         panel.add(btnSave);
+        panel.add(btnMap);
         panel.add(btnInventory);
         panel.add(btnStatus);
         panel.add(btnHelp);
@@ -380,6 +385,10 @@ public class FullScreenGUI extends JFrame {
         if (engine == null) return;
 
         String response = engine.processCommand(input);
+        if ("##MAPPA##".equals(response)) {
+            showMapDialog();
+            return;
+        }
         currentText = response;
         currentLocation = engine.getCurrentRoomKey();
 
@@ -519,6 +528,52 @@ public class FullScreenGUI extends JFrame {
 
         updateTextDisplay();
         gamePanel.repaint();
+    }
+
+    private void showMapDialog() {
+        JDialog mapDialog = new JDialog(this, "Mappa dell'Isola", true);
+        mapDialog.setLayout(new BorderLayout());
+        mapDialog.getContentPane().setBackground(new Color(20, 30, 40));
+
+        ImageIcon icon = null;
+        java.net.URL url = getClass().getClassLoader().getResource("images/mappa_isola.jpg");
+        if (url != null) {
+            icon = new ImageIcon(url);
+        }
+
+        if (icon != null && icon.getIconWidth() > 0) {
+            // Scala l'immagine per adattarla allo schermo
+            int maxW = (int) (getWidth() * 0.85);
+            int maxH = (int) (getHeight() * 0.85);
+            int imgW = icon.getIconWidth();
+            int imgH = icon.getIconHeight();
+            double scale = Math.min((double) maxW / imgW, (double) maxH / imgH);
+            int newW = (int) (imgW * scale);
+            int newH = (int) (imgH * scale);
+            Image scaled = icon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+
+            JLabel imgLabel = new JLabel(new ImageIcon(scaled));
+            imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            mapDialog.add(imgLabel, BorderLayout.CENTER);
+        } else {
+            JLabel errLabel = new JLabel("Mappa non trovata.");
+            errLabel.setForeground(Color.WHITE);
+            errLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            mapDialog.add(errLabel, BorderLayout.CENTER);
+        }
+
+        JButton closeBtn = GuiButtonFactory.create("Chiudi",
+            new Font("SansSerif", Font.BOLD, 14),
+            new Color(50, 70, 50), Color.WHITE);
+        closeBtn.addActionListener(e -> mapDialog.dispose());
+        JPanel btnPanel = new JPanel();
+        btnPanel.setBackground(new Color(20, 30, 40));
+        btnPanel.add(closeBtn);
+        mapDialog.add(btnPanel, BorderLayout.SOUTH);
+
+        mapDialog.pack();
+        mapDialog.setLocationRelativeTo(this);
+        mapDialog.setVisible(true);
     }
 
     private void updateTextDisplay() {

@@ -96,6 +96,10 @@ public class CommandParser {
         // CARICA PARTITA - caricare partita
         register(CommandType.CARICA_PARTITA,
             "load", "caricapartita", "carica_partita", "ricarica");
+
+        // MAPPA - mostrare la mappa dell'isola
+        register(CommandType.MAPPA,
+            "mappa", "map", "cartina", "m");
     }
 
     private void register(CommandType type, String... aliases) {
@@ -157,6 +161,7 @@ public class CommandParser {
         appendAliasLine(sb, CommandType.AVANTI,    "➡️ Avanti");
         appendAliasLine(sb, CommandType.SALVA,     "💾 Salva");
         appendAliasLine(sb, CommandType.CARICA_PARTITA, "📂 Carica");
+        appendAliasLine(sb, CommandType.MAPPA,     "🗺️ Mappa");
         appendAliasLine(sb, CommandType.AIUTO,     "❓ Aiuto");
 
         sb.append("═══════════════════════════════════════\n");

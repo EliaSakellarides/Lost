@@ -45,114 +45,60 @@ public class FullScreenRenderer {
         this.pixelArtManager = new PixelArtManager(imageWidth, imageHeight);
     }
     
-    public void render(Graphics2D g, String locationKey, String text, 
-                       String title, String statusInfo) {
+    public void render(Graphics2D g, String locationKey, String statusInfo) {
         // Sfondo
         g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, screenWidth, screenHeight);
-        
+
         // Immagine della location
         BufferedImage locationImage = pixelArtManager.getImage(locationKey);
         if (locationImage != null) {
             int imgX = (screenWidth - imageWidth) / 2;
             int imgY = 20;
-            
+
             // Bordo immagine
             g.setColor(BORDER_COLOR);
             g.setStroke(new BasicStroke(3));
             g.drawRect(imgX - 3, imgY - 3, imageWidth + 6, imageHeight + 6);
-            
+
             // Immagine
             g.drawImage(locationImage, imgX, imgY, null);
         }
-        
-        // Box del testo
-        renderTextBox(g, text, title);
-        
+
+        // Box del testo (solo sfondo + bordo, il testo lo fa JTextPane)
+        renderTextBox(g);
+
         // Barra di stato in basso
         renderStatusBar(g, statusInfo);
-        
+
         // Logo LOST in alto
         renderLogo(g);
     }
     
-    private void renderTextBox(Graphics2D g, String text, String title) {
+    private void renderTextBox(Graphics2D g) {
         // Sfondo semitrasparente
         g.setColor(TEXT_BOX_COLOR);
         g.fillRoundRect(textBoxX, textBoxY, textBoxWidth, textBoxHeight, 15, 15);
-        
+
         // Bordo
         g.setColor(BORDER_COLOR);
         g.setStroke(new BasicStroke(2));
         g.drawRoundRect(textBoxX, textBoxY, textBoxWidth, textBoxHeight, 15, 15);
-        
-        // Titolo
-        if (title != null && !title.isEmpty()) {
-            g.setColor(TITLE_COLOR);
-            g.setFont(new Font("SansSerif", Font.BOLD, 16));
-            FontMetrics fm = g.getFontMetrics();
-            int titleWidth = fm.stringWidth(title);
-            g.drawString(title, textBoxX + (textBoxWidth - titleWidth) / 2, textBoxY + 25);
-        }
-        
-        // Testo principale
-        g.setColor(TEXT_COLOR);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        
-        // Wrapping del testo
-        int padding = 15;
-        int startY = textBoxY + 45;
-        int lineHeight = 16;
-        int maxWidth = textBoxWidth - 2 * padding;
-        
-        FontMetrics fm = g.getFontMetrics();
-        String[] lines = text.split("\n");
-        int currentY = startY;
-        
-        for (String line : lines) {
-            if (currentY > textBoxY + textBoxHeight - 20) break;
-            
-            // Controlla se è una linea speciale (scelte, suggerimenti)
-            if (line.startsWith("🔘") || line.startsWith("💡")) {
-                g.setColor(HIGHLIGHT_COLOR);
-            } else if (line.startsWith("✅") || line.startsWith("❌")) {
-                g.setColor(line.startsWith("✅") ? new Color(100, 255, 100) : new Color(255, 100, 100));
-            } else {
-                g.setColor(TEXT_COLOR);
-            }
-            
-            // Word wrap
-            if (fm.stringWidth(line) > maxWidth) {
-                String[] words = line.split(" ");
-                StringBuilder currentLine = new StringBuilder();
-                
-                for (String word : words) {
-                    String test = currentLine.length() > 0 ? 
-                        currentLine + " " + word : word;
-                    
-                    if (fm.stringWidth(test) > maxWidth) {
-                        if (currentLine.length() > 0) {
-                            g.drawString(currentLine.toString(), textBoxX + padding, currentY);
-                            currentY += lineHeight;
-                            currentLine = new StringBuilder(word);
-                        } else {
-                            g.drawString(word, textBoxX + padding, currentY);
-                            currentY += lineHeight;
-                        }
-                    } else {
-                        currentLine = new StringBuilder(test);
-                    }
-                }
-                
-                if (currentLine.length() > 0) {
-                    g.drawString(currentLine.toString(), textBoxX + padding, currentY);
-                    currentY += lineHeight;
-                }
-            } else {
-                g.drawString(line, textBoxX + padding, currentY);
-                currentY += lineHeight;
-            }
-        }
+
+        // Il testo viene ora renderizzato dal JTextPane in FullScreenGUI
+    }
+
+    public void updateLayout(int width, int height) {
+        this.screenWidth = width;
+        this.screenHeight = height;
+
+        this.imageWidth = (int) (width * 0.9);
+        this.imageHeight = (int) (height * 0.5);
+
+        this.textBoxWidth = (int) (width * 0.9);
+        this.textBoxHeight = 280;
+        this.textBoxX = (width - textBoxWidth) / 2;
+        this.textBoxY = height - textBoxHeight - 80;
     }
     
     private void renderStatusBar(Graphics2D g, String statusInfo) {

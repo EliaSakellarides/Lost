@@ -2,6 +2,7 @@ package com.lostthesis.gui;
 
 import com.lostthesis.engine.GameEngine;
 import com.lostthesis.graphics.FullScreenRenderer;
+import com.lostthesis.graphics.TextColorizer;
 import com.lostthesis.minigames.MiniGame;
 import com.lostthesis.save.GameSave;
 import com.lostthesis.save.GameSaveInstance;
@@ -10,6 +11,8 @@ import com.lostthesis.save.GameState;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -28,6 +31,8 @@ public class FullScreenGUI extends JFrame {
     private JButton btnAdvance;
     private JButton btnInventory;
     private JButton btnStatus;
+    private JTextPane textPane;
+    private JScrollPane textScrollPane;
 
     // Stato display
     private String currentText = "";
@@ -62,6 +67,27 @@ public class FullScreenGUI extends JFrame {
 
         gamePanel = new GamePanel();
         gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight - 70));
+        gamePanel.setLayout(null);
+
+        // JTextPane per testo colorato HTML
+        textPane = new JTextPane();
+        textPane.setContentType("text/html");
+        textPane.setEditable(false);
+        textPane.setOpaque(false);
+        textPane.setFocusable(false);
+
+        textScrollPane = new JScrollPane(textPane);
+        textScrollPane.setOpaque(false);
+        textScrollPane.getViewport().setOpaque(false);
+        textScrollPane.setBorder(null);
+        textScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        textScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        // Scrollbar sottile e scura
+        textScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
+        textScrollPane.getVerticalScrollBar().setOpaque(false);
+
+        repositionTextPane();
+        gamePanel.add(textScrollPane);
 
         setLayout(new BorderLayout());
 
@@ -72,6 +98,20 @@ public class FullScreenGUI extends JFrame {
 
         JPanel controlPanel = createControlPanel();
         add(controlPanel, BorderLayout.SOUTH);
+
+        // Resize listener
+        gamePanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int w = gamePanel.getWidth();
+                int h = gamePanel.getHeight();
+                if (w > 0 && h > 0) {
+                    renderer.updateLayout(w, h);
+                    repositionTextPane();
+                    gamePanel.repaint();
+                }
+            }
+        });
 
         setVisible(true);
 
@@ -332,6 +372,7 @@ public class FullScreenGUI extends JFrame {
         currentTitle = "\uD83C\uDFDD\uFE0F L'ISOLA MISTERIOSA";
         currentLocation = "spiaggia";
 
+        updateTextDisplay();
         gamePanel.repaint();
     }
 
@@ -353,6 +394,7 @@ public class FullScreenGUI extends JFrame {
         }
 
         updateButtonLabelsForMiniGame();
+        updateTextDisplay();
 
         gamePanel.repaint();
 
@@ -390,7 +432,7 @@ public class FullScreenGUI extends JFrame {
                     currentLocation.toUpperCase());
             }
 
-            renderer.render(g2d, currentImageKey, currentText, currentTitle, status);
+            renderer.render(g2d, currentImageKey, status);
         }
     }
 
@@ -475,7 +517,26 @@ public class FullScreenGUI extends JFrame {
             "Premi AVANTI per continuare...";
         currentTitle = "\uD83D\uDCC2 PARTITA CARICATA";
 
+        updateTextDisplay();
         gamePanel.repaint();
+    }
+
+    private void updateTextDisplay() {
+        String fullText = currentText;
+        if (currentTitle != null && !currentTitle.isEmpty()) {
+            fullText = currentTitle + "\n\n" + currentText;
+        }
+        textPane.setText(TextColorizer.colorize(fullText));
+        textPane.setCaretPosition(0);
+    }
+
+    private void repositionTextPane() {
+        int padding = 10;
+        int x = renderer.getTextBoxX() + padding;
+        int y = renderer.getTextBoxY() + padding;
+        int w = renderer.getTextBoxWidth() - 2 * padding;
+        int h = renderer.getTextBoxHeight() - 2 * padding;
+        textScrollPane.setBounds(x, y, w, h);
     }
 
     public static void main(String[] args) {

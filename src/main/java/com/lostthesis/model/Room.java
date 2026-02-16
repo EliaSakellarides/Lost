@@ -56,6 +56,7 @@ public class Room {
         return null;
     }
     
+    /** Restituisce la descrizione completa della stanza con oggetti visibili e uscite. */
     public String getFullDescription() {
         StringBuilder sb = new StringBuilder();
         sb.append("📍 ").append(name).append("\n\n");

@@ -79,6 +79,10 @@ public class GameEngine {
         miniGames.put("morse_code", new MorseCodeGame());
     }
     
+    /**
+     * Inizializza una nuova partita: crea il mondo, i capitoli,
+     * posiziona il giocatore sulla spiaggia e avvia la colonna sonora.
+     */
     public void initializeGame(String playerName) {
         player = new Player(playerName);
         createWorld();
@@ -576,6 +580,12 @@ public class GameEngine {
         startRoom = spiaggia;
     }
     
+    /**
+     * Processa un comando testuale del giocatore e restituisce
+     * il testo di risposta da mostrare nella GUI.
+     * Delega al mini gioco attivo se presente, altrimenti
+     * parsa il comando tramite {@link CommandParser}.
+     */
     public String processCommand(String command) {
         if (!gameRunning) {
             return "Il gioco è terminato!";
@@ -684,6 +694,7 @@ public class GameEngine {
         return "❌ Non ci sono scelte in questo momento.";
     }
     
+    /** Forza l'avvio del primo capitolo. Usato dalla GUI dopo l'intro. */
     public String forceStartFirstChapter() {
         currentChapterStarted = false;
         currentChapterCompleted = false;
@@ -859,6 +870,7 @@ public class GameEngine {
         return result;
     }
 
+    /** Avvia il mini gioco identificato dalla chiave (es. "smoke_chase"). */
     public String startMiniGame(String miniGameKey) {
         MiniGame game = miniGames.get(miniGameKey);
         if (game == null) return "Mini gioco non trovato: " + miniGameKey;

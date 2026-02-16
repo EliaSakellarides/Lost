@@ -55,6 +55,11 @@ public class Player {
         return getItem(itemName) != null;
     }
     
+    /**
+     * Usa un oggetto dall'inventario. L'effetto dipende dal tipo:
+     * CIBO/MEDICINA ripristinano salute, DOCUMENTO mostra testo, ecc.
+     * Se l'oggetto esaurisce gli usi rimanenti, viene rimosso.
+     */
     public String useItem(String itemName) {
         Item item = getItem(itemName);
         if (item == null) {
@@ -115,6 +120,7 @@ public class Player {
         sanity = Math.max(0, sanity - amount);
     }
     
+    /** Avanza di un giorno. Ogni giorno sull'isola riduce la sanita' di 5 punti. */
     public void nextDay() {
         daysOnIsland++;
         // Ogni giorno perdi un po' di sanità

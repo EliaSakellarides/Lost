@@ -114,22 +114,22 @@ public class GameEngine {
         // CAPITOLI RIVISITATI - Focus su SOPRAVVIVENZA e cronologia LOST
         // ═══════════════════════════════════════════════════════════════
         
-        // CAPITOLO 1: LO SCHIANTO
+        // CAPITOLO 1: LA PRIMA NOTTE
         Map<String, String> cap1Choices = new HashMap<>();
-        cap1Choices.put("A", "Aiutare i feriti");
-        cap1Choices.put("B", "Esplorare i rottami");
-        cap1Choices.put("C", "Fuggire nella giungla");
+        cap1Choices.put("A", "Accendere un fuoco");
+        cap1Choices.put("B", "Costruire un riparo");
+        cap1Choices.put("C", "Esplorare i dintorni");
         storyChapters.add(new Level(
-            "cap1_crash",
-            "Lo Schianto",
-            "✈️💥 CRASH! L'aereo si è spezzato in due!\n\n" +
-            "Ti svegli sulla spiaggia tra i rottami fumanti.\n" +
-            "Urla, fuoco, confusione ovunque.\n" +
-            "Un motore sta ancora girando pericolosamente...\n\n" +
-            "❓ Cosa fai per prima cosa?",
+            "cap1_firstnight",
+            "La Prima Notte",
+            "\uD83C\uDF19 LA PRIMA NOTTE SULL'ISOLA\n\n" +
+            "Il sole sta tramontando. La spiaggia si fa buia.\n" +
+            "I sopravvissuti si guardano intorno, spaventati.\n" +
+            "Dalla giungla arrivano suoni inquietanti...\n\n" +
+            "\u2753 Come vi preparate per la notte?",
             cap1Choices,
             "A",
-            "Essere un eroe è sempre la scelta giusta!"
+            "Il fuoco tiene lontani i predatori e solleva il morale!"
         ));
         
         // CAPITOLO 2: I SOPRAVVISSUTI - Organizzare il campo
@@ -141,7 +141,7 @@ public class GameEngine {
             "cap2_survivors",
             "I Sopravvissuti",
             "🏝️ Sei sulla spiaggia con gli altri sopravvissuti.\n\n" +
-            "Jack, il medico, sta organizzando il campo.\n" +
+            player.getName() + ", il medico, sta organizzando il campo.\n" +
             "Kate raccoglie provviste dai rottami.\n" +
             "Sawyer sta già litigando con qualcuno...\n\n" +
             "Qualcuno chiede: 'Quanti siamo sopravvissuti?'\n\n" +
@@ -182,7 +182,7 @@ public class GameEngine {
             "Le Grotte",
             "💧 GIORNO 3 - EMERGENZA ACQUA\n\n" +
             "L'acqua delle bottiglie sta finendo.\n" +
-            "Jack ha trovato delle GROTTE con acqua dolce!\n\n" +
+            player.getName() + " ha trovato delle GROTTE con acqua dolce!\n\n" +
             "Ma sono nella giungla, lontano dalla spiaggia...\n" +
             "Lontano dai possibili soccorsi.\n\n" +
             "Il gruppo è diviso. Cosa proponi?\n\n" +

@@ -120,7 +120,10 @@ public class FullScreenGUI extends JFrame {
         statusUpdateTimer = new Timer(500, e -> statusPanel.update(engine, currentLocation));
         statusUpdateTimer.start();
 
-        SwingUtilities.invokeLater(this::askPlayerName);
+        // askPlayerName viene chiamato solo se non si usa startGame()
+        SwingUtilities.invokeLater(() -> {
+            if (engine == null) askPlayerName();
+        });
     }
 
     private JPanel createControlPanel() {
@@ -129,8 +132,8 @@ public class FullScreenGUI extends JFrame {
         panel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 10));
         panel.setPreferredSize(new Dimension(screenWidth, 70));
 
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 14);
-        Color buttonBg = new Color(50, 70, 50);
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 18);
+        Color buttonBg = new Color(45, 130, 85);
         Color buttonFg = Color.WHITE;
 
         btnA = GuiButtonFactory.create("A", buttonFont, buttonBg, buttonFg);
@@ -142,7 +145,7 @@ public class FullScreenGUI extends JFrame {
         btnC.addActionListener(e -> processInput("C"));
 
         btnAdvance = GuiButtonFactory.create("\u27A1\uFE0F AVANTI", buttonFont,
-            new Color(70, 100, 70), buttonFg);
+            new Color(50, 150, 100), buttonFg);
         btnAdvance.addActionListener(e -> processInput("avanti"));
 
         inputField = new JTextField(25);
@@ -165,7 +168,7 @@ public class FullScreenGUI extends JFrame {
         btnInventory = GuiButtonFactory.create("\uD83C\uDF92", buttonFont, buttonBg, buttonFg);
         btnStatus = GuiButtonFactory.create("\u2764\uFE0F", buttonFont, buttonBg, buttonFg);
         JButton btnHelp = GuiButtonFactory.create("\u2753", buttonFont, buttonBg, buttonFg);
-        JButton btnExit = GuiButtonFactory.create("\uD83D\uDEAA", buttonFont, new Color(100, 50, 50), buttonFg);
+        JButton btnExit = GuiButtonFactory.create("\uD83D\uDEAA", buttonFont, new Color(180, 60, 60), buttonFg);
 
         JButton btnSave = GuiButtonFactory.create("\uD83D\uDCBE", buttonFont, buttonBg, buttonFg);
         btnSave.addActionListener(e -> showSaveDialog());
@@ -367,9 +370,9 @@ public class FullScreenGUI extends JFrame {
     }
 
     private void showGameIntro(String playerName) {
-        currentText = "\u2708\uFE0F Benvenuto sull'isola, " + playerName + "!\n\n" +
-                      "Il volo Oceanic 815 \u00E8 precipitato.\n" +
-                      "Sei uno dei pochi sopravvissuti.\n\n" +
+        currentText = "\uD83C\uDFDD\uFE0F " + playerName + ", sei sull'isola.\n\n" +
+                      "Hai aiutato i sopravvissuti e curato le tue ferite.\n" +
+                      "Ora \u00E8 il momento di organizzarsi.\n\n" +
                       "L'isola nasconde segreti terrificanti...\n" +
                       "Ma anche la chiave per la tua fuga: LA TESI.\n\n" +
                       "Trova la TESI perduta per scappare con l'aereo!\n\n" +

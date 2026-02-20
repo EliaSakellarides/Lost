@@ -151,26 +151,30 @@ public class GameEngine {
             "48 sopravvissuti iniziali!"
         ));
         
-        // CAPITOLO 3: IL MOSTRO DI FUMO - Prima apparizione + MINI GIOCO
+        // CAPITOLO 3: IL MOSTRO DI FUMO - Cabina di pilotaggio + morte del pilota
         Map<String, String> cap3Choices = new HashMap<>();
         cap3Choices.put("A", "Corri via!");
         cap3Choices.put("B", "Resta immobile");
         cap3Choices.put("C", "Arrampicati su un albero");
-        Level cap3 = new Level(
+        storyChapters.add(new Level(
             "cap3_smoke",
             "Il Mostro di Fumo",
-            "🌫️ LA PRIMA NOTTE NELLA GIUNGLA...\n\n" +
-            "Stai cercando legna quando senti un rumore terrificante.\n" +
-            "TICK... TICK... TICK... *RUGGITO MECCANICO*\n\n" +
-            "Gli alberi si piegano, qualcosa di ENORME si avvicina!\n" +
-            "Una colonna di FUMO NERO emerge dalla vegetazione!\n\n" +
-            "❓ Cosa fai?",
+            "🌴 GIORNO 1 - LA GIUNGLA\n\n" +
+            "Ti avventuri nella giungla con Jack e Kate.\n" +
+            "Trovate la cabina di pilotaggio schiantata tra gli alberi.\n" +
+            "Il pilota e' ancora vivo!\n\n" +
+            "Tenta di chiamare i soccorsi con la radio danneggiata.\n" +
+            "Tra i disturbi, una voce inquietante:\n" +
+            "\"...esistono altri su quest'isola...\n" +
+            "ci vivono da molto prima di voi...\"\n\n" +
+            "Poi il TICK... TICK... TICK... riempie la giungla.\n" +
+            "Il Mostro di Fumo attacca. Il pilota viene trascinato via.\n" +
+            "La radio e' distrutta. Gli Altri esistono.\n\n" +
+            "❓ Cosa fai quando senti arrivare il Mostro?",
             cap3Choices,
             "B",
-            "Il mostro non attacca chi sta fermo... sembra studiare le sue prede."
-        );
-        cap3.setMiniGameKey("smoke_chase");
-        storyChapters.add(cap3);
+            "Chi si muove attira il mostro. Restare immobili e' l'unica via."
+        ));
         
         // CAPITOLO 4: LE GROTTE - Trovare acqua (NUOVO)
         Map<String, String> cap4Choices = new HashMap<>();
@@ -296,24 +300,46 @@ public class GameEngine {
         );
         cap9.setMiniGameKey("frequency_tuning");
         storyChapters.add(cap9);
-        
-        // CAPITOLO 10: GLI ALTRI - Cattura
+
+        // CAPITOLO 10: HENRY GALE - Il prigioniero misterioso
         Map<String, String> cap10Choices = new HashMap<>();
-        cap10Choices.put("A", "Collaborare");
-        cap10Choices.put("B", "Resistere");
-        cap10Choices.put("C", "Cercare di fuggire");
+        cap10Choices.put("A", "Si, dice la verita'");
+        cap10Choices.put("B", "No, sta mentendo");
+        cap10Choices.put("C", "Non sei sicuro");
         storyChapters.add(new Level(
-            "cap10_others",
+            "cap10_henrygale",
+            "Il Prigioniero",
+            "🎭 UN UOMO NELLA TRAPPOLA\n\n" +
+            "Trovate un uomo catturato nella trappola di Rousseau.\n" +
+            "Si presenta con calma:\n\n" +
+            "\"Mi chiamo Henry Gale.\n" +
+            "Sono un pallonista del Minnesota.\n" +
+            "Il mio pallone si e' schiantato sull'isola mesi fa.\"\n\n" +
+            "La storia sembra plausibile. E' ferito, sembra spaventato.\n" +
+            "Ma i suoi occhi... non corrispondono alle parole.\n\n" +
+            "❓ Ti fidi di lui?",
+            cap10Choices,
+            "B",
+            "Henry Gale non esiste. Quest'uomo e' Ben Linus, il leader degli Altri."
+        ));
+
+        // CAPITOLO 11: GLI ALTRI - Cattura
+        Map<String, String> cap11aChoices = new HashMap<>();
+        cap11aChoices.put("A", "Collaborare");
+        cap11aChoices.put("B", "Resistere");
+        cap11aChoices.put("C", "Cercare di fuggire");
+        storyChapters.add(new Level(
+            "cap11_others",
             "Gli Altri",
             "👥 CATTURATO!\n\n" +
             "Durante una spedizione, vieni catturato dagli ALTRI!\n" +
             "Ti portano in un villaggio nascosto.\n\n" +
-            "Un uomo con occhiali ti interroga:\n" +
-            "'Mi chiamo Ben. Sappiamo tutto di te.'\n" +
-            "'Sappiamo perché sei su quest'isola.'\n" +
-            "'La domanda è: tu lo sai?'\n\n" +
+            "Ben ti guarda con calma - lo stesso uomo del bunker.\n" +
+            "'Sappiamo tutto di te.'\n" +
+            "'Sappiamo perche' sei su quest'isola.'\n" +
+            "'La domanda e': tu lo sai?'\n\n" +
             "❓ Come reagisci?",
-            cap10Choices,
+            cap11aChoices,
             "C",
             "Mai fidarsi degli Altri... cerca un modo per scappare!"
         ));
@@ -340,28 +366,44 @@ public class GameEngine {
             "Il fiume ti riporterà al campo... e l'acqua copre le tue tracce!"
         ));
         
-        // CAPITOLO 12: LA ZATTERA - Tentativo via mare (NUOVO)
+        // CAPITOLO 13: LA ZATTERA - Partenza
         Map<String, String> cap12Choices = new HashMap<>();
-        cap12Choices.put("A", "Aiutare con la zattera");
+        cap12Choices.put("A", "Partire con la zattera");
         cap12Choices.put("B", "Restare sull'isola");
-        cap12Choices.put("C", "Cercare un'altra via");
+        cap12Choices.put("C", "Aspettare i soccorsi");
         storyChapters.add(new Level(
             "cap12_raft",
             "La Zattera",
             "⛵ IL PIANO DI MICHAEL\n\n" +
-            "Michael sta costruendo una ZATTERA per fuggire!\n" +
+            "Michael ha costruito una zattera in poche settimane.\n" +
             "Jin, Sawyer e Walt partiranno con lui.\n\n" +
-            "'Raggiungeremo le rotte marittime commerciali!'\n" +
-            "'Qualcuno ci troverà!'\n\n" +
-            "Ma l'oceano è immenso e pericoloso.\n" +
-            "E se ci fosse un'altra via?\n\n" +
+            "E' l'unica via concreta per uscire dall'isola.\n" +
+            "L'oceano e' immenso, ma restare non e' piu' un'opzione.\n\n" +
             "❓ Cosa fai?",
             cap12Choices,
-            "C",
-            "La zattera è rischiosa... forse c'è un modo migliore!"
+            "A",
+            "Meglio rischiare il mare che restare prigionieri sull'isola!"
         ));
-        
-        // CAPITOLO 13: I FLASHBACK - Ricordi
+
+        // CAPITOLO 14: IL RAPIMENTO DI WALT
+        storyChapters.add(new Level(
+            "cap13_walt",
+            "In Mare Aperto",
+            "🌊 NOTTE - OCEANO APERTO\n\n" +
+            "La zattera naviga da ore nel buio.\n" +
+            "Poi una barca si avvicina a tutta velocita'.\n\n" +
+            "\"Avete visto un bambino?\"\n\n" +
+            "Prima che possiate rispondere, sparano.\n" +
+            "La zattera esplode.\n\n" +
+            "Walt viene RAPITO dagli Altri.\n" +
+            "Michael urla il suo nome nel buio.\n" +
+            "Sawyer e' ferito. Siete in acqua.\n\n" +
+            "❓ Come tornate a riva?",
+            Arrays.asList("nuotare", "nuoto", "a nuoto", "nuotiamo", "a"),
+            "L'unica via e' tornare a nuoto verso l'isola."
+        ));
+
+        // CAPITOLO 15: I FLASHBACK - Ricordi
         Map<String, String> cap13Choices = new HashMap<>();
         cap13Choices.put("A", "815");
         cap13Choices.put("B", "316");
@@ -782,7 +824,7 @@ public class GameEngine {
             currentChapterStarted = false;
 
             // Aggiungi la TESI all'inventario nel capitolo giusto
-            if (currentChapter == 13) {
+            if (currentChapter == 15) {
                 Item tesi = new Item("TESI",
                     "📜 La TESI perduta! Contiene le coordinate per fuggire dall'isola!",
                     true, Item.ItemType.TESI, 0, -1);

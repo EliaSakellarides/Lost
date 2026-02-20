@@ -706,7 +706,21 @@ public class GameEngine {
     
     private String startNextChapter() {
         if (currentChapterStarted && !currentChapterCompleted && currentChapter < storyChapters.size()) {
-            return "⚠️ Devi prima rispondere alla domanda!\n💡 Usa i pulsanti A, B, C o scrivi la risposta.";
+            Level chapter = storyChapters.get(currentChapter);
+            String msg = "📖 CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
+                         ": " + chapter.getTitle() + "\n\n" +
+                         chapter.getPrompt() + "\n\n";
+            if (chapter.hasChoices()) {
+                Map<String, String> choices = chapter.getChoices();
+                msg += "🔘 SCELTE: ";
+                if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
+                if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
+                if (choices.containsKey("C")) msg += "C=" + choices.get("C");
+                msg += "\n\n💡 Premi A, B o C";
+            } else {
+                msg += "💡 Scrivi la risposta";
+            }
+            return msg;
         }
         
         if (currentChapter >= storyChapters.size()) {
@@ -785,7 +799,19 @@ public class GameEngine {
 
             return success;
         } else {
-            return "❌ Risposta sbagliata!\n💡 Suggerimento: " + chapter.getHint();
+            String msg = "Risposta sbagliata. Suggerimento: " + chapter.getHint() + "\n\n";
+            msg += chapter.getPrompt() + "\n\n";
+            if (chapter.hasChoices()) {
+                Map<String, String> choices = chapter.getChoices();
+                msg += "Scelte: ";
+                if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
+                if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
+                if (choices.containsKey("C")) msg += "C=" + choices.get("C");
+                msg += "\n\nPremi A, B o C";
+            } else {
+                msg += "Scrivi la risposta";
+            }
+            return msg;
         }
     }
     

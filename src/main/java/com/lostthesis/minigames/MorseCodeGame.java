@@ -137,11 +137,12 @@ public class MorseCodeGame implements MiniGame {
                    getSegmentDisplay();
         } else {
             errorsThisSegment++;
+            waitingForAnswer = false;
             String response = "Sbagliato! '" + text.trim().toUpperCase() + "' non e' corretto.\n";
             if (errorsThisSegment >= 3) {
                 response += "\nSuggerimento: " + SEGMENT_HINTS[currentSegment] + "\n";
             }
-            response += "\nRiprova! Premi B per rivedere il Morse, A per l'alfabeto.";
+            response += "\n" + getSegmentDisplay();
             return response;
         }
     }

@@ -94,16 +94,16 @@ public class GameEngine {
         audioManager.playBackgroundMusic("lost___opening_titles.wav", false, 15000);
         
         addLog("═══════════════════════════════════════════════════");
-        addLog("  ✈️ LOST THESIS - L'ISOLA MISTERIOSA ✈️");
+        addLog("   OCEANIC FLIGHT 815 - GIORNO 1");
         addLog("═══════════════════════════════════════════════════");
         addLog("");
-        addLog("Il volo Oceanic 815 è precipitato su un'isola sconosciuta.");
-        addLog("Sei uno dei sopravvissuti, " + playerName + ".");
+        addLog("Sei vivo, " + playerName + ". Non tutti lo sono.");
         addLog("");
-        addLog("L'isola nasconde segreti terrificanti...");
-        addLog("Ma anche una via di fuga: LA TESI.");
+        addLog("Il mondo sa che siamo spariti.");
+        addLog("L'aereo e' atterrato su quest'isola.");
+        addLog("E' solo questione di ore prima che qualcuno venga a salvarci.");
         addLog("");
-        addLog("Trova la TESI perduta per scappare con l'aereo!");
+        addLog("Devi solo resistere.");
         addLog("═══════════════════════════════════════════════════");
     }
 

@@ -59,7 +59,7 @@ public class SceneBuilder {
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setBackground(bgColor);
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        titleLabel.setFont(new Font("Georgia", Font.BOLD, 26));
         titleLabel.setForeground(fgColor);
         titlePanel.add(titleLabel);
         return titlePanel;
@@ -72,7 +72,7 @@ public class SceneBuilder {
         sceneText.setWrapStyleWord(true);
         sceneText.setBackground(Color.BLACK);
         sceneText.setForeground(Color.WHITE);
-        sceneText.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        sceneText.setFont(new Font("Georgia", Font.ITALIC, 17));
         sceneText.setText(text);
         return sceneText;
     }
@@ -108,7 +108,9 @@ public class SceneBuilder {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(imagePanel, BorderLayout.CENTER);
-        topPanel.add(titlePanel, BorderLayout.SOUTH);
+        if (titlePanel != null) {
+            topPanel.add(titlePanel, BorderLayout.SOUTH);
+        }
 
         mainPanel.add(topPanel, BorderLayout.CENTER);
         mainPanel.add(textPanel, BorderLayout.SOUTH);

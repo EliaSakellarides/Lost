@@ -229,7 +229,7 @@ public class FullScreenRenderer {
         // Logo "LOST THESIS" stilizzato
         g.setColor(new Color(50, 60, 50));
         g.setFont(new Font("SansSerif", Font.BOLD, 12));
-        g.drawString("✈ LOST THESIS", 10, 15);
+        g.drawString("LOST", 10, 15);
     }
     
     public PixelArtManager getPixelArtManager() {

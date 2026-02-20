@@ -86,17 +86,6 @@ public class IntroSequence {
                 g2d.drawString(text, x, y);
 
                 g2d.setTransform(originalTransform);
-                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha[0]));
-
-                Font thesisFont = new Font("Times New Roman", Font.ITALIC, 40);
-                g2d.setFont(thesisFont);
-                g2d.setColor(new Color(200, 200, 200));
-
-                String subtitle = "T H E S I S";
-                FontMetrics fm2 = g2d.getFontMetrics();
-                int x2 = (getWidth() - fm2.stringWidth(subtitle)) / 2;
-                int y2 = centerY + 120;
-                g2d.drawString(subtitle, x2, y2);
             }
         };
 
@@ -150,22 +139,19 @@ public class IntroSequence {
         currentScene = 2;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel imagePanel = scene.createImagePanel("areo scena iniziale.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\u2708\uFE0F VOL OCEANIC 815",
-            new Color(30, 40, 60), new Color(200, 220, 255));
         JTextArea text = scene.createSceneText(
             "Sei a bordo del volo Oceanic 815, direzione Los Angeles.\n" +
-            "Un viaggio come tanti altri... o almeno cos\u00EC credi.");
+            "Un viaggio come tanti altri.");
 
-        JButton continueBtn = GuiButtonFactory.create("\u27A1\uFE0F Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(40, 60, 90), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(40, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showHostessScene();
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, null);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, null);
         dialog.setVisible(true);
     }
 
@@ -210,17 +196,12 @@ public class IntroSequence {
         imagePanel.setPreferredSize(new Dimension(screenWidth, (int)(screenHeight * 0.55)));
         imagePanel.setBackground(new Color(30, 40, 50));
 
-        JPanel titlePanel = scene.createTitlePanel(
-            "\u2708\uFE0F VOL OCEANIC 815 - IN VOLO",
-            new Color(40, 60, 40), new Color(255, 220, 100));
-        titlePanel.getComponent(0); // label gia nel panel
-
         JTextArea sceneText = scene.createSceneText(
-            "Un'hostess si avvicina con un carrello delle bevande.\n\n" +
-            "\uD83D\uDC69\u200D\u2708\uFE0F \"Posso offrirle qualcosa da bere?\"\n\n" +
-            "L'hostess \u00E8 particolarmente generosa... ti offre pi\u00F9 del dovuto.\n" +
-            "Ne approfitti e riponi una bottiglietta di whisky nella giacca.\n" +
-            "Non si sa mai, potrebbe tornare utile...");
+            "Un'hostess si avvicina con il carrello delle bevande.\n\n" +
+            "\"Posso offrirle qualcosa da bere?\"\n\n" +
+            "E' particolarmente generosa. Ne approfitti e riponi\n" +
+            "una bottiglietta di whisky nella tasca della giacca.\n" +
+            "Non si sa mai.");
 
         // Whisky ottenuto automaticamente
         Item whisky = new Item(
@@ -230,8 +211,8 @@ public class IntroSequence {
         );
         engine.getPlayer().addItem(whisky);
 
-        JButton continueBtn = GuiButtonFactory.create("\u27A1\uFE0F Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(120, 80, 40), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(120, 80, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showTurbulenceScene();
@@ -249,7 +230,6 @@ public class IntroSequence {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(imagePanel, BorderLayout.CENTER);
-        topPanel.add(titlePanel, BorderLayout.SOUTH);
 
         mainPanel.add(topPanel, BorderLayout.CENTER);
         mainPanel.add(textPanel, BorderLayout.SOUTH);
@@ -318,22 +298,21 @@ public class IntroSequence {
         currentScene = 4;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel imagePanel = scene.createImagePanel("aereotrema.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\u26A1 TURBOLENZA! \u26A1", new Color(80, 30, 30), new Color(255, 100, 100));
         JTextArea text = scene.createSceneText(
-            "L'aereo inizia a tremare violentemente!\n" +
+            "L'aereo inizia a tremare. Poi violentemente.\n" +
             "Le maschere d'ossigeno cadono dal soffitto.\n" +
-            "Urla di panico... poi tutto diventa nero...");
+            "Urla. Il rumore del metallo che cede.\n" +
+            "Poi il buio.");
 
-        JButton continueBtn = GuiButtonFactory.create("\uD83D\uDCA5 Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showPlaneBreakingScene();
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, null);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, null);
         dialog.setVisible(true);
     }
 
@@ -344,22 +323,20 @@ public class IntroSequence {
         currentScene = 5;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel imagePanel = scene.createImagePanel("aereo si rompe in volo.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\uD83D\uDCA5 L'AEREO SI SPEZZA! \uD83D\uDCA5", new Color(100, 30, 30), new Color(255, 80, 80));
         JTextArea text = scene.createSceneText(
-            "Un boato assordante! La fusoliera si spezza in due!\n" +
-            "Passeggeri e detriti volano nel vuoto...\n" +
-            "Stai precipitando verso un'isola sconosciuta...");
+            "Un boato. La fusoliera si spezza in due.\n" +
+            "Passeggeri, sedili, detriti — tutto vola nel vuoto.\n" +
+            "Stai cadendo.");
 
-        JButton continueBtn = GuiButtonFactory.create("\u2B07\uFE0F Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showEyeOpeningScene();
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, null);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, null);
         dialog.setVisible(true);
     }
 
@@ -370,22 +347,21 @@ public class IntroSequence {
         currentScene = 6;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel imagePanel = scene.createImagePanel("occhio aperto -2.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\uD83D\uDC41\uFE0F ... ", new Color(50, 50, 80), new Color(200, 200, 255));
         JTextArea text = scene.createSceneText(
-            "...\n\n" +
             "Apri gli occhi.\n\n" +
-            "Foglie di bamb\u00F9 oscillano sopra di te...");
+            "Foglie di bambu oscillano sopra di te.\n" +
+            "Non sai dove sei.\n" +
+            "Non sai quanto tempo e passato.");
 
-        JButton continueBtn = GuiButtonFactory.create("\uD83D\uDC40 Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(60, 60, 90), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(60, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showJungleAwakeningScene();
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, null);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, null);
         dialog.setVisible(true);
     }
 
@@ -396,22 +372,20 @@ public class IntroSequence {
         currentScene = 7;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel imagePanel = scene.createImagePanel("risveglio in giungla.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\uD83C\uDF34 RISVEGLIO", new Color(30, 60, 30), new Color(150, 220, 150));
         JTextArea text = scene.createSceneText(
             "Ti alzi a fatica. Sei nella giungla.\n" +
-            "Alberi di bamb\u00F9 ti circondano. Sei confuso, disorientato.\n" +
-            "In lontananza senti urla e il rumore di un motore...");
+            "Alberi di bambu, luce filtrata, silenzio.\n" +
+            "In lontananza: urla, e il rumore sordo di qualcosa che brucia.");
 
-        JButton continueBtn = GuiButtonFactory.create("\uD83C\uDF3F Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(50, 80, 50), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(50, 80, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showFollowVincentScene();
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, null);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, null);
         dialog.setVisible(true);
     }
 
@@ -422,22 +396,20 @@ public class IntroSequence {
         currentScene = 8;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel imagePanel = scene.createImagePanel("segui vincent.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\uD83D\uDC15 VINCENT", new Color(60, 50, 30), new Color(220, 200, 150));
         JTextArea text = scene.createSceneText(
-            "Un cane Labrador bianco sbuca dalla vegetazione!\n" +
-            "Ti guarda, abbaia, e corre via verso la spiaggia.\n" +
-            "Decidi di seguirlo...");
+            "Un cane Labrador bianco sbuca dalla vegetazione.\n" +
+            "Ti guarda. Abbaia. Corre via verso la spiaggia.\n\n" +
+            "Lo segui.");
 
-        JButton continueBtn = GuiButtonFactory.create("\uD83C\uDFC3 Segui Vincent!",
-            new Font("SansSerif", Font.BOLD, 16), new Color(80, 70, 40), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Segui Vincent",
+            new Font("Georgia", Font.BOLD, 16), new Color(80, 70, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showBeachCrashScene();
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, null);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, null);
         dialog.setVisible(true);
     }
 
@@ -449,15 +421,14 @@ public class IntroSequence {
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "spiaggia", screenWidth);
         JPanel imagePanel = scene.createImagePanel("aereo distrutto su spiaggia.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\uD83C\uDFDD\uFE0F LA SPIAGGIA", new Color(80, 60, 40), new Color(255, 220, 150));
         JTextArea text = scene.createSceneText(
-            "Emergi dalla giungla e resti senza fiato.\n\n" +
-            "La spiaggia \u00E8 un caos di detriti fumanti, bagagli sparsi,\n" +
-            "e sopravvissuti in stato di shock.\n\n" +
-            "Senza pensarci, corri ad aiutare. Trascini persone lontano\n" +
-            "dai rottami in fiamme, rassicuri chi \u00E8 sotto shock.\n" +
-            "Il tuo coraggio ispira gli altri.");
+            "Emergi dalla giungla e ti fermi.\n\n" +
+            "La spiaggia e' una scena di guerra. Rottami fumanti, bagagli\n" +
+            "sparsi, persone a terra. Qualcuno grida. Qualcuno non si muove.\n\n" +
+            "Corri ad aiutare. Trascini feriti lontano dalle fiamme.\n" +
+            "Non sai dove sei. Non sai come tornare a casa.\n" +
+            "Ma sai che il mondo sa che il volo e' sparito.\n" +
+            "E' solo questione di resistere.");
 
         // Effetto: +10 sanita, -10 vita (sforzo fisico)
         engine.getPlayer().addSanity(10);
@@ -471,8 +442,8 @@ public class IntroSequence {
         statsLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         statsLabel.setForeground(new Color(200, 200, 100));
 
-        JButton continueBtn = GuiButtonFactory.create("\u27A1\uFE0F Continua...",
-            new Font("SansSerif", Font.BOLD, 16), new Color(80, 60, 40), Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            new Font("Georgia", Font.BOLD, 16), new Color(80, 60, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showJungleHealScene();
@@ -484,7 +455,7 @@ public class IntroSequence {
         btnPanel.add(Box.createHorizontalStrut(30));
         btnPanel.add(continueBtn);
 
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, statusBar);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
         dialog.setVisible(true);
     }
 
@@ -496,16 +467,13 @@ public class IntroSequence {
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
         JPanel imagePanel = scene.createImagePanel("risveglio in giungla.jpg");
-        JPanel titlePanel = scene.createTitlePanel(
-            "\uD83C\uDF3F DA SOLO NELLA GIUNGLA", new Color(30, 60, 30), new Color(150, 220, 150));
         JTextArea text = scene.createSceneText(
-            "Dopo aver aiutato tutti, ti allontani dalla spiaggia.\n" +
-            "Ti rifugi tra gli alberi per riprendere fiato.\n\n" +
-            "Sei ferito, " + playerName + ". Tagli sulle braccia,\n" +
-            "lividi ovunque. Hai bisogno di curarti.\n\n" +
-            "Nella giacca senti la bottiglietta di whisky...\n" +
+            "Ti allontani dalla spiaggia per riprendere fiato.\n\n" +
+            "Sei ferito, " + playerName + ". Tagli sulle braccia, lividi ovunque.\n" +
+            "Hai bisogno di curarti.\n\n" +
+            "Nella tasca della giacca senti ancora la bottiglietta di whisky.\n" +
             "Potrebbe servire come disinfettante.\n\n" +
-            "\u2753 Come ti curi?");
+            "Come ti curi?");
 
         JButton whiskyBtn = GuiButtonFactory.create("\uD83E\uDD43 Usa il whisky sulle ferite",
             new Font("SansSerif", Font.BOLD, 14), new Color(120, 80, 40), Color.WHITE);
@@ -562,7 +530,7 @@ public class IntroSequence {
         });
 
         JPanel btnPanel = scene.createButtonPanel(whiskyBtn, bandageBtn, toughBtn);
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, statusBar);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
         dialog.setVisible(true);
     }
 
@@ -595,7 +563,7 @@ public class IntroSequence {
         btnPanel.add(Box.createHorizontalStrut(30));
         btnPanel.add(continueBtn);
 
-        scene.assembleStandardScene(dialog, imagePanel, titlePanel, text, btnPanel, statusBar);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
         dialog.setVisible(true);
     }
 }

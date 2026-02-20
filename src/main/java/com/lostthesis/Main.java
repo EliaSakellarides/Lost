@@ -24,11 +24,10 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             // Chiedi il nome al giocatore
             String playerName = JOptionPane.showInputDialog(null,
-                "✈️ LOST THESIS - L'ISOLA MISTERIOSA ✈️\n\n" +
-                "Il tuo aereo è precipitato su un'isola misteriosa.\n" +
-                "Per fuggire, devi trovare la TESI perduta!\n\n" +
-                "Come ti chiami, sopravvissuto?",
-                "Lost Thesis",
+                "OCEANIC FLIGHT 815\n\n" +
+                "Il tuo aereo e' precipitato. Sei vivo.\n" +
+                "Come ti chiami?",
+                "LOST",
                 JOptionPane.QUESTION_MESSAGE);
             
             if (playerName == null || playerName.trim().isEmpty()) {

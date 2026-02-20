@@ -39,6 +39,7 @@ public class FullScreenGUI extends JFrame {
     private String currentTitle = "";
     private String currentLocation = "spiaggia";
     private String currentImageKey = "spiaggia";
+    private boolean introRunning = false;
 
     // Etichette originali dei bottoni
     private static final String DEFAULT_BTN_A = "A";
@@ -57,7 +58,7 @@ public class FullScreenGUI extends JFrame {
         screenWidth = 1024;
         screenHeight = 768;
 
-        setTitle("\u2708\uFE0F LOST THESIS - L'Isola Misteriosa [Alpha 0.1]");
+        setTitle("LOST");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         setSize(screenWidth, screenHeight);
@@ -265,7 +266,7 @@ public class FullScreenGUI extends JFrame {
     }
 
     private void askPlayerName() {
-        JDialog dialog = new JDialog(this, "LOST THESIS", true);
+        JDialog dialog = new JDialog(this, "LOST", true);
         dialog.setUndecorated(true);
         dialog.setLayout(new BorderLayout());
         dialog.getContentPane().setBackground(new Color(20, 30, 40));
@@ -275,7 +276,7 @@ public class FullScreenGUI extends JFrame {
         content.setBackground(new Color(20, 30, 40));
         content.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
 
-        JLabel titleLabel = new JLabel("\u2708\uFE0F LOST THESIS \u2708\uFE0F");
+        JLabel titleLabel = new JLabel("LOST");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
         titleLabel.setForeground(new Color(255, 220, 100));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -363,6 +364,15 @@ public class FullScreenGUI extends JFrame {
     private void initializeGame(String playerName) {
         engine = new GameEngine();
         engine.initializeGame(playerName);
+        introRunning = true;
+        textScrollPane.setVisible(false);
+
+        // Glass pane nero per coprire il frame durante l'intro
+        JPanel glassPane = new JPanel();
+        glassPane.setOpaque(true);
+        glassPane.setBackground(Color.BLACK);
+        setGlassPane(glassPane);
+        glassPane.setVisible(true);
 
         IntroSequence intro = new IntroSequence(this, engine,
             screenWidth, screenHeight, () -> showGameIntro(playerName));
@@ -370,14 +380,15 @@ public class FullScreenGUI extends JFrame {
     }
 
     private void showGameIntro(String playerName) {
-        currentText = "\uD83C\uDFDD\uFE0F " + playerName + ", sei sull'isola.\n\n" +
+        introRunning = false;
+        textScrollPane.setVisible(true);
+        getGlassPane().setVisible(false);
+        currentText = playerName + ", sei vivo.\n\n" +
                       "Hai aiutato i sopravvissuti e curato le tue ferite.\n" +
-                      "Ora \u00E8 il momento di organizzarsi.\n\n" +
-                      "L'isola nasconde segreti terrificanti...\n" +
-                      "Ma anche la chiave per la tua fuga: LA TESI.\n\n" +
-                      "Trova la TESI perduta per scappare con l'aereo!\n\n" +
+                      "Il mondo sa che siamo spariti.\n" +
+                      "E' solo questione di ore prima che qualcuno venga a salvarci.\n\n" +
                       "Premi AVANTI per iniziare...";
-        currentTitle = "\uD83C\uDFDD\uFE0F L'ISOLA MISTERIOSA";
+        currentTitle = "GIORNO 1";
         currentLocation = "spiaggia";
 
         updateTextDisplay();
@@ -429,6 +440,12 @@ public class FullScreenGUI extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
+
+            if (introRunning) {
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                return;
+            }
 
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);

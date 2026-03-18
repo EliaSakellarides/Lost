@@ -11,8 +11,6 @@ import com.lostthesis.save.GameState;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -40,6 +38,7 @@ public class FullScreenGUI extends JFrame {
     private String currentLocation = "spiaggia";
     private String currentImageKey = "spiaggia";
     private boolean introRunning = false;
+    private boolean victoryDialogShown = false;
 
     // Etichette originali dei bottoni
     private static final String DEFAULT_BTN_A = "A";
@@ -364,6 +363,7 @@ public class FullScreenGUI extends JFrame {
     private void initializeGame(String playerName) {
         engine = new GameEngine();
         engine.initializeGame(playerName);
+        victoryDialogShown = false;
         introRunning = true;
         textScrollPane.setVisible(false);
 
@@ -421,7 +421,8 @@ public class FullScreenGUI extends JFrame {
 
         gamePanel.repaint();
 
-        if (engine.isGameWon()) {
+        if (engine.isGameWon() && !victoryDialogShown) {
+            victoryDialogShown = true;
             Timer timer = new Timer(5000, e -> {
                 JOptionPane.showMessageDialog(this,
                     "\uD83C\uDF93 HAI COMPLETATO LOST THESIS!\n\n" +
@@ -534,6 +535,7 @@ public class FullScreenGUI extends JFrame {
 
         engine = new GameEngine();
         engine.loadGameState(state);
+        victoryDialogShown = false;
 
         currentLocation = engine.getCurrentRoomKey();
         currentImageKey = engine.getCurrentChapterImageKey();
@@ -618,7 +620,7 @@ public class FullScreenGUI extends JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Look and feel di sistema non disponibile: " + e.getMessage());
         }
 
         SwingUtilities.invokeLater(() -> {

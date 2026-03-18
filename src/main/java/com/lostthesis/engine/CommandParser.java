@@ -95,7 +95,7 @@ public class CommandParser {
 
         // CARICA PARTITA - caricare partita
         register(CommandType.CARICA_PARTITA,
-            "load", "caricapartita", "carica_partita", "ricarica");
+            "load", "carica", "caricapartita", "carica_partita", "ricarica");
 
         // MAPPA - mostrare la mappa dell'isola
         register(CommandType.MAPPA,

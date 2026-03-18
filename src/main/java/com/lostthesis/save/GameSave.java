@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Gestisce il salvataggio e caricamento dei file di salvataggio.
@@ -41,7 +40,7 @@ public class GameSave {
                     slotName,
                     engine.getPlayer().getName(),
                     engine.getCurrentChapterNumber(),
-                    getCurrentChapterTitle(engine)
+                    engine.getCurrentChapterTitle()
             );
             saveIndex(instance);
 
@@ -63,7 +62,7 @@ public class GameSave {
             }
             String json = Files.readString(saveFile);
             return GameConverter.fromJson(json);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Errore caricamento: " + e.getMessage());
             return null;
         }
@@ -91,7 +90,7 @@ public class GameSave {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Errore lettura indice: " + e.getMessage());
         }
 
@@ -139,14 +138,5 @@ public class GameSave {
         Files.createDirectories(SAVE_DIR);
         Path indexFile = SAVE_DIR.resolve("index.json");
         Files.writeString(indexFile, GSON.toJson(saves));
-    }
-
-    private static String getCurrentChapterTitle(GameEngine engine) {
-        int chapterNum = engine.getCurrentChapterNumber();
-        int total = engine.getTotalChapters();
-        if (chapterNum > total) {
-            return "Completato";
-        }
-        return "Capitolo " + chapterNum;
     }
 }

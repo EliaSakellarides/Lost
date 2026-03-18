@@ -53,14 +53,14 @@ public class AudioManager {
                 
                 // Ferma dopo N millisecondi se specificato
                 if (stopAfterMs > 0) {
-                    new Thread(() -> {
+                    startDaemonThread(() -> {
                         try {
                             Thread.sleep(stopAfterMs);
                             fadeOutAndStop(2000); // Fade out di 2 secondi
                         } catch (InterruptedException e) {
                             // Interrotto
                         }
-                    }).start();
+                    }, "lost-audio-stop");
                 }
             }
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class AudioManager {
     public void fadeOutAndStop(int durationMs) {
         if (backgroundMusic == null || !backgroundMusic.isRunning()) return;
         
-        new Thread(() -> {
+        startDaemonThread(() -> {
             try {
                 float originalVolume = volume;
                 int steps = 20;
@@ -91,7 +91,7 @@ public class AudioManager {
             } catch (Exception e) {
                 stopBackgroundMusic();
             }
-        }).start();
+        }, "lost-audio-fade");
     }
     
     public void stopBackgroundMusic() {
@@ -121,6 +121,12 @@ public class AudioManager {
         if (!musicEnabled) {
             stopBackgroundMusic();
         }
+    }
+
+    private void startDaemonThread(Runnable task, String name) {
+        Thread thread = new Thread(task, name);
+        thread.setDaemon(true);
+        thread.start();
     }
     
     public boolean isMusicEnabled() { return musicEnabled; }

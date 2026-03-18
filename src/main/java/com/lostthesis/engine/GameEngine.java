@@ -237,44 +237,46 @@ public class GameEngine {
             "Serve qualcosa di potente per aprirla... come degli ESPLOSIVI!"
         ));
         
-        // CAPITOLO 7: LA ROCCIA NERA - Cercare dinamite + MINI GIOCO
+        // CAPITOLO 7: LA ROCCIA NERA - Trovare la dinamite nella stiva
         Map<String, String> cap7Choices = new HashMap<>();
-        cap7Choices.put("A", "Prendere la dinamite");
-        cap7Choices.put("B", "È troppo pericoloso");
-        cap7Choices.put("C", "Prenderne solo un po'");
-        Level cap7 = new Level(
+        cap7Choices.put("A", "Aprire la cassa nella stiva");
+        cap7Choices.put("B", "Lasciare perdere e tornare indietro");
+        cap7Choices.put("C", "Cercare qualcosa sul ponte");
+        storyChapters.add(new Level(
             "cap7_blackrock",
             "La Roccia Nera",
             "⚓ LA NAVE NELLA GIUNGLA\n\n" +
             "Rousseau vi ha parlato della ROCCIA NERA.\n" +
             "Una nave del 1800 arenata nel mezzo dell'isola!\n\n" +
-            "All'interno trovate... DINAMITE!\n" +
-            "Vecchia, instabile, ma potente abbastanza.\n\n" +
-            "⚠️ ATTENZIONE: È estremamente pericolosa!\n" +
-            "Un movimento sbagliato e... BOOM!\n\n" +
-            "❓ Vale la pena rischiare?",
+            "Nella stiva senti odore di polvere e salsedine.\n" +
+            "Tra casse marce e catene arrugginite, noti un baule inchiodato.\n\n" +
+            "Locke ti guarda: 'Quello non e' finito qui per caso.'\n" +
+            "Potrebbe esserci proprio l'esplosivo che vi serve per la botola.\n\n" +
+            "❓ Cosa fai?",
             cap7Choices,
-            "C",
-            "Prenderne poca e con MOLTA cautela... un candelotto basta!"
-        );
-        cap7.setMiniGameKey("dynamite_defusal");
-        storyChapters.add(cap7);
+            "A",
+            "La cosa piu' promettente e' quella cassa chiusa nella stiva."
+        ));
         
         // CAPITOLO 8: APRIRE LA BOTOLA
+        Map<String, String> cap8Choices = new HashMap<>();
+        cap8Choices.put("A", "Spegnere subito la miccia");
+        cap8Choices.put("B", "Allontanarsi e cercare riparo");
+        cap8Choices.put("C", "Restare vicino alla botola per osservare");
         storyChapters.add(new Level(
             "cap8_openhatch",
             "Aprire la Botola",
             "💥 IL MOMENTO DELLA VERITÀ\n\n" +
             "Siete tornati alla botola con la dinamite.\n" +
-            "Locke posiziona l'esplosivo con cura.\n" +
-            "Tutti si allontanano...\n\n" +
-            "Hurley nota qualcosa sulla botola: dei NUMERI!\n" +
-            "'Aspetta! Quei numeri... 4 8 15 16 23 42!'\n" +
-            "'Sono i numeri MALEDETTI!'\n\n" +
-            "Ma Locke ha già acceso la miccia...\n\n" +
-            "❓ Qual è la somma di questi numeri?",
-            Arrays.asList("108", "centootto"),
-            "4+8+15+16+23+42 = ?"
+            "Locke sistema la carica sulla botola e accende la miccia.\n" +
+            "Hurley impallidisce vedendo i numeri incisi sul metallo:\n" +
+            "4 8 15 16 23 42.\n\n" +
+            "'Non mi piacciono per niente...'\n" +
+            "La miccia sfrigola. Hai solo pochi secondi.\n\n" +
+            "❓ Cosa fai?",
+            cap8Choices,
+            "B",
+            "Con della dinamite accesa, la scelta giusta e' mettersi al riparo."
         ));
         
         // CAPITOLO 9: IL CIGNO - Desmond + MINI GIOCO
@@ -630,21 +632,29 @@ public class GameEngine {
      */
     public String processCommand(String command) {
         if (!gameRunning) {
-            return "Il gioco è terminato!";
+            return gameWon
+                ? "Hai gia' completato l'avventura su LOST."
+                : "Il gioco e' terminato!";
+        }
+
+        if (command == null) {
+            command = "";
         }
 
         // Se c'è un mini gioco attivo, delega l'input
         if (activeMiniGame != null) {
-            return processMiniGameInput(command.trim());
+            return finalizeTurn(processMiniGameInput(command.trim()), true);
         }
 
         String cmd = command.trim().toLowerCase();
+        String response;
+        boolean advanceTurn = false;
 
         // Modalità narrativa
         if (narrativeMode) {
             // Gestione pulsanti rapidi A, B, C (prima del parser)
             if (cmd.equals("a") || cmd.equals("b") || cmd.equals("c")) {
-                return processChoice(cmd.toUpperCase());
+                return finalizeTurn(processChoice(cmd.toUpperCase()), true);
             }
 
             // Comando speciale: mostra tutti gli alias
@@ -658,40 +668,65 @@ public class GameEngine {
 
             switch (parsed.getType()) {
                 case AVANTI:
-                    return startNextChapter();
+                    response = startNextChapter();
+                    advanceTurn = true;
+                    break;
 
                 case RISPONDI:
                     if (target.isEmpty()) {
                         return "Devi scrivere una risposta!";
                     }
-                    return answerChapter(target);
+                    response = answerChapter(target);
+                    advanceTurn = true;
+                    break;
 
                 case SCEGLI:
                     if (target.isEmpty()) {
                         return "Devi scegliere A, B o C!";
                     }
-                    return processChoice(target.trim().toUpperCase());
+                    response = processChoice(target.trim().toUpperCase());
+                    advanceTurn = true;
+                    break;
 
                 case PRENDI:
-                    if (currentChapter == 12) {
-                        return answerChapter("prendi");
+                    if (target.isEmpty()) {
+                        return "❓ Cosa vuoi prendere?";
                     }
-                    return takeItemFromRoom(target);
+                    if (currentChapter == 12) {
+                        response = answerChapter("prendi");
+                    } else {
+                        response = takeItemFromRoom(target);
+                    }
+                    advanceTurn = true;
+                    break;
 
                 case LASCIA:
-                    return dropItem(target);
+                    response = dropItem(target);
+                    advanceTurn = true;
+                    break;
 
                 case GUARDA:
-                    return lookAt(target);
+                    response = lookAt(target);
+                    advanceTurn = true;
+                    break;
 
                 case MANGIA:
-                    return eatOrDrink(target);
+                    response = eatOrDrink(target);
+                    advanceTurn = true;
+                    break;
 
                 case ATTIVA:
-                    return activateItem(target);
+                    response = activateItem(target);
+                    advanceTurn = true;
+                    break;
 
                 case USA:
-                    return player.useItem(target);
+                    if (target.isEmpty()) {
+                        return "❓ Cosa vuoi usare?";
+                    }
+                    response = player.useItem(target);
+                    advanceTurn = true;
+                    break;
 
                 case INVENTARIO:
                     return player.getInventoryString();
@@ -717,8 +752,12 @@ public class GameEngine {
                 case SCONOSCIUTO:
                 default:
                     // Prova come risposta diretta al capitolo
-                    return answerChapter(cmd);
+                    response = answerChapter(cmd);
+                    advanceTurn = true;
+                    break;
             }
+
+            return finalizeTurn(response, advanceTurn);
         }
 
         return "Comando non riconosciuto. Scrivi 'aiuto' per i comandi.";
@@ -823,6 +862,16 @@ public class GameEngine {
             currentChapterCompleted = true;
             currentChapterStarted = false;
 
+            // Ricompense narrative dei capitoli chiave
+            if (currentChapter == 7 && !player.hasItem("Dinamite")) {
+                Item dinamite = new Item("Dinamite",
+                    "🧨 Candelotti trovati nella Roccia Nera. Vecchi, ma ancora pericolosi.",
+                    true, Item.ItemType.STRUMENTO, 0, 1);
+                player.addItem(dinamite);
+                blackRockExplored = true;
+                success += "🧨 Hai trovato la dinamite nella cassa della Roccia Nera!\n\n";
+            }
+
             // Aggiungi la TESI all'inventario nel capitolo giusto
             if (currentChapter == 15) {
                 Item tesi = new Item("TESI",
@@ -834,6 +883,7 @@ public class GameEngine {
 
             if (currentChapter >= storyChapters.size()) {
                 gameWon = true;
+                gameRunning = false;
                 success += getEpicEnding();
             } else {
                 success += "Premi AVANTI per continuare...";
@@ -988,6 +1038,7 @@ public class GameEngine {
 
         if (currentChapter >= storyChapters.size()) {
             gameWon = true;
+            gameRunning = false;
             result += getEpicEnding();
         } else {
             result += "\nPremi AVANTI per continuare la storia...";
@@ -1111,7 +1162,7 @@ public class GameEngine {
                "🎒 inventario    - Vedi oggetti (i)\n" +
                "❤️ stato         - Vedi salute (st/hp)\n" +
                "💾 salva [nome]  - Salva partita\n" +
-               "📂 load [nome]   - Carica partita\n" +
+               "📂 carica/load [nome] - Carica partita\n" +
                "🗺️ mappa         - Mappa dell'isola (m)\n" +
                "❓ aiuto         - Questo messaggio (h)\n" +
                "═══════════════════════════════════════\n" +
@@ -1373,45 +1424,67 @@ public class GameEngine {
     /**
      * Processa i timer ad ogni turno (come nella guida Colombini)
      */
-    private void processTimers() {
+    private String processTimers() {
+        StringBuilder events = new StringBuilder();
+
         // Timer dinamite
         if (dynamiteTimer > 0) {
             dynamiteTimer--;
             if (dynamiteTimer == 0 && dynamiteActive) {
-                explodeDynamite();
+                appendEvent(events, explodeDynamite());
             }
         }
-        
+
         // Timer mostro di fumo (casuale)
         if (smokeMonsterTimer > 0) {
             smokeMonsterTimer--;
             if (smokeMonsterTimer == 0) {
                 smokeMonsterNearby = true;
+                appendEvent(events,
+                    "🌫️ Il Mostro di Fumo e' vicino.\n" +
+                    "TICK... TICK... TICK...");
             }
         }
+
+        // Timer degli Altri
+        if (othersTimer > 0) {
+            othersTimer--;
+            if (othersTimer == 0) {
+                appendEvent(events,
+                    "👥 Senti voci nella giungla.\n" +
+                    "Gli Altri ti stanno cercando.");
+            }
+        }
+
+        return events.toString();
     }
     
     /**
      * Esplosione dinamite
      */
-    private void explodeDynamite() {
+    private String explodeDynamite() {
         // Trova dove è la dinamite
         Item dinamite = player.getItem("dinamite");
         if (dinamite != null) {
             // Se ce l'hai in mano... BOOM!
             player.removeHealth(100);
-            addLog("💥💥💥 BOOM! 💥💥💥\n" +
-                   "La dinamite è esplosa TRA LE TUE MANI!\n" +
-                   "Non avresti dovuto tenerla...\n\n" +
-                   "☠️ SEI MORTO ☠️");
+            String message = "💥💥💥 BOOM! 💥💥💥\n" +
+                             "La dinamite e' esplosa TRA LE TUE MANI!\n" +
+                             "Non avresti dovuto tenerla...\n\n" +
+                             "☠️ SEI MORTO ☠️";
+            addLog(message);
+            dynamiteActive = false;
             gameRunning = false;
+            return message;
         } else {
             // Esplode nella stanza dove l'hai lasciata
-            addLog("💥 BOOM! 💥\n" +
-                   "Senti un'esplosione in lontananza.\n" +
-                   "Qualcosa è stato distrutto...");
+            String message = "💥 BOOM! 💥\n" +
+                             "Senti un'esplosione in lontananza.\n" +
+                             "Qualcosa e' stato distrutto...";
+            addLog(message);
+            dynamiteActive = false;
+            return message;
         }
-        dynamiteActive = false;
     }
     
     private void addLog(String message) {
@@ -1491,17 +1564,31 @@ public class GameEngine {
      */
     public String getCurrentChapterImageKey() {
         if (currentChapter >= storyChapters.size()) {
-            return "cap17_freedom"; // Finale
+            return "cap18_freedom";
         }
         Level chapter = storyChapters.get(currentChapter);
-        return chapter.getKey(); // cap1_crash, cap2_survivors, ecc.
+        return chapter.getKey();
     }
     
     /**
      * Restituisce il numero del capitolo corrente (1-based per display)
      */
     public int getCurrentChapterNumber() {
-        return currentChapter + 1;
+        if (storyChapters.isEmpty()) {
+            return 0;
+        }
+        return Math.min(currentChapter + 1, storyChapters.size());
+    }
+
+    public String getCurrentChapterTitle() {
+        if (gameWon) {
+            return "Completato";
+        }
+        if (storyChapters.isEmpty()) {
+            return "N/D";
+        }
+        int safeIndex = Math.max(0, Math.min(currentChapter, storyChapters.size() - 1));
+        return storyChapters.get(safeIndex).getTitle();
     }
     
     /**
@@ -1653,5 +1740,32 @@ public class GameEngine {
         this.activeMiniGame = null;
         this.miniGameIntroShown = false;
         this.miniGameOutroShown = false;
+    }
+
+    private String finalizeTurn(String response, boolean advanceTurn) {
+        if (!advanceTurn || !gameRunning) {
+            return response;
+        }
+
+        String timerEvents = processTimers();
+        if (timerEvents.isEmpty()) {
+            return response;
+        }
+
+        if (response == null || response.isBlank()) {
+            return timerEvents;
+        }
+
+        return response + "\n\n" + timerEvents;
+    }
+
+    private void appendEvent(StringBuilder events, String message) {
+        if (message == null || message.isBlank()) {
+            return;
+        }
+        if (!events.isEmpty()) {
+            events.append("\n\n");
+        }
+        events.append(message);
     }
 }

@@ -57,23 +57,26 @@ public class PixelArtManager {
         // ═══════════════════════════════════════════════════════════
         // IMMAGINI CAPITOLI - MAPPATE ALLE IMMAGINI ESISTENTI
         // ═══════════════════════════════════════════════════════════
-        IMAGE_FILES.put("cap1_crash", "aereo distrutto su spiaggia.jpg");     // 1. Lo Schianto
-        IMAGE_FILES.put("cap2_survivors", "campo sopravvissuti.png");          // 2. I Sopravvissuti
-        IMAGE_FILES.put("cap3_smoke", "mostro di fumo.jpg");                   // 3. Il Mostro di Fumo
-        IMAGE_FILES.put("cap4_caves", "scoperta grotte.jpg");                  // 4. Le Grotte
-        IMAGE_FILES.put("cap5_hunt", "caccia al cignhiale.jpg");               // 5. La Caccia
-        IMAGE_FILES.put("cap6_hatch_discovery", "botola.jpg");                 // 6. Scoperta Botola
-        IMAGE_FILES.put("cap7_blackrock", "black rock in lontananza.jpg");     // 7. La Roccia Nera
-        IMAGE_FILES.put("cap8_open_hatch", "dinamite alla botola.png");        // 8. Aprire la Botola
-        IMAGE_FILES.put("cap9_swan", "desmond .jpg");                          // 9. Il Cigno (Desmond)
-        IMAGE_FILES.put("cap10_others", "arrivano gli altri per l agguaot.jpg"); // 10. Gli Altri
-        IMAGE_FILES.put("cap11_flashback", "hostess.png");                     // 11. Flashback (aeroporto)
-        IMAGE_FILES.put("cap12_raft", "spari e fuoco sulla spoaggia.jpg");     // 12. La Zattera
-        IMAGE_FILES.put("cap13_thesis", "terminale numero.jpg");               // 13. La Scoperta
-        IMAGE_FILES.put("cap14_runway", "l isola è nostra.jpg");               // 14. La Pista
-        IMAGE_FILES.put("cap15_prep", "trasporto dinamite nella giugnla.png"); // 15. Preparazione
-        IMAGE_FILES.put("cap16_escape", "scappando fumo nero prima degli altri.jpg"); // 16. La Fuga
-        IMAGE_FILES.put("cap17_freedom", "circondati.jpg");                    // 17. Libertà (da sostituire)
+        IMAGE_FILES.put("cap1_firstnight", "aereo distrutto su spiaggia.jpg");
+        IMAGE_FILES.put("cap2_survivors", "campo sopravvissuti.png");
+        IMAGE_FILES.put("cap3_smoke", "mostro di fumo.jpg");
+        IMAGE_FILES.put("cap4_caves", "scoperta grotte.jpg");
+        IMAGE_FILES.put("cap5_hunt", "caccia al cignhiale.jpg");
+        IMAGE_FILES.put("cap6_hatch", "botola.jpg");
+        IMAGE_FILES.put("cap7_blackrock", "black rock in lontananza.jpg");
+        IMAGE_FILES.put("cap8_openhatch", "dinamite alla botola.png");
+        IMAGE_FILES.put("cap9_swan", "desmond .jpg");
+        IMAGE_FILES.put("cap10_henrygale", "cattura del prigionieor.jpg");
+        IMAGE_FILES.put("cap11_others", "arrivano gli altri per l agguaot.jpg");
+        IMAGE_FILES.put("cap11_escape_others", "giungla con prigionerio .jpg");
+        IMAGE_FILES.put("cap12_raft", "spari e fuoco sulla spoaggia.jpg");
+        IMAGE_FILES.put("cap13_walt", "spari e fuoco sulla spoaggia.jpg");
+        IMAGE_FILES.put("cap13_flashback", "hostess.png");
+        IMAGE_FILES.put("cap14_thesis", "terminale numero.jpg");
+        IMAGE_FILES.put("cap15_runway", "l isola è nostra.jpg");
+        IMAGE_FILES.put("cap16_prep", "trasporto dinamite nella giugnla.png");
+        IMAGE_FILES.put("cap17_escape", "scappando fumo nero prima degli altri.jpg");
+        IMAGE_FILES.put("cap18_freedom", "circondati.jpg");
         
         // Immagini extra disponibili
         IMAGE_FILES.put("black_rock_interno", "black rock da vicnino .jpg");
@@ -116,11 +119,9 @@ public class PixelArtManager {
      * Carica un'immagine dal classpath
      */
     private BufferedImage loadImageFromFile(String filename) {
-        try {
-            InputStream is = getClass().getResourceAsStream("/images/" + filename);
+        try (InputStream is = getClass().getResourceAsStream("/images/" + filename)) {
             if (is != null) {
                 BufferedImage original = ImageIO.read(is);
-                is.close();
                 // Ridimensiona all'aspect ratio corretto
                 return resizeImage(original, imageWidth, imageHeight);
             }

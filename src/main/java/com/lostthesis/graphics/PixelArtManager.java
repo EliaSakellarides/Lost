@@ -22,7 +22,7 @@ public class PixelArtManager {
     private static final Map<String, String> IMAGE_FILES = new HashMap<>();
     
     static {
-        // Scene intro (già create con AI)
+        // Scene intro
         IMAGE_FILES.put("hostess", "hostess.png");
         IMAGE_FILES.put("aereo_iniziale", "areo scena iniziale.jpg");
         IMAGE_FILES.put("turbolenza", "aereotrema.jpg");
@@ -35,7 +35,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("curare_feriti", "curare feriti.jpg");
         IMAGE_FILES.put("curarsi_alcol", "curarsi con alchol.jpg");
         
-        // Location principali del gioco (da creare con AI)
+        // Location principali del gioco
         IMAGE_FILES.put("spiaggia", "spiaggia.jpg");
         IMAGE_FILES.put("giungla", "giungla.jpg");
         IMAGE_FILES.put("botola", "botola.jpg");
@@ -47,7 +47,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("faro", "faro.jpg");
         IMAGE_FILES.put("pista", "pista.jpg");
         
-        // Scene Giorno 1 (da creare con AI)
+        // Scene Giorno 1
         IMAGE_FILES.put("giorno1_mattino", "giorno1_mattino.jpg");
         IMAGE_FILES.put("riunione", "riunione.jpg");
         IMAGE_FILES.put("esplorazione", "esplorazione.jpg");
@@ -275,7 +275,7 @@ public class PixelArtManager {
      * Lista le immagini mancanti
      */
     public void printMissingImages() {
-        System.out.println("\n📷 IMMAGINI MANCANTI (da creare con AI):");
+        System.out.println("\n📷 IMMAGINI MANCANTI:");
         System.out.println("=========================================");
         for (Map.Entry<String, String> entry : IMAGE_FILES.entrySet()) {
             String filename = entry.getValue();

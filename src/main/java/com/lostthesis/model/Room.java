@@ -40,7 +40,7 @@ public class Room {
     
     public Item removeItem(String itemName) {
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getName().equalsIgnoreCase(itemName)) {
+            if (matchesItemName(items.get(i).getName(), itemName)) {
                 return items.remove(i);
             }
         }
@@ -49,11 +49,29 @@ public class Room {
     
     public Item getItem(String itemName) {
         for (Item item : items) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
+            if (matchesItemName(item.getName(), itemName)) {
                 return item;
             }
         }
         return null;
+    }
+
+    private boolean matchesItemName(String actualName, String query) {
+        String actual = normalizeItemName(actualName);
+        String wanted = normalizeItemName(query);
+        return !wanted.isEmpty() && (actual.equals(wanted) || actual.contains(wanted) || wanted.contains(actual));
+    }
+
+    private String normalizeItemName(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.toLowerCase(Locale.ROOT)
+            .replace("'", " ")
+            .replaceAll("\\b(il|lo|la|i|gli|le|un|uno|una|con|sul|sulla|nel|nella|alla|allo)\\b", " ")
+            .replaceAll("[^a-z0-9àèéìòù]+", " ")
+            .trim()
+            .replaceAll("\\s+", " ");
     }
     
     /** Restituisce la descrizione completa della stanza con oggetti visibili e uscite. */

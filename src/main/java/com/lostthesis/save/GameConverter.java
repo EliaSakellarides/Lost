@@ -50,6 +50,11 @@ public class GameConverter {
         state.setBlackRockExplored(engine.isBlackRockExplored());
         state.setJacobMet(engine.isJacobMet());
         state.setTempleBathed(engine.isTempleBathed());
+        state.setRadioBatteryInstalled(engine.isRadioBatteryInstalled());
+        state.setRadioAntennaInstalled(engine.isRadioAntennaInstalled());
+        state.setRadioFuseInstalled(engine.isRadioFuseInstalled());
+        state.setRadioRepaired(engine.isRadioRepaired());
+        state.setRadioMessageReceived(engine.isRadioMessageReceived());
         state.setDynamiteActive(engine.isDynamiteActive());
         state.setDynamiteTimer(engine.getDynamiteTimer());
         state.setSmokeMonsterTimer(engine.getSmokeMonsterTimer());

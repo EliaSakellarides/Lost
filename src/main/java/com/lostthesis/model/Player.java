@@ -35,7 +35,7 @@ public class Player {
     
     public Item removeItem(String itemName) {
         for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.get(i).getName().equalsIgnoreCase(itemName)) {
+            if (matchesItemName(inventory.get(i).getName(), itemName)) {
                 return inventory.remove(i);
             }
         }
@@ -44,7 +44,7 @@ public class Player {
     
     public Item getItem(String itemName) {
         for (Item item : inventory) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
+            if (matchesItemName(item.getName(), itemName)) {
                 return item;
             }
         }
@@ -53,6 +53,24 @@ public class Player {
     
     public boolean hasItem(String itemName) {
         return getItem(itemName) != null;
+    }
+
+    private boolean matchesItemName(String actualName, String query) {
+        String actual = normalizeItemName(actualName);
+        String wanted = normalizeItemName(query);
+        return !wanted.isEmpty() && (actual.equals(wanted) || actual.contains(wanted) || wanted.contains(actual));
+    }
+
+    private String normalizeItemName(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.toLowerCase(Locale.ROOT)
+            .replace("'", " ")
+            .replaceAll("\\b(il|lo|la|i|gli|le|un|uno|una|con|sul|sulla|nel|nella|alla|allo)\\b", " ")
+            .replaceAll("[^a-z0-9àèéìòù]+", " ")
+            .trim()
+            .replaceAll("\\s+", " ");
     }
     
     /**

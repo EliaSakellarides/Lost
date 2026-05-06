@@ -49,6 +49,11 @@ public class GameEngine {
     private boolean blackRockExplored = false;
     private boolean jacobMet = false;
     private boolean templeBathed = false;
+    private boolean radioBatteryInstalled = false;
+    private boolean radioAntennaInstalled = false;
+    private boolean radioFuseInstalled = false;
+    private boolean radioRepaired = false;
+    private boolean radioMessageReceived = false;
 
     // Mini giochi
     private MiniGame activeMiniGame;
@@ -293,6 +298,9 @@ public class GameEngine {
             "'Brother! Finalmente qualcuno!'\n" +
             "'Devo premere il pulsante ogni 108 minuti!'\n" +
             "'Se non lo faccio... il mondo finisce!'\n\n" +
+            "In un armadietto DHARMA noti pezzi radio, batterie e fusibili.\n" +
+            "Sayid osserva la radio danneggiata recuperata nella cabina:\n" +
+            "'Si puo' riparare, ma serve alimentazione, antenna e un fusibile sano.'\n\n" +
             "Un timer sta per scadere: 00:01:30\n" +
             "Il computer mostra: 4 8 15 16 23 42\n\n" +
             "❓ Il timer sta per scadere! Cosa fai?",
@@ -300,7 +308,6 @@ public class GameEngine {
             "A",
             "Meglio non rischiare... per ora!"
         );
-        cap9.setMiniGameKey("frequency_tuning");
         storyChapters.add(cap9);
 
         // CAPITOLO 10: HENRY GALE - Il prigioniero misterioso
@@ -443,7 +450,6 @@ public class GameEngine {
             Arrays.asList("prendi", "raccogli", "ok", "si", "a"),
             "Prendila!"
         );
-        cap14.setMiniGameKey("morse_code");
         storyChapters.add(cap14);
         
         // CAPITOLO 15: LA PISTA NASCOSTA
@@ -605,11 +611,24 @@ public class GameEngine {
             Item.ItemType.CIBO, 20, 3));
         spiaggia.addItem(new Item("Kit Medico", "Kit di pronto soccorso", true,
             Item.ItemType.MEDICINA, 50, 2));
+        spiaggia.addItem(new Item("Cavo antenna",
+            "Un cavo coassiale strappato dal sistema radio dell'aereo.",
+            true, Item.ItemType.STRUMENTO, 0, -1));
+
+        giungla.addItem(new Item("Radio danneggiata",
+            "La radio del cockpit: schermo crepato, antenna spezzata e vano batteria vuoto.",
+            true, Item.ItemType.STRUMENTO, 0, -1));
         
         botola.addItem(new Item("Cibo DHARMA", "Scatolette con logo DHARMA", true,
             Item.ItemType.CIBO, 30, 5));
         botola.addItem(new Item("Mappa DHARMA", "Mappa delle stazioni sull'isola", true,
             Item.ItemType.DOCUMENTO, 0, -1));
+        botola.addItem(new Item("Batteria DHARMA",
+            "Una batteria pesante con morsetti ossidati ma ancora carica.",
+            true, Item.ItemType.STRUMENTO, 0, -1));
+        botola.addItem(new Item("Fusibile",
+            "Un fusibile di ricambio conservato in una scatola etichettata COMUNICAZIONI.",
+            true, Item.ItemType.STRUMENTO, 0, -1));
         
         rocciaNera.addItem(new Item("Dinamite", "ATTENZIONE: Altamente instabile!", true,
             Item.ItemType.STRUMENTO, 0, 1));
@@ -724,7 +743,7 @@ public class GameEngine {
                     if (target.isEmpty()) {
                         return "❓ Cosa vuoi usare?";
                     }
-                    response = player.useItem(target);
+                    response = useItem(target);
                     advanceTurn = true;
                     break;
 
@@ -934,13 +953,17 @@ public class GameEngine {
         switch (chapter) {
             case 0: case 1: roomKey = "spiaggia"; break;
             case 2: roomKey = "giungla"; break;
-            case 3: case 4: roomKey = "botola"; break;
-            case 5: case 6: roomKey = "villaggio"; break;
-            case 7: roomKey = "tempio"; break;
-            case 8: roomKey = "roccianera"; break;
-            case 9: case 10: case 11: roomKey = "faro"; break;
-            case 12: roomKey = "botola"; break;
-            case 13: case 14: case 15: case 16: roomKey = "pista"; break;
+            case 3: roomKey = "giungla"; break;
+            case 4: roomKey = "giungla"; break;
+            case 5: roomKey = "botola"; break;
+            case 6: roomKey = "roccianera"; break;
+            case 7: case 8: roomKey = "botola"; break;
+            case 9: roomKey = "giungla"; break;
+            case 10: roomKey = "villaggio"; break;
+            case 11: roomKey = "giungla"; break;
+            case 12: case 13: case 14: roomKey = "spiaggia"; break;
+            case 15: roomKey = "botola"; break;
+            case 16: case 17: case 18: case 19: roomKey = "pista"; break;
             default: roomKey = "spiaggia";
         }
         
@@ -1225,6 +1248,32 @@ public class GameEngine {
                    "ATTENZIONE: Potrebbero esplodere!\n" +
                    "💡 Usa 'attiva dinamite' per innescarla.";
         }
+        if (name.contains("radio danneggiata")) {
+            return "📻 RADIO DANNEGGIATA\n" +
+                   "La radio del cockpit e' ridotta male: batteria assente,\n" +
+                   "antenna spezzata e fusibile bruciato.\n" +
+                   getRadioRepairStatus();
+        }
+        if (name.contains("trasmettitore")) {
+            return "📡 TRASMETTITORE RIPARATO\n" +
+                   "Sayid ha rimesso insieme radio, alimentazione e antenna.\n" +
+                   "Ora puoi provare a usarlo per ascoltare una trasmissione.";
+        }
+        if (name.contains("batteria")) {
+            return "🔋 BATTERIA DHARMA\n" +
+                   "Pesante, vecchia, ma ancora carica.\n" +
+                   "I contatti sembrano compatibili con la radio del cockpit.";
+        }
+        if (name.contains("cavo") || name.contains("antenna")) {
+            return "📎 CAVO ANTENNA\n" +
+                   "Un cavo coassiale ancora integro.\n" +
+                   "Potrebbe sostituire il collegamento spezzato della radio.";
+        }
+        if (name.contains("fusibile")) {
+            return "🔌 FUSIBILE\n" +
+                   "Piccolo, fragile, conservato in una scatola DHARMA.\n" +
+                   "Senza un fusibile sano la radio si spegnerebbe subito.";
+        }
         if (name.contains("bussola")) {
             return "🧭 UNA VECCHIA BUSSOLA\n" +
                    "L'ago punta sempre a Nord... o forse no?\n" +
@@ -1316,6 +1365,14 @@ public class GameEngine {
                    "Somma: 108\n" +
                    "Sono ovunque sull'isola...";
         }
+        if (target.contains("radio") || target.contains("trasmissione")) {
+            if (radioRepaired) {
+                return "📡 La radio riparata emette un fruscio basso.\n" +
+                       "C'e' una frequenza debole oltre il rumore della stazione.";
+            }
+            return "📻 La radio del cockpit e' recuperabile, ma non funzionera'\n" +
+                   "finche' non trovi batteria, antenna e fusibile.";
+        }
         if (target.contains("jacob")) {
             return "👤 Jacob è il protettore dell'isola.\n" +
                    "Vive al Faro e osserva i candidati.\n" +
@@ -1335,6 +1392,133 @@ public class GameEngine {
         }
         
         return "❓ Non noti nulla di particolare riguardo a '" + target + "'.";
+    }
+
+    /**
+     * Usa un oggetto, gestendo anche combinazioni narrative come la radio rotta.
+     */
+    private String useItem(String target) {
+        String normalizedTarget = target.toLowerCase(Locale.ROOT);
+
+        if (mentionsAny(normalizedTarget, "batteria", "battery")) {
+            return installRadioPart("Batteria DHARMA", "batteria");
+        }
+        if (mentionsAny(normalizedTarget, "cavo", "antenna", "cable")) {
+            return installRadioPart("Cavo antenna", "antenna");
+        }
+        if (mentionsAny(normalizedTarget, "fusibile", "fuse")) {
+            return installRadioPart("Fusibile", "fusibile");
+        }
+        if (mentionsAny(normalizedTarget, "radio", "trasmettitore", "transceiver")) {
+            return useRadio();
+        }
+
+        return player.useItem(extractPrimaryUseTarget(target));
+    }
+
+    private String installRadioPart(String itemName, String partType) {
+        if (radioRepaired) {
+            return "📡 La radio e' gia' stata riparata.\n" +
+                   "Prova a usare il trasmettitore.";
+        }
+        if (!player.hasItem("radio")) {
+            return "📻 Ti serve prima la radio danneggiata del cockpit.\n" +
+                   "Cerca nella giungla vicino alla cabina schiantata.";
+        }
+
+        Item part = player.removeItem(itemName);
+        if (part == null) {
+            return "❌ Non hai " + itemName + " nell'inventario.";
+        }
+
+        StringBuilder result = new StringBuilder();
+        switch (partType) {
+            case "batteria":
+                radioBatteryInstalled = true;
+                result.append("🔋 Inserisci la batteria DHARMA nel vano della radio.\n");
+                break;
+            case "antenna":
+                radioAntennaInstalled = true;
+                result.append("📎 Colleghi il cavo antenna al circuito spezzato.\n");
+                break;
+            case "fusibile":
+                radioFuseInstalled = true;
+                result.append("🔌 Sostituisci il fusibile bruciato.\n");
+                break;
+            default:
+                result.append("🔧 Monti il pezzo sulla radio.\n");
+                break;
+        }
+
+        result.append(getRadioRepairStatus());
+        return completeRadioRepairIfReady(result.toString());
+    }
+
+    private String completeRadioRepairIfReady(String currentMessage) {
+        if (!radioBatteryInstalled || !radioAntennaInstalled || !radioFuseInstalled) {
+            return currentMessage;
+        }
+
+        radioRepaired = true;
+        player.removeItem("Radio danneggiata");
+        player.addItem(new Item("Trasmettitore riparato",
+            "Radio del cockpit riparata con componenti DHARMA.",
+            true, Item.ItemType.STRUMENTO, 0, -1));
+
+        return currentMessage + "\n" +
+               "📡 La radio gracchia, poi prende vita.\n" +
+               "Sayid sorride appena: 'Ora possiamo ascoltare l'isola.'\n" +
+               "Hai ottenuto: Trasmettitore riparato.";
+    }
+
+    private String useRadio() {
+        if (!radioRepaired) {
+            if (player.hasItem("radio")) {
+                return "📻 La radio non e' ancora pronta.\n" + getRadioRepairStatus();
+            }
+            return "📻 Non hai una radio funzionante.\n" +
+                   "La cabina di pilotaggio nella giungla potrebbe avere qualcosa.";
+        }
+
+        if (!player.hasItem("trasmettitore")) {
+            return "📡 Il trasmettitore riparato non e' nel tuo inventario.";
+        }
+
+        if (radioMessageReceived) {
+            return "📡 Risintonizzi il trasmettitore.\n" +
+                   "La stessa voce disturbata ripete: '...Hydra... pista... non fidatevi degli Altri...'";
+        }
+
+        radioMessageReceived = true;
+        return "📡 ACCENDI IL TRASMETTITORE\n\n" +
+               "KRRR... KRRR...\n" +
+               "Tra scariche e fischi, una voce lontana emerge:\n\n" +
+               "\"...stazione Fiamma compromessa...\n" +
+               "...Hydra ha una pista...\n" +
+               "...non fidatevi degli Altri...\"\n\n" +
+               "Poi solo rumore bianco.\n" +
+               "Ora sai che la pista non e' una leggenda.";
+    }
+
+    private String getRadioRepairStatus() {
+        return "\nStato riparazione:\n" +
+               "• Alimentazione: " + (radioBatteryInstalled ? "OK" : "manca batteria") + "\n" +
+               "• Antenna: " + (radioAntennaInstalled ? "OK" : "manca cavo antenna") + "\n" +
+               "• Circuito: " + (radioFuseInstalled ? "OK" : "manca fusibile") + "\n";
+    }
+
+    private String extractPrimaryUseTarget(String target) {
+        String[] parts = target.split("\\b(con|su|sul|sulla|nel|nella|alla|allo)\\b", 2);
+        return parts.length == 0 ? target : parts[0].trim();
+    }
+
+    private boolean mentionsAny(String text, String... words) {
+        for (String word : words) {
+            if (text.contains(word)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -1653,6 +1837,11 @@ public class GameEngine {
     public boolean isBlackRockExplored() { return blackRockExplored; }
     public boolean isJacobMet() { return jacobMet; }
     public boolean isTempleBathed() { return templeBathed; }
+    public boolean isRadioBatteryInstalled() { return radioBatteryInstalled; }
+    public boolean isRadioAntennaInstalled() { return radioAntennaInstalled; }
+    public boolean isRadioFuseInstalled() { return radioFuseInstalled; }
+    public boolean isRadioRepaired() { return radioRepaired; }
+    public boolean isRadioMessageReceived() { return radioMessageReceived; }
     public boolean isDynamiteActive() { return dynamiteActive; }
     public int getDynamiteTimer() { return dynamiteTimer; }
     public int getSmokeMonsterTimer() { return smokeMonsterTimer; }
@@ -1731,6 +1920,11 @@ public class GameEngine {
         this.blackRockExplored = state.isBlackRockExplored();
         this.jacobMet = state.isJacobMet();
         this.templeBathed = state.isTempleBathed();
+        this.radioBatteryInstalled = state.isRadioBatteryInstalled();
+        this.radioAntennaInstalled = state.isRadioAntennaInstalled();
+        this.radioFuseInstalled = state.isRadioFuseInstalled();
+        this.radioRepaired = state.isRadioRepaired();
+        this.radioMessageReceived = state.isRadioMessageReceived();
         this.dynamiteActive = state.isDynamiteActive();
         this.dynamiteTimer = state.getDynamiteTimer();
         this.smokeMonsterTimer = state.getSmokeMonsterTimer();

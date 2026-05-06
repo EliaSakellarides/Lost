@@ -28,6 +28,11 @@ public class GameState {
     private boolean blackRockExplored;
     private boolean jacobMet;
     private boolean templeBathed;
+    private boolean radioBatteryInstalled;
+    private boolean radioAntennaInstalled;
+    private boolean radioFuseInstalled;
+    private boolean radioRepaired;
+    private boolean radioMessageReceived;
     private boolean dynamiteActive;
     private int dynamiteTimer;
     private int smokeMonsterTimer;
@@ -73,6 +78,16 @@ public class GameState {
     public void setJacobMet(boolean jacobMet) { this.jacobMet = jacobMet; }
     public boolean isTempleBathed() { return templeBathed; }
     public void setTempleBathed(boolean templeBathed) { this.templeBathed = templeBathed; }
+    public boolean isRadioBatteryInstalled() { return radioBatteryInstalled; }
+    public void setRadioBatteryInstalled(boolean radioBatteryInstalled) { this.radioBatteryInstalled = radioBatteryInstalled; }
+    public boolean isRadioAntennaInstalled() { return radioAntennaInstalled; }
+    public void setRadioAntennaInstalled(boolean radioAntennaInstalled) { this.radioAntennaInstalled = radioAntennaInstalled; }
+    public boolean isRadioFuseInstalled() { return radioFuseInstalled; }
+    public void setRadioFuseInstalled(boolean radioFuseInstalled) { this.radioFuseInstalled = radioFuseInstalled; }
+    public boolean isRadioRepaired() { return radioRepaired; }
+    public void setRadioRepaired(boolean radioRepaired) { this.radioRepaired = radioRepaired; }
+    public boolean isRadioMessageReceived() { return radioMessageReceived; }
+    public void setRadioMessageReceived(boolean radioMessageReceived) { this.radioMessageReceived = radioMessageReceived; }
     public boolean isDynamiteActive() { return dynamiteActive; }
     public void setDynamiteActive(boolean dynamiteActive) { this.dynamiteActive = dynamiteActive; }
     public int getDynamiteTimer() { return dynamiteTimer; }

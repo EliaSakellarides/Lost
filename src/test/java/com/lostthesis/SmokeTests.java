@@ -14,6 +14,7 @@ public class SmokeTests {
         run("alias carica riconosciuto", SmokeTests::testCaricaAliasWorks);
         run("mappatura immagini capitoli", SmokeTests::testChapterImagesExist);
         run("timer dinamite", SmokeTests::testDynamiteTimerTriggersExplosion);
+        run("enigma radio riparabile", SmokeTests::testRadioRepairPuzzle);
         run("save/load round-trip", SmokeTests::testSaveRoundTripPreservesState);
 
         System.out.println();
@@ -89,6 +90,41 @@ public class SmokeTests {
         String boom = engine.processCommand("guarda");
         assertContains(boom, "BOOM");
         assertFalse(engine.isGameRunning(), "il gioco dovrebbe terminare dopo l'esplosione");
+    }
+
+    private static void testRadioRepairPuzzle() {
+        GameEngine engine = new GameEngine();
+        engine.getAudioManager().toggleMusic();
+        engine.initializeGame("Sayid");
+
+        engine.getPlayer().setCurrentRoom(engine.getAllRooms().get("giungla"));
+        assertContains(engine.processCommand("prendi radio"), "Radio danneggiata");
+
+        engine.getPlayer().setCurrentRoom(engine.getAllRooms().get("spiaggia"));
+        assertContains(engine.processCommand("prendi cavo"), "Cavo antenna");
+
+        engine.getPlayer().setCurrentRoom(engine.getAllRooms().get("botola"));
+        assertContains(engine.processCommand("prendi batteria"), "Batteria DHARMA");
+        assertContains(engine.processCommand("prendi fusibile"), "Fusibile");
+
+        assertContains(engine.processCommand("usa batteria con radio"), "Alimentazione: OK");
+        assertContains(engine.processCommand("usa cavo con radio"), "Antenna: OK");
+        String repaired = engine.processCommand("usa fusibile con radio");
+        assertContains(repaired, "Trasmettitore riparato");
+        assertTrue(engine.isRadioRepaired(), "la radio dovrebbe risultare riparata");
+        assertTrue(engine.getPlayer().hasItem("trasmettitore"), "trasmettitore mancante");
+
+        String message = engine.processCommand("usa trasmettitore");
+        assertContains(message, "Hydra");
+        assertTrue(engine.isRadioMessageReceived(), "messaggio radio non registrato");
+
+        GameState serialized = GameConverter.fromJson(
+            GameConverter.toJson(GameConverter.extractState(engine))
+        );
+        GameEngine restored = new GameEngine();
+        restored.loadGameState(serialized);
+        assertTrue(restored.isRadioRepaired(), "stato radio riparata non salvato");
+        assertTrue(restored.isRadioMessageReceived(), "messaggio radio non salvato");
     }
 
     private static void testSaveRoundTripPreservesState() {

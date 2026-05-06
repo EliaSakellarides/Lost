@@ -66,17 +66,17 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap7_blackrock", "cap7_roccia_nera.png");
         IMAGE_FILES.put("cap8_openhatch", "cap8_botola_aperta.png");
         IMAGE_FILES.put("cap9_swan", "cap9_cigno_radio.png");
-        IMAGE_FILES.put("cap10_henrygale", "cattura del prigionieor.jpg");
-        IMAGE_FILES.put("cap11_others", "arrivano gli altri per l agguaot.jpg");
-        IMAGE_FILES.put("cap11_escape_others", "giungla con prigionerio .jpg");
-        IMAGE_FILES.put("cap12_raft", "spari e fuoco sulla spoaggia.jpg");
-        IMAGE_FILES.put("cap13_walt", "spari e fuoco sulla spoaggia.jpg");
-        IMAGE_FILES.put("cap13_flashback", "hostess.png");
-        IMAGE_FILES.put("cap14_thesis", "terminale numero.jpg");
+        IMAGE_FILES.put("cap10_henrygale", "cap10_prigioniero.png");
+        IMAGE_FILES.put("cap11_others", "cap11_altri.png");
+        IMAGE_FILES.put("cap11_escape_others", "cap11_fuga.png");
+        IMAGE_FILES.put("cap12_raft", "cap12_zattera.png");
+        IMAGE_FILES.put("cap13_walt", "cap13_mare_aperto.png");
+        IMAGE_FILES.put("cap13_flashback", "cap13_flashback_aeroporto.png");
+        IMAGE_FILES.put("cap14_thesis", "cap14_scoperta_tesi.png");
         IMAGE_FILES.put("cap15_runway", "cap15_pista_nascosta.png");
-        IMAGE_FILES.put("cap16_prep", "trasporto dinamite nella giugnla.png");
-        IMAGE_FILES.put("cap17_escape", "scappando fumo nero prima degli altri.jpg");
-        IMAGE_FILES.put("cap18_freedom", "circondati.jpg");
+        IMAGE_FILES.put("cap16_prep", "cap16_preparazione_volo.png");
+        IMAGE_FILES.put("cap17_escape", "cap17_fuga_finale.png");
+        IMAGE_FILES.put("cap18_freedom", "cap18_liberta.png");
         
         // Immagini extra disponibili
         IMAGE_FILES.put("black_rock_interno", "black rock da vicnino .jpg");

@@ -57,15 +57,15 @@ public class PixelArtManager {
         // ═══════════════════════════════════════════════════════════
         // IMMAGINI CAPITOLI - MAPPATE ALLE IMMAGINI ESISTENTI
         // ═══════════════════════════════════════════════════════════
-        IMAGE_FILES.put("cap1_firstnight", "aereo distrutto su spiaggia.jpg");
+        IMAGE_FILES.put("cap1_firstnight", "cap1_prima_notte.png");
         IMAGE_FILES.put("cap2_survivors", "campo sopravvissuti.png");
-        IMAGE_FILES.put("cap3_smoke", "mostro di fumo.jpg");
+        IMAGE_FILES.put("cap3_smoke", "cap3_mostro_fumo.png");
         IMAGE_FILES.put("cap4_caves", "scoperta grotte.jpg");
         IMAGE_FILES.put("cap5_hunt", "caccia al cignhiale.jpg");
         IMAGE_FILES.put("cap6_hatch", "botola.jpg");
-        IMAGE_FILES.put("cap7_blackrock", "black rock in lontananza.jpg");
+        IMAGE_FILES.put("cap7_blackrock", "cap7_roccia_nera.png");
         IMAGE_FILES.put("cap8_openhatch", "dinamite alla botola.png");
-        IMAGE_FILES.put("cap9_swan", "desmond .jpg");
+        IMAGE_FILES.put("cap9_swan", "cap9_cigno_radio.png");
         IMAGE_FILES.put("cap10_henrygale", "cattura del prigionieor.jpg");
         IMAGE_FILES.put("cap11_others", "arrivano gli altri per l agguaot.jpg");
         IMAGE_FILES.put("cap11_escape_others", "giungla con prigionerio .jpg");
@@ -73,7 +73,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap13_walt", "spari e fuoco sulla spoaggia.jpg");
         IMAGE_FILES.put("cap13_flashback", "hostess.png");
         IMAGE_FILES.put("cap14_thesis", "terminale numero.jpg");
-        IMAGE_FILES.put("cap15_runway", "l isola è nostra.jpg");
+        IMAGE_FILES.put("cap15_runway", "cap15_pista_nascosta.png");
         IMAGE_FILES.put("cap16_prep", "trasporto dinamite nella giugnla.png");
         IMAGE_FILES.put("cap17_escape", "scappando fumo nero prima degli altri.jpg");
         IMAGE_FILES.put("cap18_freedom", "circondati.jpg");
@@ -89,6 +89,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("riunione_altri", "riunione per scoprire qualcosa sugli altri .jpg");
         IMAGE_FILES.put("barracks", "arrivo alle barracks.jpg");
         IMAGE_FILES.put("birre_blackrock", "traporto birre nelle casse dentro la black rock.png");
+        IMAGE_FILES.put("item_enigmi_radio", "item_enigmi_radio.png");
     }
     
     public PixelArtManager(int width, int height) {

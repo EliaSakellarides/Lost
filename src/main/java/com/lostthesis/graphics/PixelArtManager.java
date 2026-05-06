@@ -58,13 +58,13 @@ public class PixelArtManager {
         // IMMAGINI CAPITOLI - MAPPATE ALLE IMMAGINI ESISTENTI
         // ═══════════════════════════════════════════════════════════
         IMAGE_FILES.put("cap1_firstnight", "cap1_prima_notte.png");
-        IMAGE_FILES.put("cap2_survivors", "campo sopravvissuti.png");
+        IMAGE_FILES.put("cap2_survivors", "cap2_sopravvissuti.png");
         IMAGE_FILES.put("cap3_smoke", "cap3_mostro_fumo.png");
-        IMAGE_FILES.put("cap4_caves", "scoperta grotte.jpg");
-        IMAGE_FILES.put("cap5_hunt", "caccia al cignhiale.jpg");
-        IMAGE_FILES.put("cap6_hatch", "botola.jpg");
+        IMAGE_FILES.put("cap4_caves", "cap4_grotte.png");
+        IMAGE_FILES.put("cap5_hunt", "cap5_caccia.png");
+        IMAGE_FILES.put("cap6_hatch", "cap6_botola_scoperta.png");
         IMAGE_FILES.put("cap7_blackrock", "cap7_roccia_nera.png");
-        IMAGE_FILES.put("cap8_openhatch", "dinamite alla botola.png");
+        IMAGE_FILES.put("cap8_openhatch", "cap8_botola_aperta.png");
         IMAGE_FILES.put("cap9_swan", "cap9_cigno_radio.png");
         IMAGE_FILES.put("cap10_henrygale", "cattura del prigionieor.jpg");
         IMAGE_FILES.put("cap11_others", "arrivano gli altri per l agguaot.jpg");

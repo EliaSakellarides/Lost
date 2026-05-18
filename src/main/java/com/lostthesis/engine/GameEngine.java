@@ -77,11 +77,7 @@ public class GameEngine {
         this.miniGameIntroShown = false;
         this.miniGameOutroShown = false;
         this.miniGames = new HashMap<>();
-        miniGames.put("smoke_chase", new SmokeMonsterChase());
         miniGames.put("jungle_tracking", new JungleTrackingGame());
-        miniGames.put("dynamite_defusal", new DynamiteDefusalGame());
-        miniGames.put("frequency_tuning", new FrequencyTuningGame());
-        miniGames.put("morse_code", new MorseCodeGame());
     }
     
     /**
@@ -474,20 +470,22 @@ public class GameEngine {
         ));
         
         // CAPITOLO 16: PREPARAZIONE AL VOLO
+        Map<String, String> cap16Choices = new HashMap<>();
+        cap16Choices.put("A", "Controllare carburante, motore e comandi");
+        cap16Choices.put("B", "Decollare subito");
+        cap16Choices.put("C", "Aspettare ancora");
         storyChapters.add(new Level(
             "cap16_prep",
             "Preparazione al Volo",
             "✈️ L'AEREO!\n\n" +
             "È un Cessna 172, danneggiato ma riparabile.\n" +
-            "Trovi un manuale con le istruzioni di avvio.\n\n" +
-            "Serve un codice per sbloccare l'accensione.\n" +
-            "Sul manuale c'è scritto:\n" +
-            "'Codice: somma DHARMA diviso 2'\n\n" +
-            "4 + 8 + 15 + 16 + 23 + 42 = 108\n" +
-            "108 / 2 = ?\n\n" +
-            "❓ Qual è il codice di accensione?",
-            Arrays.asList("54", "cinquantaquattro"),
-            "108 diviso 2..."
+            "Trovate carburante, una cassetta degli attrezzi e un vecchio manuale.\n\n" +
+            "Il sole sta calando e la giungla non restera' silenziosa a lungo.\n" +
+            "Serve una preparazione semplice ma fatta bene.\n\n" +
+            "❓ Prima di partire, cosa fai?",
+            cap16Choices,
+            "A",
+            "Prima di decollare bisogna controllare carburante, motore e comandi."
         ));
         
         // CAPITOLO 17: LA FUGA FINALE
@@ -997,6 +995,9 @@ public class GameEngine {
             activeMiniGame = null;
             miniGameIntroShown = false;
             player.removeHealth(10);
+            currentChapter++;
+            currentChapterCompleted = true;
+            currentChapterStarted = false;
             return "Hai saltato il mini gioco.\n" +
                    "Penalita': -10 salute.\n\n" +
                    "Premi AVANTI per continuare la storia...";
@@ -1014,7 +1015,7 @@ public class GameEngine {
         return result;
     }
 
-    /** Avvia il mini gioco identificato dalla chiave (es. "smoke_chase"). */
+    /** Avvia il mini gioco identificato dalla chiave (es. "jungle_tracking"). */
     public String startMiniGame(String miniGameKey) {
         MiniGame game = miniGames.get(miniGameKey);
         if (game == null) return "Mini gioco non trovato: " + miniGameKey;
@@ -1072,37 +1073,12 @@ public class GameEngine {
 
     private String getMiniGameIntroText(String key) {
         switch (key) {
-            case "smoke_chase":
-                return "========================================\n" +
-                       "  MINI GIOCO: FUGA DAL MOSTRO!\n" +
-                       "========================================\n\n" +
-                       "Il Mostro di Fumo ti ha trovato!\n" +
-                       "TICK... TICK... TICK...\n" +
-                       "Devi fuggire ADESSO!";
             case "jungle_tracking":
                 return "========================================\n" +
                        "  MINI GIOCO: CACCIA NELLA GIUNGLA!\n" +
                        "========================================\n\n" +
                        "Locke ha visto le tracce di un cinghiale.\n" +
                        "Segui le tracce per catturare la preda!";
-            case "dynamite_defusal":
-                return "========================================\n" +
-                       "  MINI GIOCO: DISINNESCO DINAMITE!\n" +
-                       "========================================\n\n" +
-                       "La dinamite della Roccia Nera e' instabile!\n" +
-                       "Devi disinnescarne una per usarla in sicurezza.";
-            case "frequency_tuning":
-                return "========================================\n" +
-                       "  MINI GIOCO: SINTONIZZA LA RADIO!\n" +
-                       "========================================\n\n" +
-                       "Nella stazione Il Cigno c'e' una radio.\n" +
-                       "Trova la frequenza giusta per ricevere il messaggio!";
-            case "morse_code":
-                return "========================================\n" +
-                       "  MINI GIOCO: CODICE MORSE!\n" +
-                       "========================================\n\n" +
-                       "La radio trasmette un messaggio in codice Morse!\n" +
-                       "Decodificalo per scoprire le coordinate segrete!";
             default:
                 return "MINI GIOCO!";
         }
@@ -1110,26 +1086,10 @@ public class GameEngine {
 
     private String getMiniGameVictoryText(String key) {
         switch (key) {
-            case "smoke_chase":
-                return "Sei riuscito a sfuggire al Mostro di Fumo!\n" +
-                       "Il tuo cuore batte all'impazzata, ma sei salvo.\n" +
-                       "Ora sai che il Mostro non e' invincibile.";
             case "jungle_tracking":
                 return "Il cinghiale e' stato catturato!\n" +
                        "Stasera il campo avra' carne fresca.\n" +
                        "Locke e' impressionato dalle tue abilita'.";
-            case "dynamite_defusal":
-                return "La dinamite e' stata disinnescata!\n" +
-                       "Ora puoi trasportarla in sicurezza.\n" +
-                       "Con questa potrai aprire la botola!";
-            case "frequency_tuning":
-                return "La radio e' sintonizzata!\n" +
-                       "Il messaggio rivela informazioni preziose\n" +
-                       "sulla stazione e sui numeri DHARMA.";
-            case "morse_code":
-                return "Il messaggio Morse e' stato decodificato!\n" +
-                       "COORDINATE PER PISTA - ora sai dove\n" +
-                       "si trova la pista di atterraggio nascosta!";
             default:
                 return "Mini gioco completato!";
         }
@@ -1137,26 +1097,10 @@ public class GameEngine {
 
     private String getMiniGameDefeatText(String key) {
         switch (key) {
-            case "smoke_chase":
-                return "Il Mostro di Fumo ti ha raggiunto...\n" +
-                       "Ma per qualche ragione ti ha lasciato andare.\n" +
-                       "Sei ferito, ma vivo. (-10 salute)";
             case "jungle_tracking":
                 return "La preda e' scappata nella giungla.\n" +
                        "Oggi niente carne fresca al campo.\n" +
                        "Dovrete accontentarvi di frutta.";
-            case "dynamite_defusal":
-                return "La dinamite non e' stata disinnescata.\n" +
-                       "Dovrai trasportarla con molta cautela.\n" +
-                       "Ogni movimento potrebbe essere l'ultimo...";
-            case "frequency_tuning":
-                return "La radio si e' surriscaldata e si e' spenta.\n" +
-                       "Non sei riuscito a sintonizzarla.\n" +
-                       "Ma forse troverai le informazioni altrove.";
-            case "morse_code":
-                return "Non sei riuscito a decodificare il messaggio.\n" +
-                       "Pero' hai capito qualcosa sulle coordinate.\n" +
-                       "Forse la mappa DHARMA aiutera'.";
             default:
                 return "Mini gioco fallito.";
         }
@@ -1312,8 +1256,8 @@ public class GameEngine {
                    "Il documento più importante dell'isola!\n" +
                    "Contiene:\n" +
                    "• Coordinate della pista nascosta\n" +
-                   "• Istruzioni per l'aereo\n" +
-                   "• Il codice: 108 / 2 = 54\n" +
+                   "• Istruzioni pratiche per controllare l'aereo\n" +
+                   "• Appunti per preparare carburante, motore e comandi\n" +
                    "🎓 Con questa puoi FUGGIRE e LAUREARTI!";
         }
         if (name.contains("kit") || name.contains("medico")) {

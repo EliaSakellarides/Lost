@@ -15,6 +15,8 @@ public class SmokeTests {
         run("mappatura immagini capitoli", SmokeTests::testChapterImagesExist);
         run("timer dinamite", SmokeTests::testDynamiteTimerTriggersExplosion);
         run("enigma radio riparabile", SmokeTests::testRadioRepairPuzzle);
+        run("scelte multiple esatte", SmokeTests::testMultipleChoiceRequiresExactOption);
+        run("salto minigioco avanza", SmokeTests::testMiniGameSkipAdvancesChapter);
         run("save/load round-trip", SmokeTests::testSaveRoundTripPreservesState);
 
         System.out.println();
@@ -155,6 +157,47 @@ public class SmokeTests {
         assertEquals(2, restored.getCurrentChapterNumber(), "numero capitolo");
         assertEquals("I Sopravvissuti", restored.getCurrentChapterTitle(), "titolo capitolo");
         assertTrue(restored.getPlayer().hasItem("Bussola"), "oggetto inventario mancante");
+    }
+
+    private static void testMultipleChoiceRequiresExactOption() {
+        GameEngine engine = new GameEngine();
+        engine.getAudioManager().toggleMusic();
+        engine.initializeGame("Hurley");
+        engine.forceStartFirstChapter();
+
+        String response = engine.processCommand("banana");
+
+        assertContains(response, "Risposta sbagliata");
+        assertEquals(1, engine.getCurrentChapterNumber(), "capitolo dopo risposta ambigua");
+        assertEquals("La Prima Notte", engine.getCurrentChapterTitle(), "titolo dopo risposta ambigua");
+    }
+
+    private static void testMiniGameSkipAdvancesChapter() {
+        GameEngine engine = new GameEngine();
+        engine.getAudioManager().toggleMusic();
+        engine.initializeGame("Locke");
+        engine.forceStartFirstChapter();
+
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "C");
+
+        String miniGameStart = engine.processCommand("A");
+        assertContains(miniGameStart, "MINI GIOCO");
+        assertTrue(engine.hasMiniGameActive(), "il minigioco dovrebbe essere attivo");
+
+        String skipped = engine.processCommand("salta");
+        assertContains(skipped, "saltato");
+        assertFalse(engine.hasMiniGameActive(), "il minigioco dovrebbe essere chiuso");
+        assertEquals(6, engine.getCurrentChapterNumber(), "capitolo dopo salto minigioco");
+        assertEquals("La Botola", engine.getCurrentChapterTitle(), "titolo dopo salto minigioco");
+    }
+
+    private static void answerAndContinue(GameEngine engine, String answer) {
+        String response = engine.processCommand(answer);
+        assertContains(response, "CORRETTO");
+        engine.processCommand("avanti");
     }
 
     private static void run(String name, CheckedTest test) {

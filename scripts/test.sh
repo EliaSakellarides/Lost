@@ -1,8 +1,8 @@
 #!/bin/bash
-# Script di smoke test per Lost Thesis
+# Script di smoke test per Lost
 
 echo "═══════════════════════════════════════════════════"
-echo "  ✈️ LOST THESIS - Smoke Test"
+echo "  ✈️ LOST - Smoke Test"
 echo "═══════════════════════════════════════════════════"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -29,10 +29,32 @@ resolve_gson_jar() {
     return 1
 }
 
+resolve_h2_jar() {
+    if [ -n "${H2_JAR:-}" ] && [ -f "$H2_JAR" ]; then
+        printf '%s\n' "$H2_JAR"
+        return 0
+    fi
+
+    local cached_jar
+    cached_jar="$(find "$HOME/.m2/repository/com/h2database/h2" -name 'h2-*.jar' 2>/dev/null | sort | tail -n 1)"
+    if [ -n "$cached_jar" ] && [ -f "$cached_jar" ]; then
+        printf '%s\n' "$cached_jar"
+        return 0
+    fi
+
+    return 1
+}
+
 GSON_JAR_PATH="$(resolve_gson_jar || true)"
 if [ -z "$GSON_JAR_PATH" ]; then
     echo "❌ Dipendenza Gson non trovata."
     echo "   Imposta GSON_JAR=/percorso/a/gson.jar oppure esegui prima la compilazione su una macchina con Maven."
+    exit 1
+fi
+H2_JAR_PATH="$(resolve_h2_jar || true)"
+if [ -z "$H2_JAR_PATH" ]; then
+    echo "❌ Dipendenza H2 non trovata."
+    echo "   Imposta H2_JAR=/percorso/a/h2.jar oppure esegui prima la compilazione su una macchina con Maven."
     exit 1
 fi
 
@@ -48,11 +70,12 @@ MAIN_FILES=$(find "$MAIN_SRC_DIR" -name "*.java")
 TEST_FILES=$(find "$TEST_SRC_DIR" -name "*.java")
 
 echo "📦 Gson: $GSON_JAR_PATH"
+echo "📦 H2: $H2_JAR_PATH"
 echo "⚙️ Compilo i sorgenti principali..."
-javac -cp "$GSON_JAR_PATH" -d "$MAIN_OUT_DIR" -sourcepath "$MAIN_SRC_DIR" $MAIN_FILES || exit 1
+javac -cp "$GSON_JAR_PATH:$H2_JAR_PATH" -d "$MAIN_OUT_DIR" -sourcepath "$MAIN_SRC_DIR" $MAIN_FILES || exit 1
 
 echo "⚙️ Compilo i test..."
-javac -cp "$MAIN_OUT_DIR:$RES_DIR:$GSON_JAR_PATH" -d "$TEST_OUT_DIR" -sourcepath "$TEST_SRC_DIR" $TEST_FILES || exit 1
+javac -cp "$MAIN_OUT_DIR:$RES_DIR:$GSON_JAR_PATH:$H2_JAR_PATH" -d "$TEST_OUT_DIR" -sourcepath "$TEST_SRC_DIR" $TEST_FILES || exit 1
 
 echo "🧪 Eseguo gli smoke test..."
-java -Djava.awt.headless=true -ea -cp "$TEST_OUT_DIR:$MAIN_OUT_DIR:$RES_DIR:$GSON_JAR_PATH" com.lostthesis.SmokeTests
+java -Djava.awt.headless=true -ea -cp "$TEST_OUT_DIR:$MAIN_OUT_DIR:$RES_DIR:$GSON_JAR_PATH:$H2_JAR_PATH" com.lost.SmokeTests

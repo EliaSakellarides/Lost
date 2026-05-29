@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.lostthesis</groupId>
-    <artifactId>lost-thesis</artifactId>
+    <groupId>com.lost</groupId>
+    <artifactId>lost</artifactId>
     <version>1.0</version>
-    <name>Lost Thesis</name>
+    <name>Lost</name>
     <description>Avventura testuale grafica in Java ispirata a LOST.</description>
 
     <properties>
@@ -20,6 +20,11 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.222</version>
         </dependency>
     </dependencies>
 
@@ -41,7 +46,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.lostthesis.Main</mainClass>
+                            <mainClass>com.lost.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

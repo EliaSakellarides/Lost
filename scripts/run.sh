@@ -1,8 +1,8 @@
 #!/bin/bash
-# Script di esecuzione per Lost Thesis
+# Script di esecuzione per Lost
 
 echo "═══════════════════════════════════════════════════"
-echo "  ✈️ LOST THESIS - L'Isola Misteriosa"
+echo "  ✈️ LOST - L'Isola Misteriosa"
 echo "═══════════════════════════════════════════════════"
 
 # Directory di lavoro
@@ -26,6 +26,22 @@ resolve_gson_jar() {
     return 1
 }
 
+resolve_h2_jar() {
+    if [ -n "${H2_JAR:-}" ] && [ -f "$H2_JAR" ]; then
+        printf '%s\n' "$H2_JAR"
+        return 0
+    fi
+
+    local cached_jar
+    cached_jar="$(find "$HOME/.m2/repository/com/h2database/h2" -name 'h2-*.jar' 2>/dev/null | sort | tail -n 1)"
+    if [ -n "$cached_jar" ] && [ -f "$cached_jar" ]; then
+        printf '%s\n' "$cached_jar"
+        return 0
+    fi
+
+    return 1
+}
+
 # Controlla se è stato compilato
 if [ ! -d "$BIN_DIR" ] || [ -z "$(ls -A "$BIN_DIR")" ]; then
     echo "⚠️ Il gioco non è stato compilato."
@@ -36,10 +52,11 @@ if [ ! -d "$BIN_DIR" ] || [ -z "$(ls -A "$BIN_DIR")" ]; then
 fi
 
 # Avvia il gioco
-echo "🚀 Avvio Lost Thesis..."
+echo "🚀 Avvio Lost..."
 echo ""
 cd "$PROJECT_DIR"
 GSON_JAR_PATH="$(resolve_gson_jar || true)"
+H2_JAR_PATH="$(resolve_h2_jar || true)"
 JAVA_OPTS=()
 
 if [ -z "$GSON_JAR_PATH" ]; then
@@ -47,14 +64,19 @@ if [ -z "$GSON_JAR_PATH" ]; then
     echo "   Imposta GSON_JAR=/percorso/a/gson.jar oppure scarica le dipendenze con Maven."
     exit 1
 fi
+if [ -z "$H2_JAR_PATH" ]; then
+    echo "❌ Dipendenza H2 non trovata."
+    echo "   Imposta H2_JAR=/percorso/a/h2.jar oppure scarica le dipendenze con Maven."
+    exit 1
+fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
     JAVA_OPTS+=("-XstartOnFirstThread")
 fi
 
-java "${JAVA_OPTS[@]}" -cp "$BIN_DIR:$GSON_JAR_PATH" com.lostthesis.Main
+java "${JAVA_OPTS[@]}" -cp "$BIN_DIR:$GSON_JAR_PATH:$H2_JAR_PATH" com.lost.Main
 
 echo ""
 echo "═══════════════════════════════════════════════════"
-echo "  Grazie per aver giocato a Lost Thesis!"
+echo "  Grazie per aver giocato a Lost!"
 echo "═══════════════════════════════════════════════════"

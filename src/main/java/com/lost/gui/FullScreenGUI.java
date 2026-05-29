@@ -1,0 +1,696 @@
+package com.lost.gui;
+
+import com.lost.engine.GameEngine;
+import com.lost.graphics.FullScreenRenderer;
+import com.lost.graphics.TextColorizer;
+import com.lost.minigames.MiniGame;
+import com.lost.save.GameSave;
+import com.lost.save.GameSaveInstance;
+import com.lost.save.GameState;
+import com.lost.records.GameRecord;
+import com.lost.records.RecordService;
+
+import java.util.List;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+/**
+ * GUI fullscreen per Lost
+ * Ispirata alla serie TV LOST
+ */
+public class FullScreenGUI extends JFrame {
+    private GameEngine engine;
+    private FullScreenRenderer renderer;
+    private GamePanel gamePanel;
+
+    // Componenti UI
+    private JTextField inputField;
+    private JButton btnA, btnB, btnC;
+    private JButton btnAdvance;
+    private JButton btnInventory;
+    private JButton btnStatus;
+    private JTextPane textPane;
+    private JScrollPane textScrollPane;
+
+    // Stato display
+    private String currentText = "";
+    private String currentTitle = "";
+    private String currentLocation = "spiaggia";
+    private String currentImageKey = "spiaggia";
+    private boolean introRunning = false;
+    private boolean victoryDialogShown = false;
+    private boolean completionRecordSaved = false;
+    private long gameStartMillis = 0L;
+
+    // Etichette originali dei bottoni
+    private static final String DEFAULT_BTN_A = "A";
+    private static final String DEFAULT_BTN_B = "B";
+    private static final String DEFAULT_BTN_C = "C";
+
+    // Dimensioni schermo
+    private int screenWidth;
+    private int screenHeight;
+
+    // Pannello stato permanente
+    private StatusPanelFactory.StatusPanel statusPanel;
+    private Timer statusUpdateTimer;
+    private RecordService recordService;
+
+    public FullScreenGUI() {
+        screenWidth = 1024;
+        screenHeight = 768;
+
+        setTitle("LOST");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
+        setSize(screenWidth, screenHeight);
+        setLocationRelativeTo(null);
+
+        renderer = new FullScreenRenderer(screenWidth, screenHeight - 70);
+        recordService = new RecordService();
+
+        gamePanel = new GamePanel();
+        gamePanel.setPreferredSize(new Dimension(screenWidth, screenHeight - 70));
+        gamePanel.setLayout(null);
+
+        // JTextPane per testo colorato HTML
+        textPane = new JTextPane();
+        textPane.setContentType("text/html");
+        textPane.setEditable(false);
+        textPane.setOpaque(false);
+        textPane.setFocusable(false);
+
+        textScrollPane = new JScrollPane(textPane);
+        textScrollPane.setOpaque(false);
+        textScrollPane.getViewport().setOpaque(false);
+        textScrollPane.setBorder(null);
+        textScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        textScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        // Scrollbar sottile e scura
+        textScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
+        textScrollPane.getVerticalScrollBar().setOpaque(false);
+
+        repositionTextPane();
+        gamePanel.add(textScrollPane);
+
+        setLayout(new BorderLayout());
+
+        statusPanel = StatusPanelFactory.createPermanentStatusPanel(screenWidth);
+        add(statusPanel.getPanel(), BorderLayout.NORTH);
+
+        add(gamePanel, BorderLayout.CENTER);
+
+        JPanel controlPanel = createControlPanel();
+        add(controlPanel, BorderLayout.SOUTH);
+
+        // Resize listener
+        gamePanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int w = gamePanel.getWidth();
+                int h = gamePanel.getHeight();
+                if (w > 0 && h > 0) {
+                    renderer.updateLayout(w, h);
+                    repositionTextPane();
+                    gamePanel.repaint();
+                }
+            }
+        });
+
+        setVisible(true);
+
+        setupKeyBindings();
+
+        statusUpdateTimer = new Timer(500, e -> statusPanel.update(engine, currentLocation));
+        statusUpdateTimer.start();
+
+        // askPlayerName viene chiamato solo se non si usa startGame()
+        SwingUtilities.invokeLater(() -> {
+            if (engine == null) askPlayerName();
+        });
+    }
+
+    private JPanel createControlPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(20, 30, 40));
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        panel.setPreferredSize(new Dimension(screenWidth, 70));
+
+        Font buttonFont = new Font("SansSerif", Font.BOLD, 18);
+        Color buttonBg = new Color(45, 130, 85);
+        Color buttonFg = Color.WHITE;
+
+        btnA = GuiButtonFactory.create("A", buttonFont, buttonBg, buttonFg);
+        btnB = GuiButtonFactory.create("B", buttonFont, buttonBg, buttonFg);
+        btnC = GuiButtonFactory.create("C", buttonFont, buttonBg, buttonFg);
+
+        btnA.addActionListener(e -> processInput("A"));
+        btnB.addActionListener(e -> processInput("B"));
+        btnC.addActionListener(e -> processInput("C"));
+
+        btnAdvance = GuiButtonFactory.create("\u27A1\uFE0F AVANTI", buttonFont,
+            new Color(50, 150, 100), buttonFg);
+        btnAdvance.addActionListener(e -> processInput("avanti"));
+
+        inputField = new JTextField(25);
+        inputField.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        inputField.setBackground(new Color(40, 50, 60));
+        inputField.setForeground(Color.WHITE);
+        inputField.setCaretColor(Color.WHITE);
+        inputField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(100, 150, 100), 2),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        inputField.addActionListener(e -> {
+            String text = inputField.getText().trim();
+            if (!text.isEmpty()) {
+                processInput(text);
+                inputField.setText("");
+            }
+        });
+
+        btnInventory = GuiButtonFactory.create("\uD83C\uDF92", buttonFont, buttonBg, buttonFg);
+        btnStatus = GuiButtonFactory.create("\u2764\uFE0F", buttonFont, buttonBg, buttonFg);
+        JButton btnHelp = GuiButtonFactory.create("\u2753", buttonFont, buttonBg, buttonFg);
+        JButton btnExit = GuiButtonFactory.create("\uD83D\uDEAA", buttonFont, new Color(180, 60, 60), buttonFg);
+
+        JButton btnSave = GuiButtonFactory.create("\uD83D\uDCBE", buttonFont, buttonBg, buttonFg);
+        btnSave.addActionListener(e -> showSaveDialog());
+
+        JButton btnMap = GuiButtonFactory.create("\uD83D\uDDFA\uFE0F", buttonFont, buttonBg, buttonFg);
+        btnMap.setToolTipText("Mappa dell'isola");
+        btnMap.addActionListener(e -> showMapDialog());
+
+        JButton btnRecords = GuiButtonFactory.create("\uD83C\uDFC6", buttonFont, buttonBg, buttonFg);
+        btnRecords.setToolTipText("Record");
+        btnRecords.addActionListener(e -> showRecordsDialog());
+
+        btnInventory.addActionListener(e -> processInput("inventario"));
+        btnStatus.addActionListener(e -> processInput("stato"));
+        btnHelp.addActionListener(e -> processInput("aiuto"));
+        btnExit.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(this,
+                "Vuoi davvero uscire dall'isola?", "Esci", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+
+        panel.add(new JLabel(""));
+        panel.add(btnA);
+        panel.add(btnB);
+        panel.add(btnC);
+        panel.add(Box.createHorizontalStrut(20));
+        panel.add(btnAdvance);
+        panel.add(Box.createHorizontalStrut(20));
+        panel.add(inputField);
+        panel.add(Box.createHorizontalStrut(20));
+        panel.add(btnSave);
+        panel.add(btnMap);
+        panel.add(btnRecords);
+        panel.add(btnInventory);
+        panel.add(btnStatus);
+        panel.add(btnHelp);
+        panel.add(btnExit);
+
+        return panel;
+    }
+
+    public void setButtonLabels(String a, String b, String c) {
+        if (btnA != null) btnA.setText(a);
+        if (btnB != null) btnB.setText(b);
+        if (btnC != null) btnC.setText(c);
+    }
+
+    public void resetButtonLabels() {
+        setButtonLabels(DEFAULT_BTN_A, DEFAULT_BTN_B, DEFAULT_BTN_C);
+    }
+
+    private void updateButtonLabelsForMiniGame() {
+        if (engine != null && engine.hasMiniGameActive()) {
+            MiniGame mg = engine.getActiveMiniGame();
+            setButtonLabels(mg.getButtonALabel(), mg.getButtonBLabel(), mg.getButtonCLabel());
+        } else {
+            resetButtonLabels();
+        }
+    }
+
+    private void setupKeyBindings() {
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+            .put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "exit");
+        getRootPane().getActionMap().put("exit", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(FullScreenGUI.this,
+                    "Vuoi davvero uscire?", "Esci", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        });
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            .addKeyEventDispatcher(e -> {
+                if (e.getID() == KeyEvent.KEY_PRESSED &&
+                    !inputField.hasFocus()) {
+                    switch (e.getKeyCode()) {
+                        case KeyEvent.VK_A:
+                            processInput("A");
+                            return true;
+                        case KeyEvent.VK_B:
+                            processInput("B");
+                            return true;
+                        case KeyEvent.VK_C:
+                            processInput("C");
+                            return true;
+                        case KeyEvent.VK_ENTER:
+                        case KeyEvent.VK_SPACE:
+                            processInput("avanti");
+                            return true;
+                    }
+                }
+                return false;
+            });
+    }
+
+    private void askPlayerName() {
+        JDialog dialog = new JDialog(this, "LOST", true);
+        dialog.setUndecorated(true);
+        dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setBackground(new Color(20, 30, 40));
+
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBackground(new Color(20, 30, 40));
+        content.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
+
+        JLabel titleLabel = new JLabel("LOST");
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        titleLabel.setForeground(new Color(255, 220, 100));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subLabel = new JLabel("L'Isola Misteriosa");
+        subLabel.setFont(new Font("SansSerif", Font.ITALIC, 16));
+        subLabel.setForeground(new Color(150, 180, 150));
+        subLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel msgLabel = new JLabel("Il volo Oceanic 815 \u00E8 precipitato...");
+        msgLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        msgLabel.setForeground(Color.WHITE);
+        msgLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel msg2Label = new JLabel("Come ti chiami, sopravvissuto?");
+        msg2Label.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        msg2Label.setForeground(Color.WHITE);
+        msg2Label.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JTextField nameField = new JTextField("Jack", 20);
+        nameField.setFont(new Font("Monospaced", Font.BOLD, 16));
+        nameField.setMaximumSize(new Dimension(200, 35));
+        nameField.setHorizontalAlignment(JTextField.CENTER);
+        nameField.setBackground(new Color(40, 50, 60));
+        nameField.setForeground(Color.WHITE);
+        nameField.setCaretColor(Color.WHITE);
+        nameField.setBorder(BorderFactory.createLineBorder(new Color(100, 150, 100), 2));
+        nameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton startBtn = GuiButtonFactory.create("\uD83C\uDFDD\uFE0F INIZIA L'AVVENTURA",
+            new Font("SansSerif", Font.BOLD, 16),
+            new Color(50, 100, 50), Color.WHITE);
+        startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        Runnable startGameAction = () -> {
+            String name = nameField.getText().trim();
+            if (name.isEmpty()) name = "Jack";
+            dialog.dispose();
+            initializeGame(name);
+        };
+
+        startBtn.addActionListener(e -> startGameAction.run());
+        nameField.addActionListener(e -> startGameAction.run());
+
+        content.add(titleLabel);
+        content.add(Box.createVerticalStrut(10));
+        content.add(subLabel);
+        content.add(Box.createVerticalStrut(30));
+        content.add(msgLabel);
+        content.add(Box.createVerticalStrut(5));
+        content.add(msg2Label);
+        content.add(Box.createVerticalStrut(20));
+        content.add(nameField);
+        content.add(Box.createVerticalStrut(25));
+        content.add(startBtn);
+
+        if (GameSave.hasSaves()) {
+            content.add(Box.createVerticalStrut(10));
+            JButton loadBtn = GuiButtonFactory.create("\uD83D\uDCC2 CARICA PARTITA",
+                new Font("SansSerif", Font.BOLD, 14),
+                new Color(70, 70, 100), Color.WHITE);
+            loadBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            loadBtn.addActionListener(e -> {
+                dialog.dispose();
+                showLoadDialog();
+            });
+            content.add(loadBtn);
+        }
+
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setBackground(new Color(100, 150, 100));
+        wrapper.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+        wrapper.add(content, BorderLayout.CENTER);
+
+        dialog.add(wrapper);
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    public void startGame(String playerName) {
+        initializeGame(playerName);
+    }
+
+    private void initializeGame(String playerName) {
+        engine = new GameEngine();
+        engine.initializeGame(playerName);
+        victoryDialogShown = false;
+        completionRecordSaved = false;
+        gameStartMillis = System.currentTimeMillis();
+        introRunning = true;
+        textScrollPane.setVisible(false);
+
+        // Glass pane nero per coprire il frame durante l'intro
+        JPanel glassPane = new JPanel();
+        glassPane.setOpaque(true);
+        glassPane.setBackground(Color.BLACK);
+        setGlassPane(glassPane);
+        glassPane.setVisible(true);
+
+        IntroSequence intro = new IntroSequence(this, engine,
+            screenWidth, screenHeight, () -> showGameIntro(playerName));
+        intro.start(playerName);
+    }
+
+    private void showGameIntro(String playerName) {
+        introRunning = false;
+        textScrollPane.setVisible(true);
+        getGlassPane().setVisible(false);
+        currentText = playerName + ", sei vivo.\n\n" +
+                      "Hai aiutato i sopravvissuti e curato le tue ferite.\n" +
+                      "Il mondo sa che siamo spariti.\n" +
+                      "E' solo questione di ore prima che qualcuno venga a salvarci.\n\n" +
+                      "Premi AVANTI per iniziare...";
+        currentTitle = "GIORNO 1";
+        currentLocation = "spiaggia";
+
+        updateTextDisplay();
+        gamePanel.repaint();
+    }
+
+    private void processInput(String input) {
+        if (engine == null) return;
+
+        String response = engine.processCommand(input);
+        if ("##MAPPA##".equals(response)) {
+            showMapDialog();
+            return;
+        }
+        currentText = response;
+        currentLocation = engine.getCurrentRoomKey();
+
+        currentImageKey = engine.getCurrentChapterImageKey();
+
+        if (response.contains("CAP.")) {
+            int start = response.indexOf(": ");
+            int end = response.indexOf("\n\n");
+            if (start > 0 && end > start) {
+                currentTitle = response.substring(start + 2, end);
+            }
+        }
+
+        updateButtonLabelsForMiniGame();
+        updateTextDisplay();
+
+        gamePanel.repaint();
+
+        if (engine.isGameWon() && !victoryDialogShown) {
+            victoryDialogShown = true;
+            GameRecord record = saveCompletionRecord();
+            Timer timer = new Timer(5000, e -> {
+                String recordLine = record != null
+                    ? "Tempo finale: " + record.getFormattedTime() + "\n"
+                    : "";
+                JOptionPane.showMessageDialog(this,
+                    "\uD83C\uDF93 HAI COMPLETATO LOST!\n\n" +
+                    "Sei fuggito dall'isola!\n" +
+                    "La TESI ti ha salvato!\n\n" +
+                    recordLine +
+                    "Grazie per aver giocato!",
+                    "VITTORIA!", JOptionPane.INFORMATION_MESSAGE);
+            });
+            timer.setRepeats(false);
+            timer.start();
+        }
+    }
+
+    private GameRecord saveCompletionRecord() {
+        if (completionRecordSaved || engine == null || engine.getPlayer() == null) {
+            return null;
+        }
+
+        completionRecordSaved = true;
+        long elapsedMillis = Math.max(0L, System.currentTimeMillis() - gameStartMillis);
+        try {
+            return recordService.saveCompletion(engine.getPlayer().getName(), elapsedMillis);
+        } catch (RuntimeException e) {
+            System.out.println("Record non salvato: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private class GamePanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+
+            if (introRunning) {
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                return;
+            }
+
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            String status = "";
+            if (engine != null && engine.getPlayer() != null) {
+                status = String.format("\u2764\uFE0F %d%%  |  \uD83E\uDDE0 %d%%  |  \uD83D\uDCC5 Giorno %d  |  \uD83D\uDCCD %s",
+                    engine.getPlayer().getHealth(),
+                    engine.getPlayer().getSanity(),
+                    engine.getPlayer().getDaysOnIsland(),
+                    currentLocation.toUpperCase());
+            }
+
+            renderer.render(g2d, currentImageKey, status);
+        }
+    }
+
+    private void showSaveDialog() {
+        if (engine == null) return;
+
+        String slotName = JOptionPane.showInputDialog(this,
+            "Nome del salvataggio:",
+            "\uD83D\uDCBE Salva Partita",
+            JOptionPane.PLAIN_MESSAGE);
+
+        if (slotName == null || slotName.trim().isEmpty()) return;
+        slotName = slotName.trim().replaceAll("[^a-zA-Z0-9_-]", "_");
+
+        boolean ok = GameSave.save(engine, slotName);
+        if (ok) {
+            JOptionPane.showMessageDialog(this,
+                "Partita salvata nello slot '" + slotName + "'!",
+                "\uD83D\uDCBE Salvato!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Errore durante il salvataggio!",
+                "\u274C Errore", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showLoadDialog() {
+        List<GameSaveInstance> saves = GameSave.listSaves();
+        if (saves.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Nessun salvataggio trovato.",
+                "\uD83D\uDCC2 Carica Partita", JOptionPane.INFORMATION_MESSAGE);
+            SwingUtilities.invokeLater(this::askPlayerName);
+            return;
+        }
+
+        String[] options = new String[saves.size()];
+        for (int i = 0; i < saves.size(); i++) {
+            options[i] = saves.get(i).getDisplayText();
+        }
+
+        String choice = (String) JOptionPane.showInputDialog(this,
+            "Scegli un salvataggio da caricare:",
+            "\uD83D\uDCC2 Carica Partita",
+            JOptionPane.PLAIN_MESSAGE,
+            null, options, options[0]);
+
+        if (choice == null) {
+            SwingUtilities.invokeLater(this::askPlayerName);
+            return;
+        }
+
+        GameSaveInstance selected = null;
+        for (GameSaveInstance s : saves) {
+            if (s.getDisplayText().equals(choice)) {
+                selected = s;
+                break;
+            }
+        }
+
+        if (selected == null) return;
+
+        GameState state = GameSave.load(selected.getSlotName());
+        if (state == null) {
+            JOptionPane.showMessageDialog(this,
+                "Errore nel caricamento!",
+                "\u274C Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        engine = new GameEngine();
+        engine.loadGameState(state);
+        victoryDialogShown = false;
+        completionRecordSaved = false;
+        gameStartMillis = System.currentTimeMillis();
+
+        currentLocation = engine.getCurrentRoomKey();
+        currentImageKey = engine.getCurrentChapterImageKey();
+        currentText = "\u2705 Partita caricata!\n\n" +
+            "\uD83D\uDC64 " + engine.getPlayer().getName() +
+            " | Cap. " + engine.getCurrentChapterNumber() +
+            "/" + engine.getTotalChapters() +
+            " | \u2764\uFE0F " + engine.getPlayer().getHealth() +
+            " | \uD83E\uDDE0 " + engine.getPlayer().getSanity() + "\n\n" +
+            "Premi AVANTI per continuare...";
+        currentTitle = "\uD83D\uDCC2 PARTITA CARICATA";
+
+        updateTextDisplay();
+        gamePanel.repaint();
+    }
+
+    private void showMapDialog() {
+        JDialog mapDialog = new JDialog(this, "Mappa dell'Isola", true);
+        mapDialog.setLayout(new BorderLayout());
+        mapDialog.getContentPane().setBackground(new Color(20, 30, 40));
+
+        ImageIcon icon = null;
+        java.net.URL url = getClass().getClassLoader().getResource("images/mappa_isola.jpg");
+        if (url != null) {
+            icon = new ImageIcon(url);
+        }
+
+        if (icon != null && icon.getIconWidth() > 0) {
+            // Scala l'immagine per adattarla allo schermo
+            int maxW = (int) (getWidth() * 0.85);
+            int maxH = (int) (getHeight() * 0.85);
+            int imgW = icon.getIconWidth();
+            int imgH = icon.getIconHeight();
+            double scale = Math.min((double) maxW / imgW, (double) maxH / imgH);
+            int newW = (int) (imgW * scale);
+            int newH = (int) (imgH * scale);
+            Image scaled = icon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+
+            JLabel imgLabel = new JLabel(new ImageIcon(scaled));
+            imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            mapDialog.add(imgLabel, BorderLayout.CENTER);
+        } else {
+            JLabel errLabel = new JLabel("Mappa non trovata.");
+            errLabel.setForeground(Color.WHITE);
+            errLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            mapDialog.add(errLabel, BorderLayout.CENTER);
+        }
+
+        JButton closeBtn = GuiButtonFactory.create("Chiudi",
+            new Font("SansSerif", Font.BOLD, 14),
+            new Color(50, 70, 50), Color.WHITE);
+        closeBtn.addActionListener(e -> mapDialog.dispose());
+        JPanel btnPanel = new JPanel();
+        btnPanel.setBackground(new Color(20, 30, 40));
+        btnPanel.add(closeBtn);
+        mapDialog.add(btnPanel, BorderLayout.SOUTH);
+
+        mapDialog.pack();
+        mapDialog.setLocationRelativeTo(this);
+        mapDialog.setVisible(true);
+    }
+
+    private void showRecordsDialog() {
+        List<GameRecord> records;
+        try {
+            records = recordService.getBestRecords(5);
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(this,
+                "Impossibile leggere i record.",
+                "Record", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        StringBuilder message = new StringBuilder("Migliori fughe dall'isola:\n\n");
+        if (records.isEmpty()) {
+            message.append("Nessun record salvato.");
+        } else {
+            for (int i = 0; i < records.size(); i++) {
+                GameRecord record = records.get(i);
+                message.append(i + 1)
+                    .append(". ")
+                    .append(record.getPlayerName())
+                    .append(" - ")
+                    .append(record.getFormattedTime())
+                    .append("\n");
+            }
+        }
+
+        JOptionPane.showMessageDialog(this,
+            message.toString(),
+            "Record", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void updateTextDisplay() {
+        String fullText = currentText;
+        if (currentTitle != null && !currentTitle.isEmpty()) {
+            fullText = currentTitle + "\n\n" + currentText;
+        }
+        textPane.setText(TextColorizer.colorize(fullText));
+        textPane.setCaretPosition(0);
+    }
+
+    private void repositionTextPane() {
+        int padding = 10;
+        int x = renderer.getTextBoxX() + padding;
+        int y = renderer.getTextBoxY() + padding;
+        int w = renderer.getTextBoxWidth() - 2 * padding;
+        int h = renderer.getTextBoxHeight() - 2 * padding;
+        textScrollPane.setBounds(x, y, w, h);
+    }
+
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            System.out.println("Look and feel di sistema non disponibile: " + e.getMessage());
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new FullScreenGUI();
+        });
+    }
+}

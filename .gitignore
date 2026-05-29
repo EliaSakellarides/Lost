@@ -27,7 +27,9 @@ replay_pid*
 # IDE files
 .idea/
 *.iml
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
 *.swp
 *.swo
 *~

@@ -1,8 +1,8 @@
 #!/bin/bash
-# Script di compilazione per Lost Thesis
+# Script di compilazione per Lost
 
 echo "═══════════════════════════════════════════════════"
-echo "  ✈️ LOST THESIS - Compilazione"
+echo "  ✈️ LOST - Compilazione"
 echo "═══════════════════════════════════════════════════"
 
 # Directory di lavoro
@@ -20,6 +20,22 @@ resolve_gson_jar() {
 
     local cached_jar
     cached_jar="$(find "$HOME/.m2/repository/com/google/code/gson/gson" -name 'gson-*.jar' 2>/dev/null | sort | tail -n 1)"
+    if [ -n "$cached_jar" ] && [ -f "$cached_jar" ]; then
+        printf '%s\n' "$cached_jar"
+        return 0
+    fi
+
+    return 1
+}
+
+resolve_h2_jar() {
+    if [ -n "${H2_JAR:-}" ] && [ -f "$H2_JAR" ]; then
+        printf '%s\n' "$H2_JAR"
+        return 0
+    fi
+
+    local cached_jar
+    cached_jar="$(find "$HOME/.m2/repository/com/h2database/h2" -name 'h2-*.jar' 2>/dev/null | sort | tail -n 1)"
     if [ -n "$cached_jar" ] && [ -f "$cached_jar" ]; then
         printf '%s\n' "$cached_jar"
         return 0
@@ -49,8 +65,15 @@ if [ -z "$GSON_JAR_PATH" ]; then
     echo "   Imposta GSON_JAR=/percorso/a/gson.jar oppure esegui prima 'mvn package' su una macchina con Maven."
     exit 1
 fi
+H2_JAR_PATH="$(resolve_h2_jar || true)"
+if [ -z "$H2_JAR_PATH" ]; then
+    echo "❌ Dipendenza H2 non trovata."
+    echo "   Imposta H2_JAR=/percorso/a/h2.jar oppure esegui prima 'mvn package' su una macchina con Maven."
+    exit 1
+fi
 
 echo "📦 Gson: $GSON_JAR_PATH"
+echo "📦 H2: $H2_JAR_PATH"
 echo ""
 
 # Trova tutti i file Java
@@ -62,7 +85,7 @@ echo ""
 
 # Compila
 echo "⚙️ Compilazione in corso..."
-if javac -cp "$GSON_JAR_PATH" -d "$BIN_DIR" -sourcepath "$SRC_DIR" $JAVA_FILES 2>&1; then
+if javac -cp "$GSON_JAR_PATH:$H2_JAR_PATH" -d "$BIN_DIR" -sourcepath "$SRC_DIR" $JAVA_FILES 2>&1; then
     if [ -d "$RES_DIR" ]; then
         cp -R "$RES_DIR"/. "$BIN_DIR"/
     fi

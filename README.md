@@ -1,4 +1,4 @@
-# Lost Thesis
+# Lost
 
 Avventura testuale grafica in Java ispirata alla serie TV LOST.
 Il giocatore interpreta un sopravvissuto del volo Oceanic 815, precipitato su un'isola misteriosa.
@@ -19,7 +19,9 @@ sulla pista di atterraggio e lasciare l'isola.
 - Enigmi semplici basati su oggetti, come la riparazione della radio rotta
 - 8 locazioni esplorabili: Spiaggia dello Schianto, Giungla Oscura, La Botola (Il Cigno), Villaggio degli Altri, Il Tempio, La Roccia Nera, Il Faro, Pista di Atterraggio
 - Parser comandi con alias multilingua (italiano e inglese) e abbreviazioni rapide
-- Sistema di salvataggio/caricamento su file JSON (slot multipli in `~/.lostthesis/saves/`)
+- Sistema di salvataggio/caricamento su file JSON (slot multipli in `~/.lost/saves/`)
+- Classifica dei migliori tempi salvata su database H2 locale
+- API REST locale per consultare e inserire record (`http://localhost:8000/records`)
 - Testo colorato con HTML via JTextPane (dialoghi, parole chiave, emoji tematiche)
 - Gestione immagini di scena e placeholder tramite `PixelArtManager`
 - Immagini di scena per ogni capitolo
@@ -45,14 +47,28 @@ export GSON_JAR="/percorso/a/gson-2.11.0.jar"
 Gli script compilano solo `src/main/java`, copiano automaticamente `src/main/resources` in `bin/`
 e provano anche a riutilizzare Gson dalla cache locale di Maven (`~/.m2`) se presente.
 Su macOS `./scripts/run.sh` aggiunge automaticamente `-XstartOnFirstThread`, necessario per l'avvio corretto della GUI.
-`./scripts/test.sh` esegue uno smoke test del motore di gioco, dei timer, del save/load e della mappatura immagini.
+`./scripts/test.sh` esegue uno smoke test del motore di gioco, dei timer, del save/load,
+della mappatura immagini e della classifica H2.
 
 ### Con Maven (se disponibile)
 
 ```bash
 mvn package
-java -jar target/lost-thesis-1.0-jar-with-dependencies.jar
+java -jar target/lost-1.0-jar-with-dependencies.jar
 ```
+
+## Record e API REST
+
+All'avvio il gioco prova ad aprire una piccola API locale sulla porta `8000`.
+Se la porta e' libera, puoi consultare i record dal browser:
+
+```text
+http://localhost:8000/records
+http://localhost:8000/records/best
+```
+
+I record vengono salvati in un database H2 locale sotto `~/.lost/`.
+Ogni record contiene nome giocatore, tempo di completamento e data.
 
 Se vuoi eseguire solo gli smoke test senza GUI:
 
@@ -91,7 +107,7 @@ Lost/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/lostthesis/
+│   │   │   └── com/lost/
 │   │   │       ├── Main.java
 │   │   │       ├── engine/
 │   │   │       ├── model/
@@ -105,7 +121,7 @@ Lost/
 │   │       └── music/
 │   └── test/
 │       └── java/
-│           └── com/lostthesis/
+│           └── com/lost/
 │               └── SmokeTests.java
 └── README.md
 ```

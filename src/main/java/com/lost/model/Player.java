@@ -81,33 +81,33 @@ public class Player {
     public String useItem(String itemName) {
         Item item = getItem(itemName);
         if (item == null) {
-            return "❌ Non hai questo oggetto nell'inventario!";
+            return "Non hai questo oggetto nell'inventario!";
         }
         
         String result = "";
         switch (item.getType()) {
             case CIBO:
                 health = Math.min(maxHealth, health + item.getHealthBoost());
-                result = "🍽️ Mangi " + item.getName() + ". +" + item.getHealthBoost() + " salute!";
+                result = "Mangi " + item.getName() + ". +" + item.getHealthBoost() + " salute!";
                 item.use();
                 break;
             case MEDICINA:
                 health = Math.min(maxHealth, health + item.getHealthBoost());
                 sanity = Math.min(100, sanity + 10);
-                result = "💊 Usi " + item.getName() + ". Salute e sanità mentale migliorate!";
+                result = "Usi " + item.getName() + ". Salute e sanità mentale migliorate!";
                 item.use();
                 break;
             case ARMA:
-                result = "🔪 Impugni " + item.getName() + ". Sei pronto a difenderti!";
+                result = "Impugni " + item.getName() + ". Sei pronto a difenderti!";
                 break;
             case CHIAVE:
-                result = "🔑 " + item.getName() + " - Potrebbe aprire qualcosa...";
+                result = item.getName() + " - Potrebbe aprire qualcosa...";
                 break;
             case DOCUMENTO:
-                result = "📄 Leggi " + item.getName() + ":\n" + item.getDescription();
+                result = "Leggi " + item.getName() + ":\n" + item.getDescription();
                 break;
             case TESI:
-                result = "📜 LA TESI! Contiene le coordinate per fuggire dall'isola!\n" +
+                result = "LA TESI! Contiene le coordinate per fuggire dall'isola!\n" +
                         "Devi raggiungere l'aereo sulla pista nascosta!";
                 break;
             default:
@@ -146,18 +146,18 @@ public class Player {
     }
     
     public String getStatus() {
-        String status = "👤 " + name + " - Giorno " + daysOnIsland + " sull'isola\n";
-        status += "❤️ Salute: " + health + "/" + maxHealth + "\n";
-        status += "🧠 Sanità: " + sanity + "/100\n";
-        status += "🎒 Inventario: " + inventory.size() + "/" + maxInventorySize + " oggetti";
+        String status = name + " - Giorno " + daysOnIsland + " sull'isola\n";
+        status += "Salute: " + health + "/" + maxHealth + "\n";
+        status += "Sanità: " + sanity + "/100\n";
+        status += "Inventario: " + inventory.size() + "/" + maxInventorySize + " oggetti";
         return status;
     }
     
     public String getInventoryString() {
         if (inventory.isEmpty()) {
-            return "🎒 Il tuo inventario è vuoto.";
+            return "Il tuo inventario è vuoto.";
         }
-        StringBuilder sb = new StringBuilder("🎒 INVENTARIO:\n");
+        StringBuilder sb = new StringBuilder("INVENTARIO:\n");
         for (Item item : inventory) {
             sb.append("  • ").append(item.getName());
             if (item.getUsesRemaining() > 0 && item.getUsesRemaining() < 99) {

@@ -22,10 +22,10 @@ public class JungleTrackingGame implements MiniGame {
     private final String[] correctDirections = {"nord", "est", "sud", "ovest"};
 
     private final String[] baseClues = {
-        "Vedi impronte fresche di cinghiale nel fango.\nI rami bassi sono spezzati verso una direzione...",
-        "Le tracce continuano. Trovi del pelo impigliato in un cespuglio.\nUn sentiero naturale si apre davanti a te...",
-        "Il terreno e' piu' umido. Il cinghiale sta cercando acqua.\nSenti un ruscello in lontananza...",
-        "Le impronte sono fresche! La preda e' vicina!\nVedi movimenti tra la vegetazione..."
+        "Vedi impronte fresche di cinghiale nel fango.\nI rami bassi sono spezzati verso una direzione.\nPrima raccogli un indizio con ESAMINA o ASCOLTA.",
+        "Le tracce continuano. Trovi del pelo impigliato in un cespuglio.\nUn sentiero naturale si apre davanti a te.\nPrima raccogli un indizio con ESAMINA o ASCOLTA.",
+        "Il terreno e' piu' umido. Il cinghiale sta cercando acqua.\nSenti un ruscello in lontananza.\nPrima raccogli un indizio con ESAMINA o ASCOLTA.",
+        "Le impronte sono fresche! La preda e' vicina!\nVedi movimenti tra la vegetazione.\nPrima raccogli un indizio con ESAMINA o ASCOLTA."
     };
 
     private final String[] groundClues = {
@@ -59,8 +59,11 @@ public class JungleTrackingGame implements MiniGame {
                "Devi seguire le tracce del cinghiale!\n" +
                "In ogni fase, cerca indizi per capire\n" +
                "la DIREZIONE giusta (NORD/SUD/EST/OVEST).\n\n" +
-               "A = Esamina il terreno (indizio extra)\n" +
-               "B = Ascolta i suoni (indizio extra)\n" +
+               "1. Premi ESAMINA oppure ASCOLTA.\n" +
+               "2. Leggi l'indizio: dira' una direzione precisa.\n" +
+               "3. Premi DIREZIONE e scrivi NORD, SUD, EST o OVEST.\n\n" +
+               "A = Esamina il terreno\n" +
+               "B = Ascolta i suoni\n" +
                "C = Inserisci la direzione\n\n" +
                "Hai 3 errori massimo prima di perdere la preda!\n" +
                "========================================";
@@ -88,6 +91,10 @@ public class JungleTrackingGame implements MiniGame {
                 listenedSounds = true;
                 return "Ti fermi e tendi l'orecchio...\n\n" + soundClues[currentStep];
             case "C":
+                if (!examinedGround && !listenedSounds) {
+                    return "Prima cerca un indizio: premi ESAMINA o ASCOLTA.\n" +
+                           "Poi premi DIREZIONE e scrivi NORD, SUD, EST o OVEST.";
+                }
                 waitingForDirection = true;
                 return "In che direzione vai?\nScrivi: NORD, SUD, EST o OVEST";
             default:
@@ -159,6 +166,13 @@ public class JungleTrackingGame implements MiniGame {
                        baseClues[currentStep];
                 if (waitingForDirection) {
                     display += "\n\nIn che direzione vai? (NORD/SUD/EST/OVEST)";
+                } else if (!examinedGround && !listenedSounds) {
+                    display += "\n\nCosa fare adesso:\n" +
+                               "1. Premi ESAMINA o ASCOLTA per trovare la direzione.\n" +
+                               "2. Premi DIREZIONE.\n" +
+                               "3. Scrivi NORD, SUD, EST o OVEST.";
+                } else {
+                    display += "\n\nHai un indizio. Ora premi DIREZIONE e scrivi la strada giusta.";
                 }
                 return display;
         }

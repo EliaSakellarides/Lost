@@ -150,7 +150,7 @@ public class FullScreenGUI extends JFrame {
         btnB.addActionListener(e -> processInput("B"));
         btnC.addActionListener(e -> processInput("C"));
 
-        btnAdvance = GuiButtonFactory.create("\u27A1\uFE0F AVANTI", buttonFont,
+        btnAdvance = GuiButtonFactory.create("AVANTI", buttonFont,
             new Color(50, 150, 100), buttonFg);
         btnAdvance.addActionListener(e -> processInput("avanti"));
 
@@ -171,19 +171,19 @@ public class FullScreenGUI extends JFrame {
             }
         });
 
-        btnInventory = GuiButtonFactory.create("\uD83C\uDF92", buttonFont, buttonBg, buttonFg);
-        btnStatus = GuiButtonFactory.create("\u2764\uFE0F", buttonFont, buttonBg, buttonFg);
-        JButton btnHelp = GuiButtonFactory.create("\u2753", buttonFont, buttonBg, buttonFg);
-        JButton btnExit = GuiButtonFactory.create("\uD83D\uDEAA", buttonFont, new Color(180, 60, 60), buttonFg);
+        btnInventory = GuiButtonFactory.create("INV", buttonFont, buttonBg, buttonFg);
+        btnStatus = GuiButtonFactory.create("STATO", buttonFont, buttonBg, buttonFg);
+        JButton btnHelp = GuiButtonFactory.create("AIUTO", buttonFont, buttonBg, buttonFg);
+        JButton btnExit = GuiButtonFactory.create("ESCI", buttonFont, new Color(180, 60, 60), buttonFg);
 
-        JButton btnSave = GuiButtonFactory.create("\uD83D\uDCBE", buttonFont, buttonBg, buttonFg);
+        JButton btnSave = GuiButtonFactory.create("SALVA", buttonFont, buttonBg, buttonFg);
         btnSave.addActionListener(e -> showSaveDialog());
 
-        JButton btnMap = GuiButtonFactory.create("\uD83D\uDDFA\uFE0F", buttonFont, buttonBg, buttonFg);
+        JButton btnMap = GuiButtonFactory.create("MAPPA", buttonFont, buttonBg, buttonFg);
         btnMap.setToolTipText("Mappa dell'isola");
         btnMap.addActionListener(e -> showMapDialog());
 
-        JButton btnRecords = GuiButtonFactory.create("\uD83C\uDFC6", buttonFont, buttonBg, buttonFg);
+        JButton btnRecords = GuiButtonFactory.create("RECORD", buttonFont, buttonBg, buttonFg);
         btnRecords.setToolTipText("Record");
         btnRecords.addActionListener(e -> showRecordsDialog());
 
@@ -198,7 +198,7 @@ public class FullScreenGUI extends JFrame {
             }
         });
 
-        panel.add(new JLabel(""));
+        panel.add(Box.createHorizontalStrut(0));
         panel.add(btnA);
         panel.add(btnB);
         panel.add(btnC);
@@ -316,7 +316,7 @@ public class FullScreenGUI extends JFrame {
         nameField.setBorder(BorderFactory.createLineBorder(new Color(100, 150, 100), 2));
         nameField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton startBtn = GuiButtonFactory.create("\uD83C\uDFDD\uFE0F INIZIA L'AVVENTURA",
+        JButton startBtn = GuiButtonFactory.create(" INIZIA L'AVVENTURA",
             new Font("SansSerif", Font.BOLD, 16),
             new Color(50, 100, 50), Color.WHITE);
         startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -345,7 +345,7 @@ public class FullScreenGUI extends JFrame {
 
         if (GameSave.hasSaves()) {
             content.add(Box.createVerticalStrut(10));
-            JButton loadBtn = GuiButtonFactory.create("\uD83D\uDCC2 CARICA PARTITA",
+            JButton loadBtn = GuiButtonFactory.create(" CARICA PARTITA",
                 new Font("SansSerif", Font.BOLD, 14),
                 new Color(70, 70, 100), Color.WHITE);
             loadBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -442,7 +442,7 @@ public class FullScreenGUI extends JFrame {
                     ? "Tempo finale: " + record.getFormattedTime() + "\n"
                     : "";
                 JOptionPane.showMessageDialog(this,
-                    "\uD83C\uDF93 HAI COMPLETATO LOST!\n\n" +
+                    "HAI COMPLETATO LOST!\n\n" +
                     "Sei fuggito dall'isola!\n" +
                     "La TESI ti ha salvato!\n\n" +
                     recordLine +
@@ -488,7 +488,7 @@ public class FullScreenGUI extends JFrame {
 
             String status = "";
             if (engine != null && engine.getPlayer() != null) {
-                status = String.format("\u2764\uFE0F %d%%  |  \uD83E\uDDE0 %d%%  |  \uD83D\uDCC5 Giorno %d  |  \uD83D\uDCCD %s",
+                status = String.format("Salute %d%% | Sanita %d%% | Giorno %d | %s",
                     engine.getPlayer().getHealth(),
                     engine.getPlayer().getSanity(),
                     engine.getPlayer().getDaysOnIsland(),
@@ -504,7 +504,7 @@ public class FullScreenGUI extends JFrame {
 
         String slotName = JOptionPane.showInputDialog(this,
             "Nome del salvataggio:",
-            "\uD83D\uDCBE Salva Partita",
+            "Salva Partita",
             JOptionPane.PLAIN_MESSAGE);
 
         if (slotName == null || slotName.trim().isEmpty()) return;
@@ -514,11 +514,11 @@ public class FullScreenGUI extends JFrame {
         if (ok) {
             JOptionPane.showMessageDialog(this,
                 "Partita salvata nello slot '" + slotName + "'!",
-                "\uD83D\uDCBE Salvato!", JOptionPane.INFORMATION_MESSAGE);
+                "Salvato", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this,
                 "Errore durante il salvataggio!",
-                "\u274C Errore", JOptionPane.ERROR_MESSAGE);
+                "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -527,7 +527,7 @@ public class FullScreenGUI extends JFrame {
         if (saves.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                 "Nessun salvataggio trovato.",
-                "\uD83D\uDCC2 Carica Partita", JOptionPane.INFORMATION_MESSAGE);
+                "Carica Partita", JOptionPane.INFORMATION_MESSAGE);
             SwingUtilities.invokeLater(this::askPlayerName);
             return;
         }
@@ -539,7 +539,7 @@ public class FullScreenGUI extends JFrame {
 
         String choice = (String) JOptionPane.showInputDialog(this,
             "Scegli un salvataggio da caricare:",
-            "\uD83D\uDCC2 Carica Partita",
+            "Carica Partita",
             JOptionPane.PLAIN_MESSAGE,
             null, options, options[0]);
 
@@ -562,7 +562,7 @@ public class FullScreenGUI extends JFrame {
         if (state == null) {
             JOptionPane.showMessageDialog(this,
                 "Errore nel caricamento!",
-                "\u274C Errore", JOptionPane.ERROR_MESSAGE);
+                "Errore", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -574,14 +574,14 @@ public class FullScreenGUI extends JFrame {
 
         currentLocation = engine.getCurrentRoomKey();
         currentImageKey = engine.getCurrentChapterImageKey();
-        currentText = "\u2705 Partita caricata!\n\n" +
-            "\uD83D\uDC64 " + engine.getPlayer().getName() +
+        currentText = "Partita caricata!\n\n" +
+            engine.getPlayer().getName() +
             " | Cap. " + engine.getCurrentChapterNumber() +
             "/" + engine.getTotalChapters() +
-            " | \u2764\uFE0F " + engine.getPlayer().getHealth() +
-            " | \uD83E\uDDE0 " + engine.getPlayer().getSanity() + "\n\n" +
+            " | Salute " + engine.getPlayer().getHealth() +
+            " | Sanita " + engine.getPlayer().getSanity() + "\n\n" +
             "Premi AVANTI per continuare...";
-        currentTitle = "\uD83D\uDCC2 PARTITA CARICATA";
+        currentTitle = "PARTITA CARICATA";
 
         updateTextDisplay();
         gamePanel.repaint();

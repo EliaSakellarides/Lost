@@ -2,7 +2,7 @@
 # Script di esecuzione per Lost
 
 echo "═══════════════════════════════════════════════════"
-echo "  ✈️ LOST - L'Isola Misteriosa"
+echo "  LOST - L'Isola Misteriosa"
 echo "═══════════════════════════════════════════════════"
 
 # Directory di lavoro
@@ -44,7 +44,7 @@ resolve_h2_jar() {
 
 # Controlla se è stato compilato
 if [ ! -d "$BIN_DIR" ] || [ -z "$(ls -A "$BIN_DIR")" ]; then
-    echo "⚠️ Il gioco non è stato compilato."
+    echo "ATTENZIONE: Il gioco non è stato compilato."
     echo "   Eseguo prima la compilazione..."
     echo ""
     "$SCRIPT_DIR/compile.sh"
@@ -52,7 +52,7 @@ if [ ! -d "$BIN_DIR" ] || [ -z "$(ls -A "$BIN_DIR")" ]; then
 fi
 
 # Avvia il gioco
-echo "🚀 Avvio Lost..."
+echo "Avvio Lost..."
 echo ""
 cd "$PROJECT_DIR"
 GSON_JAR_PATH="$(resolve_gson_jar || true)"
@@ -60,12 +60,12 @@ H2_JAR_PATH="$(resolve_h2_jar || true)"
 JAVA_OPTS=()
 
 if [ -z "$GSON_JAR_PATH" ]; then
-    echo "❌ Dipendenza Gson non trovata."
+    echo "ERRORE: Dipendenza Gson non trovata."
     echo "   Imposta GSON_JAR=/percorso/a/gson.jar oppure scarica le dipendenze con Maven."
     exit 1
 fi
 if [ -z "$H2_JAR_PATH" ]; then
-    echo "❌ Dipendenza H2 non trovata."
+    echo "ERRORE: Dipendenza H2 non trovata."
     echo "   Imposta H2_JAR=/percorso/a/h2.jar oppure scarica le dipendenze con Maven."
     exit 1
 fi

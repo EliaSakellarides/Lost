@@ -59,7 +59,7 @@ public class PixelArtManager {
         // ═══════════════════════════════════════════════════════════
         IMAGE_FILES.put("cap1_firstnight", "cap1_prima_notte.png");
         IMAGE_FILES.put("cap2_survivors", "cap2_sopravvissuti.png");
-        IMAGE_FILES.put("cap3_smoke", "cap3_mostro_fumo.png");
+        IMAGE_FILES.put("cap3_smoke", "cap3_mostro_fumo_davanti.png");
         IMAGE_FILES.put("cap4_caves", "cap4_grotte.png");
         IMAGE_FILES.put("cap5_hunt", "cap5_caccia.png");
         IMAGE_FILES.put("cap6_hatch", "cap6_botola_scoperta.png");
@@ -113,7 +113,7 @@ public class PixelArtManager {
                 imageCache.put(key, img);
             }
         }
-        System.out.println("🖼️ Caricate " + imageCache.size() + " immagini dal classpath");
+        System.out.println(" Caricate " + imageCache.size() + " immagini dal classpath");
     }
     
     /**
@@ -213,7 +213,7 @@ public class PixelArtManager {
         
         // Testo location
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Monospaced", Font.BOLD, 24));
+        g.setFont(new Font("Serif", Font.BOLD, 26));
         String text = locationKey.toUpperCase().replace("_", " ");
         FontMetrics fm = g.getFontMetrics();
         int textX = (imageWidth - fm.stringWidth(text)) / 2;
@@ -221,7 +221,7 @@ public class PixelArtManager {
         g.drawString(text, textX, textY);
         
         // Nota per creare immagine
-        g.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        g.setFont(new Font("Serif", Font.PLAIN, 15));
         String note = "(Immagine da creare)";
         int noteX = (imageWidth - g.getFontMetrics().stringWidth(note)) / 2;
         g.drawString(note, noteX, textY + 30);
@@ -276,12 +276,12 @@ public class PixelArtManager {
      * Lista le immagini mancanti
      */
     public void printMissingImages() {
-        System.out.println("\n📷 IMMAGINI MANCANTI:");
+        System.out.println("\n IMMAGINI MANCANTI:");
         System.out.println("=========================================");
         for (Map.Entry<String, String> entry : IMAGE_FILES.entrySet()) {
             String filename = entry.getValue();
             if (getClass().getResource("/images/" + filename) == null) {
-                System.out.println("  ❌ " + entry.getKey() + " -> " + filename);
+                System.out.println("   " + entry.getKey() + " -> " + filename);
             }
         }
         System.out.println("=========================================\n");

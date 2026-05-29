@@ -91,7 +91,7 @@ public class GameEngine {
         player.setCurrentRoom(startRoom);
         gameRunning = true;
         
-        // 🎵 Avvia la sigla di LOST! (suona per 15 secondi, poi fade out)
+        // Avvia la sigla di LOST! (suona per 15 secondi, poi fade out)
         audioManager.playBackgroundMusic("lost___opening_titles.wav", false, 15000);
         
         addLog("═══════════════════════════════════════════════════");
@@ -123,11 +123,11 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap1_firstnight",
             "La Prima Notte",
-            "\uD83C\uDF19 LA PRIMA NOTTE SULL'ISOLA\n\n" +
+            "LA PRIMA NOTTE SULL'ISOLA\n\n" +
             "Il sole sta tramontando. La spiaggia si fa buia.\n" +
             "I sopravvissuti si guardano intorno, spaventati.\n" +
             "Dalla giungla arrivano suoni inquietanti...\n\n" +
-            "\u2753 Come vi preparate per la notte?",
+            "Come vi preparate per la notte?",
             cap1Choices,
             "A",
             "Il fuoco tiene lontani i predatori e solleva il morale!"
@@ -141,12 +141,12 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap2_survivors",
             "I Sopravvissuti",
-            "🏝️ Sei sulla spiaggia con gli altri sopravvissuti.\n\n" +
+            "Sei sulla spiaggia con gli altri sopravvissuti.\n\n" +
             player.getName() + ", il medico, sta organizzando il campo.\n" +
             "Kate raccoglie provviste dai rottami.\n" +
             "Sawyer sta già litigando con qualcuno...\n\n" +
             "Qualcuno chiede: 'Quanti siamo sopravvissuti?'\n\n" +
-            "❓ Quanti passeggeri sono sopravvissuti allo schianto?",
+            "Quanti passeggeri sono sopravvissuti allo schianto?",
             cap2Choices,
             "A",
             "48 sopravvissuti iniziali!"
@@ -160,7 +160,7 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap3_smoke",
             "Il Mostro di Fumo",
-            "🌴 GIORNO 1 - LA GIUNGLA\n\n" +
+            "GIORNO 1 - LA GIUNGLA\n\n" +
             "Ti avventuri nella giungla con Jack e Kate.\n" +
             "Trovate la cabina di pilotaggio schiantata tra gli alberi.\n" +
             "Il pilota e' ancora vivo!\n\n" +
@@ -171,7 +171,9 @@ public class GameEngine {
             "Poi il TICK... TICK... TICK... riempie la giungla.\n" +
             "Il Mostro di Fumo attacca. Il pilota viene trascinato via.\n" +
             "La radio e' distrutta. Gli Altri esistono.\n\n" +
-            "❓ Cosa fai quando senti arrivare il Mostro?",
+            "Il fumo nero ora e' davanti a te. Non sembra un animale.\n" +
+            "Ti osserva. Ogni movimento potrebbe attirarlo.\n\n" +
+            "Cosa fai?",
             cap3Choices,
             "B",
             "Chi si muove attira il mostro. Restare immobili e' l'unica via."
@@ -185,13 +187,13 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap4_caves",
             "Le Grotte",
-            "💧 GIORNO 3 - EMERGENZA ACQUA\n\n" +
+            "GIORNO 3 - EMERGENZA ACQUA\n\n" +
             "L'acqua delle bottiglie sta finendo.\n" +
             player.getName() + " ha trovato delle GROTTE con acqua dolce!\n\n" +
             "Ma sono nella giungla, lontano dalla spiaggia...\n" +
             "Lontano dai possibili soccorsi.\n\n" +
             "Il gruppo è diviso. Cosa proponi?\n\n" +
-            "❓ Qual è la scelta migliore per sopravvivere?",
+            "Qual è la scelta migliore per sopravvivere?",
             cap4Choices,
             "C",
             "Dividere il gruppo: alcuni alle grotte per l'acqua, altri sulla spiaggia per i soccorsi!"
@@ -205,12 +207,12 @@ public class GameEngine {
         Level cap5 = new Level(
             "cap5_hunt",
             "La Caccia",
-            "🐗 GIORNO 5 - IL CIBO SCARSEGGIA\n\n" +
+            "GIORNO 5 - IL CIBO SCARSEGGIA\n\n" +
             "Le provviste dell'aereo sono quasi finite.\n" +
             "Locke ha visto dei CINGHIALI nella giungla.\n" +
             "Jin sa pescare. Hurley ha trovato alberi di frutta.\n\n" +
             "Servono proteine per sopravvivere a lungo termine.\n\n" +
-            "❓ Come procurarsi il cibo?",
+            "Come procurarsi il cibo?",
             cap5Choices,
             "A",
             "I cinghiali sono la fonte di proteine più affidabile sull'isola!"
@@ -226,13 +228,13 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap6_hatch",
             "La Botola",
-            "🚪 GIORNO 8 - LA SCOPERTA DI LOCKE\n\n" +
+            "GIORNO 8 - LA SCOPERTA DI LOCKE\n\n" +
             "Locke e Boone hanno trovato qualcosa nella giungla!\n" +
             "Una BOTOLA di metallo sepolta nel terreno.\n\n" +
             "C'è scritto 'QUARANTINE' e un simbolo: DHARMA.\n" +
             "È sigillata, impossibile aprirla a mani nude.\n\n" +
             "Locke è ossessionato. Vuole sapere cosa c'è sotto.\n\n" +
-            "❓ Cosa consigli?",
+            "Cosa consigli?",
             cap6Choices,
             "C",
             "Serve qualcosa di potente per aprirla... come degli ESPLOSIVI!"
@@ -246,14 +248,14 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap7_blackrock",
             "La Roccia Nera",
-            "⚓ LA NAVE NELLA GIUNGLA\n\n" +
+            "LA NAVE NELLA GIUNGLA\n\n" +
             "Rousseau vi ha parlato della ROCCIA NERA.\n" +
             "Una nave del 1800 arenata nel mezzo dell'isola!\n\n" +
             "Nella stiva senti odore di polvere e salsedine.\n" +
             "Tra casse marce e catene arrugginite, noti un baule inchiodato.\n\n" +
             "Locke ti guarda: 'Quello non e' finito qui per caso.'\n" +
             "Potrebbe esserci proprio l'esplosivo che vi serve per la botola.\n\n" +
-            "❓ Cosa fai?",
+            "Cosa fai?",
             cap7Choices,
             "A",
             "La cosa piu' promettente e' quella cassa chiusa nella stiva."
@@ -267,14 +269,14 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap8_openhatch",
             "Aprire la Botola",
-            "💥 IL MOMENTO DELLA VERITÀ\n\n" +
+            "IL MOMENTO DELLA VERITÀ\n\n" +
             "Siete tornati alla botola con la dinamite.\n" +
             "Locke sistema la carica sulla botola e accende la miccia.\n" +
             "Hurley impallidisce vedendo i numeri incisi sul metallo:\n" +
             "4 8 15 16 23 42.\n\n" +
             "'Non mi piacciono per niente...'\n" +
             "La miccia sfrigola. Hai solo pochi secondi.\n\n" +
-            "❓ Cosa fai?",
+            "Cosa fai?",
             cap8Choices,
             "B",
             "Con della dinamite accesa, la scelta giusta e' mettersi al riparo."
@@ -288,7 +290,7 @@ public class GameEngine {
         Level cap9 = new Level(
             "cap9_swan",
             "La Stazione Il Cigno",
-            "🦢 DENTRO LA BOTOLA\n\n" +
+            "DENTRO LA BOTOLA\n\n" +
             "Scendete nella stazione sotterranea.\n" +
             "Trovi un uomo, DESMOND, che vive qui da 3 anni!\n\n" +
             "'Brother! Finalmente qualcuno!'\n" +
@@ -299,7 +301,7 @@ public class GameEngine {
             "'Si puo' riparare, ma serve alimentazione, antenna e un fusibile sano.'\n\n" +
             "Un timer sta per scadere: 00:01:30\n" +
             "Il computer mostra: 4 8 15 16 23 42\n\n" +
-            "❓ Il timer sta per scadere! Cosa fai?",
+            "Il timer sta per scadere! Cosa fai?",
             cap9Choices,
             "A",
             "Meglio non rischiare... per ora!"
@@ -314,7 +316,7 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap10_henrygale",
             "Il Prigioniero",
-            "🎭 UN UOMO NELLA TRAPPOLA\n\n" +
+            "UN UOMO NELLA TRAPPOLA\n\n" +
             "Trovate un uomo catturato nella trappola di Rousseau.\n" +
             "Si presenta con calma:\n\n" +
             "\"Mi chiamo Henry Gale.\n" +
@@ -322,7 +324,7 @@ public class GameEngine {
             "Il mio pallone si e' schiantato sull'isola mesi fa.\"\n\n" +
             "La storia sembra plausibile. E' ferito, sembra spaventato.\n" +
             "Ma i suoi occhi... non corrispondono alle parole.\n\n" +
-            "❓ Ti fidi di lui?",
+            "Ti fidi di lui?",
             cap10Choices,
             "B",
             "Henry Gale non esiste. Quest'uomo e' Ben Linus, il leader degli Altri."
@@ -336,14 +338,14 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap11_others",
             "Gli Altri",
-            "👥 CATTURATO!\n\n" +
+            "CATTURATO!\n\n" +
             "Durante una spedizione, vieni catturato dagli ALTRI!\n" +
             "Ti portano in un villaggio nascosto.\n\n" +
             "Ben ti guarda con calma - lo stesso uomo del bunker.\n" +
             "'Sappiamo tutto di te.'\n" +
             "'Sappiamo perche' sei su quest'isola.'\n" +
             "'La domanda e': tu lo sai?'\n\n" +
-            "❓ Come reagisci?",
+            "Come reagisci?",
             cap11aChoices,
             "C",
             "Mai fidarsi degli Altri... cerca un modo per scappare!"
@@ -357,7 +359,7 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap11_escape_others",
             "La Fuga",
-            "🏃 DEVI SCAPPARE!\n\n" +
+            "DEVI SCAPPARE!\n\n" +
             "Riesci a liberarti dalle corde durante la notte.\n" +
             "Il villaggio è silenzioso, le guardie distratte.\n\n" +
             "Hai tre vie di fuga possibili:\n" +
@@ -365,7 +367,7 @@ public class GameEngine {
             "• Il fiume - più lungo ma facile da seguire\n" +
             "• La costa - esposto ma familiare\n\n" +
             "Il Mostro di Fumo è stato visto nella giungla...\n\n" +
-            "❓ Quale strada prendi?",
+            "Quale strada prendi?",
             cap11Choices,
             "B",
             "Il fiume ti riporterà al campo... e l'acqua copre le tue tracce!"
@@ -379,12 +381,12 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap12_raft",
             "La Zattera",
-            "⛵ IL PIANO DI MICHAEL\n\n" +
+            "IL PIANO DI MICHAEL\n\n" +
             "Michael ha costruito una zattera in poche settimane.\n" +
             "Jin, Sawyer e Walt partiranno con lui.\n\n" +
             "E' l'unica via concreta per uscire dall'isola.\n" +
             "L'oceano e' immenso, ma restare non e' piu' un'opzione.\n\n" +
-            "❓ Cosa fai?",
+            "Cosa fai?",
             cap12Choices,
             "A",
             "Meglio rischiare il mare che restare prigionieri sull'isola!"
@@ -394,7 +396,7 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap13_walt",
             "In Mare Aperto",
-            "🌊 NOTTE - OCEANO APERTO\n\n" +
+            "NOTTE - OCEANO APERTO\n\n" +
             "La zattera naviga da ore nel buio.\n" +
             "Poi una barca si avvicina a tutta velocita'.\n\n" +
             "\"Avete visto un bambino?\"\n\n" +
@@ -403,7 +405,7 @@ public class GameEngine {
             "Walt viene RAPITO dagli Altri.\n" +
             "Michael urla il suo nome nel buio.\n" +
             "Sawyer e' ferito. Siete in acqua.\n\n" +
-            "❓ Come tornate a riva?",
+            "Come tornate a riva?",
             Arrays.asList("nuotare", "nuoto", "a nuoto", "nuotiamo", "a"),
             "L'unica via e' tornare a nuoto verso l'isola."
         ));
@@ -416,7 +418,7 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap13_flashback",
             "Flashback",
-            "💭 QUELLA NOTTE... UN SOGNO\n\n" +
+            "QUELLA NOTTE... UN SOGNO\n\n" +
             "Ti ricordi di quando sei salito sull'aereo.\n" +
             "L'aeroporto di Sydney era affollato.\n\n" +
             "Avevi con te una TESI importante...\n" +
@@ -424,7 +426,7 @@ public class GameEngine {
             "Era il tuo lavoro di anni!\n\n" +
             "La tesi... DOVE L'HAI MESSA?\n" +
             "Forse è ancora nei rottami dell'aereo?\n\n" +
-            "❓ Qual era il numero del volo Oceanic?",
+            "Qual era il numero del volo Oceanic?",
             cap13Choices,
             "A",
             "Oceanic Flight 815!"
@@ -434,15 +436,15 @@ public class GameEngine {
         Level cap14 = new Level(
             "cap14_thesis",
             "La Scoperta",
-            "📜 NEL BUNKER DHARMA...\n\n" +
+            "NEL BUNKER DHARMA...\n\n" +
             "Esplori la stazione Il Cigno più a fondo.\n" +
             "Trovi una stanza segreta dietro una parete!\n\n" +
             "All'interno... documenti DHARMA!\n" +
             "E tra questi... una MAPPA!\n\n" +
-            "📖 'COORDINATE: PISTA DI ATTERRAGGIO HYDRA'\n" +
+            "'COORDINATE: PISTA DI ATTERRAGGIO HYDRA'\n" +
             "'Per emergenze. Aereo funzionante.'\n\n" +
             "C'è un AEREO nascosto sull'isola!\n\n" +
-            "❓ Digita 'prendi' per prendere la mappa!",
+            "Digita 'prendi' per prendere la mappa!",
             Arrays.asList("prendi", "raccogli", "ok", "si", "a"),
             "Prendila!"
         );
@@ -456,14 +458,14 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap15_runway",
             "La Pista Nascosta",
-            "🛬 LA SPERANZA!\n\n" +
+            "LA SPERANZA!\n\n" +
             "Segui le coordinate della mappa.\n" +
             "Attraversi territori pericolosi.\n" +
             "Il Mostro di Fumo ruggisce in lontananza.\n\n" +
             "Ma finalmente... LA VEDI!\n" +
             "Una pista di atterraggio nascosta!\n" +
             "E un piccolo AEREO Cessna sotto un telo!\n\n" +
-            "❓ Come procedi?",
+            "Come procedi?",
             cap15Choices,
             "B",
             "Meglio prepararsi: carburante, provviste, e verificare l'aereo!"
@@ -477,12 +479,12 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap16_prep",
             "Preparazione al Volo",
-            "✈️ L'AEREO!\n\n" +
+            "L'AEREO!\n\n" +
             "È un Cessna 172, danneggiato ma riparabile.\n" +
             "Trovate carburante, una cassetta degli attrezzi e un vecchio manuale.\n\n" +
             "Il sole sta calando e la giungla non restera' silenziosa a lungo.\n" +
             "Serve una preparazione semplice ma fatta bene.\n\n" +
-            "❓ Prima di partire, cosa fai?",
+            "Prima di partire, cosa fai?",
             cap16Choices,
             "A",
             "Prima di decollare bisogna controllare carburante, motore e comandi."
@@ -496,14 +498,14 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap17_escape",
             "La Fuga",
-            "🛫 IL MOMENTO È ARRIVATO!\n\n" +
+            "IL MOMENTO È ARRIVATO!\n\n" +
             "Il motore si accende! L'elica gira!\n" +
             "Ma qualcosa non va...\n\n" +
             "Il MOSTRO DI FUMO appare dalla giungla!\n" +
             "Gli ALTRI corrono verso la pista!\n" +
             "Ben grida: 'NON PUOI ANDARTENE!'\n\n" +
             "Hai solo pochi secondi per decidere!\n\n" +
-            "❓ Cosa fai?",
+            "Cosa fai?",
             cap17Choices,
             "A",
             "Non c'è tempo! DECOLLA!"
@@ -513,16 +515,16 @@ public class GameEngine {
         storyChapters.add(new Level(
             "cap18_freedom",
             "Libertà",
-            "🌅 CE L'HAI FATTA!\n\n" +
+            "CE L'HAI FATTA!\n\n" +
             "L'aereo decolla, lasciandoti alle spalle l'isola.\n" +
             "Il Mostro di Fumo ruggisce impotente sotto di te.\n" +
             "Gli Altri diventano puntini sulla pista.\n\n" +
             "Sotto di te, l'isola diventa sempre più piccola...\n" +
             "Finché non scompare all'orizzonte.\n\n" +
-            "🌊 L'oceano infinito si stende davanti a te.\n" +
+            "L'oceano infinito si stende davanti a te.\n" +
             "Sei LIBERO. Finalmente LIBERO!\n\n" +
-            "🎓 E la tua TESI? Ce l'hai fatta!\n\n" +
-            "❓ Digita 'fine' per concludere.",
+            "E la tua TESI? Ce l'hai fatta!\n\n" +
+            "Digita 'fine' per concludere.",
             Arrays.asList("fine", "finito", "ok", "si", "a"),
             "È finita... o forse no?"
         ));
@@ -530,50 +532,50 @@ public class GameEngine {
 
     private void createWorld() {
         // SPIAGGIA - Punto di partenza
-        Room spiaggia = new Room("spiaggia", "🏖️ Spiaggia dello Schianto",
+        Room spiaggia = new Room("spiaggia", "Spiaggia dello Schianto",
             "La spiaggia è coperta di rottami dell'aereo. " +
             "Il fumo sale ancora dalla fusoliera. " +
             "Il mare è calmo, ma la giungla dietro di te sembra ostile.");
         
         // GIUNGLA
-        Room giungla = new Room("giungla", "🌴 Giungla Oscura",
+        Room giungla = new Room("giungla", "Giungla Oscura",
             "Alberi altissimi bloccano la luce del sole. " +
             "Senti strani rumori... ticchettii meccanici. " +
             "Qualcosa di grosso si muove tra gli alberi.");
         giungla.setDangerous(true, "Il Mostro di Fumo potrebbe essere qui...");
         
         // BOTOLA
-        Room botola = new Room("botola", "🚪 La Botola (Il Cigno)",
+        Room botola = new Room("botola", "La Botola (Il Cigno)",
             "Una stazione sotterranea della DHARMA Initiative. " +
             "Computer antiquati, un pulsante misterioso, e molto cibo in scatola. " +
             "Desmond viveva qui, premendo il pulsante ogni 108 minuti.");
         
         // VILLAGGIO DEGLI ALTRI
-        Room villaggio = new Room("villaggio", "🏘️ Villaggio degli Altri",
+        Room villaggio = new Room("villaggio", "Villaggio degli Altri",
             "Un villaggio apparentemente normale nel mezzo dell'isola. " +
             "Case bianche, giardini curati... ma qualcosa non quadra. " +
             "Gli abitanti ti osservano con sospetto.");
         
         // TEMPIO
-        Room tempio = new Room("tempio", "🏛️ Il Tempio",
+        Room tempio = new Room("tempio", "Il Tempio",
             "Un antico tempio nascosto nella giungla. " +
             "I guardiani proteggono questo luogo sacro. " +
             "Al centro c'è una vasca con acqua misteriosa.");
         
         // ROCCIA NERA
-        Room rocciaNera = new Room("roccianera", "⚓ La Roccia Nera",
+        Room rocciaNera = new Room("roccianera", "La Roccia Nera",
             "Una nave schiavista del 1800 in mezzo alla giungla! " +
             "Come ci è arrivata? È piena di dinamite instabile. " +
             "Nei diari trovi mappe dell'isola.");
         
         // FARO
-        Room faro = new Room("faro", "🗼 Il Faro",
+        Room faro = new Room("faro", "Il Faro",
             "Un faro antico sulla scogliera. " +
             "All'interno, uno specchio magico mostra luoghi lontani. " +
             "Jacob usava questo posto per osservare i candidati.");
         
         // PISTA
-        Room pista = new Room("pista", "🛬 Pista di Atterraggio",
+        Room pista = new Room("pista", "Pista di Atterraggio",
             "Una pista nascosta tra le palme! " +
             "C'è un piccolo aereo Cessna parzialmente coperto. " +
             "Con le giuste istruzioni... potresti farlo volare.");
@@ -707,7 +709,7 @@ public class GameEngine {
 
                 case PRENDI:
                     if (target.isEmpty()) {
-                        return "❓ Cosa vuoi prendere?";
+                        return " Cosa vuoi prendere?";
                     }
                     if (currentChapter == 12) {
                         response = answerChapter("prendi");
@@ -739,7 +741,7 @@ public class GameEngine {
 
                 case USA:
                     if (target.isEmpty()) {
-                        return "❓ Cosa vuoi usare?";
+                        return " Cosa vuoi usare?";
                     }
                     response = useItem(target);
                     advanceTurn = true;
@@ -782,7 +784,7 @@ public class GameEngine {
     
     private String processChoice(String choice) {
         if (!choice.matches("[ABC]")) {
-            return "❌ Scegli A, B o C!";
+            return "Scegli A, B o C!";
         }
         
         if (currentChapter < storyChapters.size()) {
@@ -792,7 +794,7 @@ public class GameEngine {
             }
         }
         
-        return "❌ Non ci sono scelte in questo momento.";
+        return "Non ci sono scelte in questo momento.";
     }
     
     /** Forza l'avvio del primo capitolo. Usato dalla GUI dopo l'intro. */
@@ -805,18 +807,18 @@ public class GameEngine {
     private String startNextChapter() {
         if (currentChapterStarted && !currentChapterCompleted && currentChapter < storyChapters.size()) {
             Level chapter = storyChapters.get(currentChapter);
-            String msg = "📖 CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
+            String msg = "CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
                          ": " + chapter.getTitle() + "\n\n" +
                          chapter.getPrompt() + "\n\n";
             if (chapter.hasChoices()) {
                 Map<String, String> choices = chapter.getChoices();
-                msg += "🔘 SCELTE: ";
+                msg += "SCELTE: ";
                 if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
                 if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
                 if (choices.containsKey("C")) msg += "C=" + choices.get("C");
-                msg += "\n\n💡 Premi A, B o C";
+                msg += "\n\nPremi A, B o C";
             } else {
-                msg += "💡 Scrivi la risposta";
+                msg += "Scrivi la risposta";
             }
             return msg;
         }
@@ -824,10 +826,10 @@ public class GameEngine {
         if (currentChapter >= storyChapters.size()) {
             gameWon = true;
             gameRunning = false;
-            return "🎉 HAI COMPLETATO LOST! 🎉\n\n" +
+            return "HAI COMPLETATO LOST!\n\n" +
                    "Sei fuggito dall'isola!\n" +
                    "La TESI ti ha salvato!\n" +
-                   "Ora puoi laurearti! 🎓\n\n" +
+                   "Ora puoi laurearti!\n\n" +
                    "CONGRATULAZIONI!";
         }
         
@@ -837,19 +839,19 @@ public class GameEngine {
         
         updateRoomByChapter(currentChapter);
         
-        String msg = "📖 CAP. " + (currentChapter + 1) + "/" + storyChapters.size() + 
+        String msg = "CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
                      ": " + chapter.getTitle() + "\n\n" +
                      chapter.getPrompt() + "\n\n";
         
         if (chapter.hasChoices()) {
             Map<String, String> choices = chapter.getChoices();
-            msg += "🔘 SCELTE: ";
+            msg += "SCELTE: ";
             if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
             if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
             if (choices.containsKey("C")) msg += "C=" + choices.get("C");
-            msg += "\n\n💡 Premi A, B o C";
+            msg += "\n\nPremi A, B o C";
         } else {
-            msg += "💡 Scrivi la risposta";
+            msg += "Scrivi la risposta";
         }
         
         addLog(msg);
@@ -865,7 +867,13 @@ public class GameEngine {
         boolean correct = chapter.checkAnswer(answer);
         
         if (correct) {
-            String success = "✅ CORRETTO!\n\n";
+            String success = "CORRETTO!\n\n";
+
+            if ("cap3_smoke".equals(chapter.getKey())) {
+                success += "Resti immobile. Il fumo nero ti gira intorno, vicinissimo.\n" +
+                           "Per un attimo sembra sul punto di colpirti.\n" +
+                           "Poi, senza spiegazione, si ritira tra gli alberi.\n\n";
+            }
 
             // Se il capitolo ha un mini gioco, avvialo PRIMA di avanzare
             if (chapter.hasMiniGame()) {
@@ -882,20 +890,20 @@ public class GameEngine {
             // Ricompense narrative dei capitoli chiave
             if (currentChapter == 7 && !player.hasItem("Dinamite")) {
                 Item dinamite = new Item("Dinamite",
-                    "🧨 Candelotti trovati nella Roccia Nera. Vecchi, ma ancora pericolosi.",
+                    "Candelotti trovati nella Roccia Nera. Vecchi, ma ancora pericolosi.",
                     true, Item.ItemType.STRUMENTO, 0, 1);
                 player.addItem(dinamite);
                 blackRockExplored = true;
-                success += "🧨 Hai trovato la dinamite nella cassa della Roccia Nera!\n\n";
+                success += "Hai trovato la dinamite nella cassa della Roccia Nera!\n\n";
             }
 
             // Aggiungi la TESI all'inventario nel capitolo giusto
             if (currentChapter == 15) {
                 Item tesi = new Item("TESI",
-                    "📜 La TESI perduta! Contiene le coordinate per fuggire dall'isola!",
+                    "La TESI perduta! Contiene le coordinate per fuggire dall'isola!",
                     true, Item.ItemType.TESI, 0, -1);
                 player.addItem(tesi);
-                success += "📜 Hai ottenuto la TESI!\n\n";
+                success += "Hai ottenuto la TESI!\n\n";
             }
 
             if (currentChapter >= storyChapters.size()) {
@@ -908,6 +916,16 @@ public class GameEngine {
 
             return success;
         } else {
+            if ("cap3_smoke".equals(chapter.getKey())) {
+                player.removeHealth(25);
+                return "Ti muovi troppo in fretta.\n\n" +
+                       "Il Mostro di Fumo scatta verso di te e ti trascina per alcuni metri nella giungla.\n" +
+                       "Jack e Kate riescono a tirarti via all'ultimo momento.\n\n" +
+                       "Salute -25.\n\n" +
+                       "Il fumo torna davanti a voi.\n" +
+                       "Devi scegliere con calma: A, B o C.";
+            }
+
             String msg = "Risposta sbagliata. Suggerimento: " + chapter.getHint() + "\n\n";
             msg += chapter.getPrompt() + "\n\n";
             if (chapter.hasChoices()) {
@@ -930,19 +948,19 @@ public class GameEngine {
         
         Item item = room.removeItem(itemName);
         if (item == null) {
-            return "❌ Non vedo '" + itemName + "' qui.";
+            return " Non vedo '" + itemName + "' qui.";
         }
         
         if (!item.isTakeable()) {
             room.addItem(item);
-            return "❌ Non puoi prendere " + item.getName() + ".";
+            return " Non puoi prendere " + item.getName() + ".";
         }
         
         if (player.addItem(item)) {
-            return "✅ Hai preso: " + item.getName();
+            return " Hai preso: " + item.getName();
         } else {
             room.addItem(item);
-            return "❌ Inventario pieno!";
+            return " Inventario pieno!";
         }
     }
     
@@ -1116,24 +1134,24 @@ public class GameEngine {
 
     private String getHelpText() {
         return "═══════════════════════════════════════\n" +
-               "  ✈️ LOST - COMANDI ✈️\n" +
+               "   LOST - COMANDI \n" +
                "═══════════════════════════════════════\n" +
-               "🔘 A, B, C      - Scegli un'opzione\n" +
-               "➡️ avanti        - Continua la storia\n" +
-               "📦 prendi [obj]  - Raccogli oggetto (p)\n" +
-               "📤 lascia [obj]  - Lascia oggetto (l)\n" +
-               "👁️ guarda [obj]  - Osserva oggetto (g/x)\n" +
-               "🔧 usa [obj]     - Usa un oggetto (u)\n" +
-               "🍎 mangia [obj]  - Mangia/bevi\n" +
-               "💣 attiva [obj]  - Attiva oggetto\n" +
-               "🎒 inventario    - Vedi oggetti (i)\n" +
-               "❤️ stato         - Vedi salute (st/hp)\n" +
-               "💾 salva [nome]  - Salva partita\n" +
-               "📂 carica/load [nome] - Carica partita\n" +
-               "🗺️ mappa         - Mappa dell'isola (m)\n" +
-               "❓ aiuto         - Questo messaggio (h)\n" +
+               " A, B, C      - Scegli un'opzione\n" +
+               " avanti        - Continua la storia\n" +
+               " prendi [obj]  - Raccogli oggetto (p)\n" +
+               " lascia [obj]  - Lascia oggetto (l)\n" +
+               " guarda [obj]  - Osserva oggetto (g/x)\n" +
+               " usa [obj]     - Usa un oggetto (u)\n" +
+               " mangia [obj]  - Mangia/bevi\n" +
+               " attiva [obj]  - Attiva oggetto\n" +
+               " inventario    - Vedi oggetti (i)\n" +
+               " stato         - Vedi salute (st/hp)\n" +
+               " salva [nome]  - Salva partita\n" +
+               " carica/load [nome] - Carica partita\n" +
+               " mappa         - Mappa dell'isola (m)\n" +
+               " aiuto         - Questo messaggio (h)\n" +
                "═══════════════════════════════════════\n" +
-               "💡 Scrivi 'alias' per tutti i sinonimi\n" +
+               " Scrivi 'alias' per tutti i sinonimi\n" +
                "═══════════════════════════════════════";
     }
     
@@ -1146,14 +1164,14 @@ public class GameEngine {
      */
     private String dropItem(String itemName) {
         if (itemName.isEmpty()) {
-            return "❌ Cosa vuoi lasciare?";
+            return " Cosa vuoi lasciare?";
         }
         Item item = player.removeItem(itemName);
         if (item == null) {
-            return "❌ Non hai '" + itemName + "' nell'inventario.";
+            return " Non hai '" + itemName + "' nell'inventario.";
         }
         player.getCurrentRoom().addItem(item);
-        return "✅ Hai lasciato: " + item.getName();
+        return " Hai lasciato: " + item.getName();
     }
     
     /**
@@ -1187,45 +1205,45 @@ public class GameEngine {
         String name = item.getName().toLowerCase();
         
         if (name.contains("dinamite")) {
-            return "🧨 DINAMITE INSTABILE\n" +
+            return "DINAMITE INSTABILE\n" +
                    "Vecchi candelotti dalla Roccia Nera.\n" +
                    "ATTENZIONE: Potrebbero esplodere!\n" +
-                   "💡 Usa 'attiva dinamite' per innescarla.";
+                   "Usa 'attiva dinamite' per innescarla.";
         }
         if (name.contains("radio danneggiata")) {
-            return "📻 RADIO DANNEGGIATA\n" +
+            return "RADIO DANNEGGIATA\n" +
                    "La radio del cockpit e' ridotta male: batteria assente,\n" +
                    "antenna spezzata e fusibile bruciato.\n" +
                    getRadioRepairStatus();
         }
         if (name.contains("trasmettitore")) {
-            return "📡 TRASMETTITORE RIPARATO\n" +
+            return "TRASMETTITORE RIPARATO\n" +
                    "Sayid ha rimesso insieme radio, alimentazione e antenna.\n" +
                    "Ora puoi provare a usarlo per ascoltare una trasmissione.";
         }
         if (name.contains("batteria")) {
-            return "🔋 BATTERIA DHARMA\n" +
+            return "BATTERIA DHARMA\n" +
                    "Pesante, vecchia, ma ancora carica.\n" +
                    "I contatti sembrano compatibili con la radio del cockpit.";
         }
         if (name.contains("cavo") || name.contains("antenna")) {
-            return "📎 CAVO ANTENNA\n" +
+            return "CAVO ANTENNA\n" +
                    "Un cavo coassiale ancora integro.\n" +
                    "Potrebbe sostituire il collegamento spezzato della radio.";
         }
         if (name.contains("fusibile")) {
-            return "🔌 FUSIBILE\n" +
+            return "FUSIBILE\n" +
                    "Piccolo, fragile, conservato in una scatola DHARMA.\n" +
                    "Senza un fusibile sano la radio si spegnerebbe subito.";
         }
         if (name.contains("bussola")) {
-            return "🧭 UNA VECCHIA BUSSOLA\n" +
+            return "UNA VECCHIA BUSSOLA\n" +
                    "L'ago punta sempre a Nord... o forse no?\n" +
                    "Sull'isola, le bussole impazziscono.\n" +
                    "C'è un'incisione: '4 8 15 16 23 42'";
         }
         if (name.contains("mappa") && name.contains("dharma")) {
-            return "🗺️ MAPPA DHARMA INITIATIVE\n" +
+            return "MAPPA DHARMA INITIATIVE\n" +
                    "Mostra le stazioni segrete dell'isola:\n" +
                    "• IL CIGNO (The Swan) - Pulsante\n" +
                    "• LA PERLA (The Pearl) - Osservazione\n" +
@@ -1233,48 +1251,48 @@ public class GameEngine {
                    "• L'IDRA (Hydra) - Esperimenti";
         }
         if (name.contains("chiave")) {
-            return "🔑 CHIAVE DI SICUREZZA\n" +
+            return "CHIAVE DI SICUREZZA\n" +
                    "Una chiave metallica con il logo DHARMA.\n" +
                    "Potrebbe aprire qualcosa di importante...";
         }
         if (name.contains("cibo") && name.contains("dharma")) {
-            return "🥫 SCATOLETTE DHARMA\n" +
+            return "SCATOLETTE DHARMA\n" +
                    "Cibo in scatola degli anni '70.\n" +
                    "Etichetta: 'DHARMA Initiative - Ranch Composite'\n" +
                    "Scadenza: 1977 (gulp!)\n" +
-                   "💡 Usa 'mangia cibo' per recuperare salute.";
+                   "Usa 'mangia cibo' per recuperare salute.";
         }
         if (name.contains("diario")) {
-            return "📖 DIARIO DEL CAPITANO\n" +
+            return "DIARIO DEL CAPITANO\n" +
                    "Dalla nave Roccia Nera, anno 1867.\n" +
                    "'...un'onda gigantesca ci ha portato\n" +
                    "nell'entroterra dell'isola. Questo luogo\n" +
                    "è maledetto. Ho visto il fumo nero...'";
         }
         if (name.contains("tesi")) {
-            return "📜 LA TESI PERDUTA\n" +
+            return "LA TESI PERDUTA\n" +
                    "Il documento più importante dell'isola!\n" +
                    "Contiene:\n" +
                    "• Coordinate della pista nascosta\n" +
                    "• Istruzioni pratiche per controllare l'aereo\n" +
                    "• Appunti per preparare carburante, motore e comandi\n" +
-                   "🎓 Con questa puoi FUGGIRE e LAUREARTI!";
+                   "Con questa puoi FUGGIRE e LAUREARTI!";
         }
         if (name.contains("kit") || name.contains("medico")) {
-            return "🏥 KIT DI PRONTO SOCCORSO\n" +
+            return "KIT DI PRONTO SOCCORSO\n" +
                    "Recuperato dai rottami dell'Oceanic 815.\n" +
                    "Contiene bende, disinfettante e antidolorifici.\n" +
-                   "💡 Usa 'usa kit' per curarti.";
+                   "Usa 'usa kit' per curarti.";
         }
         if (name.contains("acqua")) {
-            return "💧 BOTTIGLIA D'ACQUA\n" +
+            return "BOTTIGLIA D'ACQUA\n" +
                    "Acqua potabile dai rottami dell'aereo.\n" +
                    "Essenziale per sopravvivere sull'isola.\n" +
-                   "💡 Usa 'bevi acqua' per idratarti.";
+                   "Usa 'bevi acqua' per idratarti.";
         }
         
         // Descrizione generica
-        return "👁️ " + item.getName().toUpperCase() + "\n" + item.getDescription();
+        return item.getName().toUpperCase() + "\n" + item.getDescription();
     }
     
     /**
@@ -1285,57 +1303,57 @@ public class GameEngine {
         
         // Risposte atmosferiche per l'ambiente
         if (target.contains("cielo") || target.contains("sky")) {
-            return "☁️ Il cielo è stranamente luminoso.\n" +
+            return "Il cielo è stranamente luminoso.\n" +
                    "A volte sembra che l'isola sia... fuori dal tempo.";
         }
         if (target.contains("mare") || target.contains("oceano")) {
-            return "🌊 L'oceano si estende all'infinito.\n" +
+            return "L'oceano si estende all'infinito.\n" +
                    "Nessuna nave all'orizzonte. Nessun aereo.\n" +
                    "Sei davvero solo qui.";
         }
         if (target.contains("giungla") || target.contains("alberi")) {
-            return "🌴 La giungla è fitta e ostile.\n" +
+            return " La giungla è fitta e ostile.\n" +
                    "Senti strani rumori... ticchettii meccanici.\n" +
                    "Qualcosa di GROSSO si muove là dentro.";
         }
         if (target.contains("mostro") || target.contains("fumo")) {
-            return "🌫️ Non vedi nulla... ma lo SENTI.\n" +
+            return " Non vedi nulla... ma lo SENTI.\n" +
                    "TICK... TICK... TICK...\n" +
                    "Il Mostro di Fumo è sempre in agguato.";
         }
         if (target.contains("numeri") || target.contains("4 8 15")) {
-            return "🔢 I NUMERI MALEDETTI\n" +
+            return " I NUMERI MALEDETTI\n" +
                    "4 - 8 - 15 - 16 - 23 - 42\n" +
                    "Somma: 108\n" +
                    "Sono ovunque sull'isola...";
         }
         if (target.contains("radio") || target.contains("trasmissione")) {
             if (radioRepaired) {
-                return "📡 La radio riparata emette un fruscio basso.\n" +
+                return " La radio riparata emette un fruscio basso.\n" +
                        "C'e' una frequenza debole oltre il rumore della stazione.";
             }
-            return "📻 La radio del cockpit e' recuperabile, ma non funzionera'\n" +
+            return " La radio del cockpit e' recuperabile, ma non funzionera'\n" +
                    "finche' non trovi batteria, antenna e fusibile.";
         }
         if (target.contains("jacob")) {
-            return "👤 Jacob è il protettore dell'isola.\n" +
+            return " Jacob è il protettore dell'isola.\n" +
                    "Vive al Faro e osserva i candidati.\n" +
                    "'L'isola ti ha scelto.'";
         }
         if (target.contains("altri") || target.contains("others")) {
-            return "👥 Gli Altri vivono sull'isola da anni.\n" +
+            return " Gli Altri vivono sull'isola da anni.\n" +
                    "Guidati da Ben Linus.\n" +
                    "Non fidarti di loro.";
         }
         
         // Risposte ironiche per comandi strani (come suggerito dalla guida!)
         if (target.contains("me") || target.contains("stesso")) {
-            return "🪞 Ti guardi: sei un sopravvissuto.\n" +
+            return " Ti guardi: sei un sopravvissuto.\n" +
                    "Sporco, stanco, ma ancora vivo.\n" +
                    "Ce la farai!";
         }
         
-        return "❓ Non noti nulla di particolare riguardo a '" + target + "'.";
+        return " Non noti nulla di particolare riguardo a '" + target + "'.";
     }
 
     /**
@@ -1362,35 +1380,35 @@ public class GameEngine {
 
     private String installRadioPart(String itemName, String partType) {
         if (radioRepaired) {
-            return "📡 La radio e' gia' stata riparata.\n" +
+            return "La radio e' gia' stata riparata.\n" +
                    "Prova a usare il trasmettitore.";
         }
         if (!player.hasItem("radio")) {
-            return "📻 Ti serve prima la radio danneggiata del cockpit.\n" +
+            return "Ti serve prima la radio danneggiata del cockpit.\n" +
                    "Cerca nella giungla vicino alla cabina schiantata.";
         }
 
         Item part = player.removeItem(itemName);
         if (part == null) {
-            return "❌ Non hai " + itemName + " nell'inventario.";
+            return "Non hai " + itemName + " nell'inventario.";
         }
 
         StringBuilder result = new StringBuilder();
         switch (partType) {
             case "batteria":
                 radioBatteryInstalled = true;
-                result.append("🔋 Inserisci la batteria DHARMA nel vano della radio.\n");
+                result.append("Inserisci la batteria DHARMA nel vano della radio.\n");
                 break;
             case "antenna":
                 radioAntennaInstalled = true;
-                result.append("📎 Colleghi il cavo antenna al circuito spezzato.\n");
+                result.append("Colleghi il cavo antenna al circuito spezzato.\n");
                 break;
             case "fusibile":
                 radioFuseInstalled = true;
-                result.append("🔌 Sostituisci il fusibile bruciato.\n");
+                result.append("Sostituisci il fusibile bruciato.\n");
                 break;
             default:
-                result.append("🔧 Monti il pezzo sulla radio.\n");
+                result.append("Monti il pezzo sulla radio.\n");
                 break;
         }
 
@@ -1410,7 +1428,7 @@ public class GameEngine {
             true, Item.ItemType.STRUMENTO, 0, -1));
 
         return currentMessage + "\n" +
-               "📡 La radio gracchia, poi prende vita.\n" +
+               "La radio gracchia, poi prende vita.\n" +
                "Sayid sorride appena: 'Ora possiamo ascoltare l'isola.'\n" +
                "Hai ottenuto: Trasmettitore riparato.";
     }
@@ -1418,23 +1436,23 @@ public class GameEngine {
     private String useRadio() {
         if (!radioRepaired) {
             if (player.hasItem("radio")) {
-                return "📻 La radio non e' ancora pronta.\n" + getRadioRepairStatus();
+                return "La radio non e' ancora pronta.\n" + getRadioRepairStatus();
             }
-            return "📻 Non hai una radio funzionante.\n" +
+            return "Non hai una radio funzionante.\n" +
                    "La cabina di pilotaggio nella giungla potrebbe avere qualcosa.";
         }
 
         if (!player.hasItem("trasmettitore")) {
-            return "📡 Il trasmettitore riparato non e' nel tuo inventario.";
+            return "Il trasmettitore riparato non e' nel tuo inventario.";
         }
 
         if (radioMessageReceived) {
-            return "📡 Risintonizzi il trasmettitore.\n" +
+            return "Risintonizzi il trasmettitore.\n" +
                    "La stessa voce disturbata ripete: '...Hydra... pista... non fidatevi degli Altri...'";
         }
 
         radioMessageReceived = true;
-        return "📡 ACCENDI IL TRASMETTITORE\n\n" +
+        return " ACCENDI IL TRASMETTITORE\n\n" +
                "KRRR... KRRR...\n" +
                "Tra scariche e fischi, una voce lontana emerge:\n\n" +
                "\"...stazione Fiamma compromessa...\n" +
@@ -1474,7 +1492,7 @@ public class GameEngine {
         }
         Item item = player.getItem(target);
         if (item == null) {
-            return "❌ Non hai '" + target + "' nell'inventario.";
+            return " Non hai '" + target + "' nell'inventario.";
         }
         if (item.getType() != Item.ItemType.CIBO && item.getType() != Item.ItemType.MEDICINA) {
             return getIronicResponse("mangia " + target);
@@ -1487,27 +1505,27 @@ public class GameEngine {
      */
     private String activateItem(String target) {
         if (target.isEmpty()) {
-            return "❓ Cosa vuoi attivare?";
+            return " Cosa vuoi attivare?";
         }
         
         if (target.toLowerCase().contains("dinamite")) {
             if (!player.hasItem("dinamite")) {
-                return "❌ Non hai dinamite!";
+                return " Non hai dinamite!";
             }
             if (dynamiteActive) {
-                return "⚠️ La dinamite è già innescata!\n" +
+                return " La dinamite è già innescata!\n" +
                        "TICK... TICK... TICK...\n" +
                        "Lasciala da qualche parte, VELOCE!";
             }
             dynamiteActive = true;
             dynamiteTimer = 5; // 5 turni prima dell'esplosione
-            return "🧨💥 HAI INNESCATO LA DINAMITE!\n" +
+            return " HAI INNESCATO LA DINAMITE!\n" +
                    "TICK... TICK... TICK...\n" +
                    "Hai 5 turni per metterti al sicuro!\n" +
-                   "💡 Lasciala con 'lascia dinamite' e SCAPPA!";
+                   " Lasciala con 'lascia dinamite' e SCAPPA!";
         }
         
-        return "❓ Non puoi attivare '" + target + "'.";
+        return " Non puoi attivare '" + target + "'.";
     }
     
     /**
@@ -1517,36 +1535,36 @@ public class GameEngine {
         command = command.toLowerCase();
         
         if (command.contains("mangia") && command.contains("roccia")) {
-            return "🪨 Hmm, no. Non sei COSÌ affamato... ancora.";
+            return " Hmm, no. Non sei COSÌ affamato... ancora.";
         }
         if (command.contains("mangia") && command.contains("sabbia")) {
-            return "🏖️ La sabbia non è nel menu oggi.";
+            return " La sabbia non è nel menu oggi.";
         }
         if (command.contains("mangia") && command.contains("dinamite")) {
-            return "🧨 Pessima idea. PESSIMA.";
+            return " Pessima idea. PESSIMA.";
         }
         if (command.contains("mangia")) {
-            return "🤔 Non puoi mangiare quello.\n" +
+            return " Non puoi mangiare quello.\n" +
                    "Prova con il cibo DHARMA!";
         }
         if (command.contains("vola") || command.contains("fly")) {
-            return "🦅 Sei un sopravvissuto, non un uccello.\n" +
+            return " Sei un sopravvissuto, non un uccello.\n" +
                    "Ma c'è un aereo sulla pista nascosta...";
         }
         if (command.contains("nuota") && command.contains("via")) {
-            return "🌊 L'oceano è infinito.\n" +
+            return " L'oceano è infinito.\n" +
                    "Moriresti prima di vedere terra.";
         }
         if (command.contains("uccidi") && command.contains("mostro")) {
-            return "🌫️ Non puoi uccidere il Mostro di Fumo.\n" +
+            return " Non puoi uccidere il Mostro di Fumo.\n" +
                    "Puoi solo SCAPPARE.";
         }
         if (command.contains("parla") && command.contains("albero")) {
-            return "🌴 L'albero non risponde.\n" +
+            return " L'albero non risponde.\n" +
                    "(Forse la sanità mentale sta calando...)";
         }
         
-        return "❓ Non capisco cosa vuoi fare.";
+        return " Non capisco cosa vuoi fare.";
     }
     
     /**
@@ -1569,7 +1587,7 @@ public class GameEngine {
             if (smokeMonsterTimer == 0) {
                 smokeMonsterNearby = true;
                 appendEvent(events,
-                    "🌫️ Il Mostro di Fumo e' vicino.\n" +
+                    "Il Mostro di Fumo e' vicino.\n" +
                     "TICK... TICK... TICK...");
             }
         }
@@ -1579,7 +1597,7 @@ public class GameEngine {
             othersTimer--;
             if (othersTimer == 0) {
                 appendEvent(events,
-                    "👥 Senti voci nella giungla.\n" +
+                    "Senti voci nella giungla.\n" +
                     "Gli Altri ti stanno cercando.");
             }
         }
@@ -1596,17 +1614,17 @@ public class GameEngine {
         if (dinamite != null) {
             // Se ce l'hai in mano... BOOM!
             player.removeHealth(100);
-            String message = "💥💥💥 BOOM! 💥💥💥\n" +
+            String message = "BOOM!\n" +
                              "La dinamite e' esplosa TRA LE TUE MANI!\n" +
                              "Non avresti dovuto tenerla...\n\n" +
-                             "☠️ SEI MORTO ☠️";
+                             "SEI MORTO";
             addLog(message);
             dynamiteActive = false;
             gameRunning = false;
             return message;
         } else {
             // Esplode nella stanza dove l'hai lasciata
-            String message = "💥 BOOM! 💥\n" +
+            String message = "BOOM!\n" +
                              "Senti un'esplosione in lontananza.\n" +
                              "Qualcosa e' stato distrutto...";
             addLog(message);
@@ -1629,7 +1647,7 @@ public class GameEngine {
         
         ending.append("\n");
         ending.append("═══════════════════════════════════════════════════════\n");
-        ending.append("     ✈️🌅 L I B E R T À 🌅✈️\n");
+        ending.append("      L I B E R T À \n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
         
         ending.append("L'aereo decolla, lasciandosi alle spalle l'isola.\n\n");
@@ -1639,36 +1657,36 @@ public class GameEngine {
         ending.append("Il Tempio, la Stazione Il Cigno, la Roccia Nera...\n");
         ending.append("tutto scompare all'orizzonte.\n\n");
         
-        ending.append("🌊 L'oceano infinito si stende davanti a te.\n");
+        ending.append("L'oceano infinito si stende davanti a te.\n");
         ending.append("Finalmente LIBERO.\n\n");
         
         ending.append("═══════════════════════════════════════════════════════\n\n");
         
-        ending.append("📜 Stringi la TESI tra le mani.\n");
+        ending.append("Stringi la TESI tra le mani.\n");
         ending.append("Quella tesi che ti ha salvato la vita.\n");
         ending.append("Quella tesi che ti ha mostrato la via.\n\n");
         
-        ending.append("🎓 E ora... puoi finalmente LAUREARTI!\n\n");
+        ending.append("E ora... puoi finalmente LAUREARTI!\n\n");
         
         ending.append("═══════════════════════════════════════════════════════\n");
-        ending.append("          🏆 HAI COMPLETATO LOST! 🏆\n");
+        ending.append("           HAI COMPLETATO LOST!\n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
         
         // Statistiche finali
-        ending.append("📊 LE TUE STATISTICHE:\n");
-        ending.append("   ⏱️ Giorni sull'isola: ").append(player.getDaysOnIsland()).append("\n");
-        ending.append("   ❤️ Salute finale: ").append(player.getHealth()).append("/100\n");
-        ending.append("   🧠 Sanità mentale: ").append(player.getSanity()).append("/100\n");
-        ending.append("   🎒 Oggetti raccolti: ").append(player.getInventory().size()).append("\n\n");
+        ending.append("LE TUE STATISTICHE:\n");
+        ending.append("   Giorni sull'isola: ").append(player.getDaysOnIsland()).append("\n");
+        ending.append("   Salute finale: ").append(player.getHealth()).append("/100\n");
+        ending.append("   Sanita mentale: ").append(player.getSanity()).append("/100\n");
+        ending.append("   Oggetti raccolti: ").append(player.getInventory().size()).append("\n\n");
         
         ending.append("═══════════════════════════════════════════════════════\n");
         ending.append("   \"L'isola non ha finito con te, ").append(player.getName()).append(".\"\n");
         ending.append("                           - Jacob\n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
         
-        ending.append("              🎮 GRAZIE PER AVER GIOCATO! 🎮\n\n");
+        ending.append("               GRAZIE PER AVER GIOCATO!\n\n");
         
-        ending.append("        Creato con ❤️ seguendo la Guida Colombini\n");
+        ending.append("        Ispirato alla Guida Colombini\n");
         ending.append("        'Avventure - Guida pratica alla creazione\n");
         ending.append("         di giochi di avventura' (Jackson, 1985)\n");
         
@@ -1739,35 +1757,35 @@ public class GameEngine {
     private String saveGame(String slotName) {
         boolean ok = GameSave.save(this, slotName);
         if (ok) {
-            return "💾 Partita salvata nello slot '" + slotName + "'!\n" +
+            return "Partita salvata nello slot '" + slotName + "'!\n" +
                    "Usa 'carica " + slotName + "' per ricaricarla.";
         }
-        return "❌ Errore durante il salvataggio!";
+        return "Errore durante il salvataggio!";
     }
 
     private String loadGame(String slotName) {
         GameState state = GameSave.load(slotName);
         if (state == null) {
-            return "❌ Nessun salvataggio trovato con nome '" + slotName + "'.\n" +
+            return "Nessun salvataggio trovato con nome '" + slotName + "'.\n" +
                    "Usa 'carica' per vedere i salvataggi disponibili.";
         }
         loadGameState(state);
-        return "✅ Partita caricata dallo slot '" + slotName + "'!\n" +
-               "👤 " + player.getName() + " | Cap. " + getCurrentChapterNumber() +
-               "/" + getTotalChapters() + " | ❤️ " + player.getHealth() +
-               " | 🧠 " + player.getSanity() + "\n\n" +
+        return "Partita caricata dallo slot '" + slotName + "'!\n" +
+               player.getName() + " | Cap. " + getCurrentChapterNumber() +
+               "/" + getTotalChapters() + " | Salute " + player.getHealth() +
+               " | Sanita " + player.getSanity() + "\n\n" +
                "Premi AVANTI per continuare...";
     }
 
     private String listSaves() {
         List<GameSaveInstance> saves = GameSave.listSaves();
         if (saves.isEmpty()) {
-            return "📂 Nessun salvataggio trovato.\n" +
+            return "Nessun salvataggio trovato.\n" +
                    "Usa 'salva [nome]' per salvare la partita.";
         }
-        StringBuilder sb = new StringBuilder("📂 SALVATAGGI DISPONIBILI:\n\n");
+        StringBuilder sb = new StringBuilder("SALVATAGGI DISPONIBILI:\n\n");
         for (GameSaveInstance save : saves) {
-            sb.append("  💾 ").append(save.getDisplayText()).append("\n");
+            sb.append("   ").append(save.getDisplayText()).append("\n");
         }
         sb.append("\nUsa 'carica [nome]' per caricare un salvataggio.");
         return sb.toString();

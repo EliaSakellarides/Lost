@@ -40,19 +40,19 @@ public class StatusPanelFactory {
             int sanity = engine.getPlayer().getSanity();
             int day = engine.getPlayer().getDaysOnIsland();
 
-            // Aggiorna cuoricini
-            int fullHearts = health / 10;
-            int halfHeart = (health % 10 >= 5) ? 1 : 0;
+            // Aggiorna la barra salute testuale, senza icone.
+            int fullSegments = health / 10;
+            int halfSegment = (health % 10 >= 5) ? 1 : 0;
 
             for (int i = 0; i < 10; i++) {
-                if (i < fullHearts) {
-                    heartLabels[i].setText("\u2665");
+                if (i < fullSegments) {
+                    heartLabels[i].setText("#");
                     heartLabels[i].setForeground(new Color(255, 80, 80));
-                } else if (i == fullHearts && halfHeart == 1) {
-                    heartLabels[i].setText("\u2665");
+                } else if (i == fullSegments && halfSegment == 1) {
+                    heartLabels[i].setText("+");
                     heartLabels[i].setForeground(new Color(255, 150, 150));
                 } else {
-                    heartLabels[i].setText("\u2661");
+                    heartLabels[i].setText("-");
                     heartLabels[i].setForeground(new Color(80, 80, 80));
                 }
             }
@@ -68,10 +68,10 @@ public class StatusPanelFactory {
                 sanityBar.setForeground(new Color(255, 100, 100));
             }
 
-            dayLabel.setText("\uD83D\uDCC5 Giorno " + day);
+            dayLabel.setText("Giorno " + day);
 
             String loc = currentLocation.toUpperCase();
-            locationLabel.setText("\uD83D\uDCCD " + loc);
+            locationLabel.setText(loc);
         }
     }
 
@@ -82,15 +82,16 @@ public class StatusPanelFactory {
         panel.setPreferredSize(new Dimension(screenWidth, 40));
         panel.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(100, 150, 100)));
 
-        // === CUORICINI ===
-        JLabel heartTitle = new JLabel("\u2764\uFE0F");
+        // === SALUTE ===
+        JLabel heartTitle = new JLabel("Salute");
         heartTitle.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        heartTitle.setForeground(new Color(255, 150, 150));
         panel.add(heartTitle);
 
         JLabel[] heartLabels = new JLabel[10];
         for (int i = 0; i < 10; i++) {
-            heartLabels[i] = new JLabel("\u2665");
-            heartLabels[i].setFont(new Font("SansSerif", Font.BOLD, 16));
+            heartLabels[i] = new JLabel("#");
+            heartLabels[i].setFont(new Font("Monospaced", Font.BOLD, 16));
             heartLabels[i].setForeground(new Color(255, 80, 80));
             panel.add(heartLabels[i]);
         }
@@ -98,8 +99,9 @@ public class StatusPanelFactory {
         panel.add(Box.createHorizontalStrut(15));
 
         // === BARRA SANITA ===
-        JLabel brainLabel = new JLabel("\uD83E\uDDE0");
+        JLabel brainLabel = new JLabel("Mente");
         brainLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        brainLabel.setForeground(new Color(150, 150, 255));
         panel.add(brainLabel);
 
         JProgressBar sanityBar = new JProgressBar(0, 100);
@@ -115,7 +117,7 @@ public class StatusPanelFactory {
         panel.add(Box.createHorizontalStrut(20));
 
         // === GIORNO ===
-        JLabel dayLabel = new JLabel("\uD83D\uDCC5 Giorno 1");
+        JLabel dayLabel = new JLabel("Giorno 1");
         dayLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         dayLabel.setForeground(new Color(255, 220, 100));
         panel.add(dayLabel);
@@ -123,7 +125,7 @@ public class StatusPanelFactory {
         panel.add(Box.createHorizontalStrut(20));
 
         // === POSIZIONE ===
-        JLabel locationLabel = new JLabel("\uD83D\uDCCD SPIAGGIA");
+        JLabel locationLabel = new JLabel("SPIAGGIA");
         locationLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         locationLabel.setForeground(new Color(150, 220, 150));
         panel.add(locationLabel);
@@ -142,24 +144,26 @@ public class StatusPanelFactory {
         int sanity = (engine != null && engine.getPlayer() != null) ? engine.getPlayer().getSanity() : 100;
         int day = (engine != null && engine.getPlayer() != null) ? engine.getPlayer().getDaysOnIsland() : 1;
 
-        // === CUORICINI ===
-        JLabel heartTitle = new JLabel("\u2764\uFE0F");
+        // === SALUTE ===
+        JLabel heartTitle = new JLabel("Salute");
         heartTitle.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        heartTitle.setForeground(new Color(255, 150, 150));
         panel.add(heartTitle);
 
-        int fullHearts = health / 10;
+        int fullSegments = health / 10;
         for (int i = 0; i < 10; i++) {
-            JLabel heart = new JLabel(i < fullHearts ? "\u2665" : "\u2661");
-            heart.setFont(new Font("SansSerif", Font.BOLD, 14));
-            heart.setForeground(i < fullHearts ? new Color(255, 80, 80) : new Color(80, 80, 80));
+            JLabel heart = new JLabel(i < fullSegments ? "#" : "-");
+            heart.setFont(new Font("Monospaced", Font.BOLD, 14));
+            heart.setForeground(i < fullSegments ? new Color(255, 80, 80) : new Color(80, 80, 80));
             panel.add(heart);
         }
 
         panel.add(Box.createHorizontalStrut(10));
 
         // === BARRA SANITA ===
-        JLabel brainLabel = new JLabel("\uD83E\uDDE0");
+        JLabel brainLabel = new JLabel("Mente");
         brainLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        brainLabel.setForeground(new Color(150, 150, 255));
         panel.add(brainLabel);
 
         JProgressBar sanityBarDialog = new JProgressBar(0, 100);
@@ -177,7 +181,7 @@ public class StatusPanelFactory {
         panel.add(Box.createHorizontalStrut(15));
 
         // === GIORNO ===
-        JLabel dayLabelDialog = new JLabel("\uD83D\uDCC5 Giorno " + day);
+        JLabel dayLabelDialog = new JLabel("Giorno " + day);
         dayLabelDialog.setFont(new Font("SansSerif", Font.BOLD, 12));
         dayLabelDialog.setForeground(new Color(255, 220, 100));
         panel.add(dayLabelDialog);
@@ -185,7 +189,7 @@ public class StatusPanelFactory {
         panel.add(Box.createHorizontalStrut(15));
 
         // === POSIZIONE ===
-        JLabel locationLabelDialog = new JLabel("\uD83D\uDCCD " + currentLocation.toUpperCase());
+        JLabel locationLabelDialog = new JLabel(currentLocation.toUpperCase());
         locationLabelDialog.setFont(new Font("SansSerif", Font.BOLD, 12));
         locationLabelDialog.setForeground(new Color(150, 220, 150));
         panel.add(locationLabelDialog);

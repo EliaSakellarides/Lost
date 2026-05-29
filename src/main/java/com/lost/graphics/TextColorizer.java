@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * Converte testo puro in HTML colorizzato per JTextPane.
- * Regole di colorizzazione basate su emoji, parole chiave e dialoghi.
+ * Regole di colorizzazione basate su parole chiave e dialoghi.
  */
 public class TextColorizer {
 
@@ -52,25 +52,42 @@ public class TextColorizer {
             return span(escapeHtml(line), GREEN_DARK, false, false);
         }
 
-        // Righe con emoji speciali - bold
-        if (trimmed.contains("✅")) {
+        // Righe speciali - bold
+        if (trimmed.contains("CORRETTO") ||
+                trimmed.contains("COMPLETATA CON SUCCESSO") ||
+                trimmed.contains("HAI COMPLETATO")) {
             return span(escapeHtml(line), GREEN_BRIGHT, true, false);
         }
-        if (trimmed.contains("❌")) {
+        if (trimmed.contains("Risposta sbagliata") ||
+                trimmed.contains("Direzione sbagliata") ||
+                trimmed.contains("PREDA PERSA") ||
+                trimmed.contains("SEI MORTO") ||
+                trimmed.contains("Errore")) {
             return span(escapeHtml(line), RED, true, false);
         }
-        if (trimmed.contains("📖") && trimmed.contains("CAP.")) {
+        if (trimmed.contains("CAP.")) {
             return span(escapeHtml(line), GOLD, true, false);
         }
-        if (trimmed.contains("❓")) {
+        if (trimmed.contains("Cosa fai") ||
+                trimmed.contains("Come ") ||
+                trimmed.contains("Quale ") ||
+                trimmed.contains("Quanti ") ||
+                trimmed.contains("Scrivi la risposta")) {
             return span(escapeHtml(line), AZURE, true, false);
         }
-        if (trimmed.contains("⚠")) {
+        if (trimmed.contains("ATTENZIONE") ||
+                trimmed.contains("Salute -") ||
+                trimmed.contains("Sanita -") ||
+                trimmed.contains("Penalita")) {
             return span(escapeHtml(line), AMBER, true, false);
         }
 
         // Scelte e suggerimenti - verde chiaro
-        if (trimmed.contains("🔘") || trimmed.contains("💡")) {
+        if (trimmed.contains("SCELTE") ||
+                trimmed.contains("Scelte") ||
+                trimmed.contains("Premi ") ||
+                trimmed.contains("Suggerimento") ||
+                trimmed.contains("Usa ")) {
             return span(escapeHtml(line), GREEN_LIGHT, false, false);
         }
 

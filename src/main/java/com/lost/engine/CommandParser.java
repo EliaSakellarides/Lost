@@ -150,22 +150,22 @@ public class CommandParser {
         sb.append("  ALIAS DISPONIBILI\n");
         sb.append("═══════════════════════════════════════\n");
 
-        appendAliasLine(sb, CommandType.PRENDI,   "📦 Prendi");
-        appendAliasLine(sb, CommandType.LASCIA,    "📤 Lascia");
-        appendAliasLine(sb, CommandType.GUARDA,    "👁️ Guarda");
-        appendAliasLine(sb, CommandType.USA,       "🔧 Usa");
-        appendAliasLine(sb, CommandType.MANGIA,    "🍎 Mangia");
-        appendAliasLine(sb, CommandType.ATTIVA,    "💣 Attiva");
-        appendAliasLine(sb, CommandType.INVENTARIO,"🎒 Inventario");
-        appendAliasLine(sb, CommandType.STATO,     "❤️ Stato");
-        appendAliasLine(sb, CommandType.AVANTI,    "➡️ Avanti");
-        appendAliasLine(sb, CommandType.SALVA,     "💾 Salva");
-        appendAliasLine(sb, CommandType.CARICA_PARTITA, "📂 Carica");
-        appendAliasLine(sb, CommandType.MAPPA,     "🗺️ Mappa");
-        appendAliasLine(sb, CommandType.AIUTO,     "❓ Aiuto");
+        appendAliasLine(sb, CommandType.PRENDI,   "Prendi");
+        appendAliasLine(sb, CommandType.LASCIA,    "Lascia");
+        appendAliasLine(sb, CommandType.GUARDA,    "Guarda");
+        appendAliasLine(sb, CommandType.USA,       "Usa");
+        appendAliasLine(sb, CommandType.MANGIA,    "Mangia");
+        appendAliasLine(sb, CommandType.ATTIVA,    "Attiva");
+        appendAliasLine(sb, CommandType.INVENTARIO,"Inventario");
+        appendAliasLine(sb, CommandType.STATO,     "Stato");
+        appendAliasLine(sb, CommandType.AVANTI,    "Avanti");
+        appendAliasLine(sb, CommandType.SALVA,     "Salva");
+        appendAliasLine(sb, CommandType.CARICA_PARTITA, "Carica");
+        appendAliasLine(sb, CommandType.MAPPA,     "Mappa");
+        appendAliasLine(sb, CommandType.AIUTO,     "Aiuto");
 
         sb.append("═══════════════════════════════════════\n");
-        sb.append("💡 Abbreviazioni rapide:\n");
+        sb.append("Abbreviazioni rapide:\n");
         sb.append("   p=prendi  g=guarda  l=lascia\n");
         sb.append("   i=inventario  u=usa  h=aiuto\n");
         sb.append("═══════════════════════════════════════");

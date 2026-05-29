@@ -2,7 +2,7 @@
 # Script di smoke test per Lost
 
 echo "═══════════════════════════════════════════════════"
-echo "  ✈️ LOST - Smoke Test"
+echo "  LOST - Smoke Test"
 echo "═══════════════════════════════════════════════════"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -47,19 +47,19 @@ resolve_h2_jar() {
 
 GSON_JAR_PATH="$(resolve_gson_jar || true)"
 if [ -z "$GSON_JAR_PATH" ]; then
-    echo "❌ Dipendenza Gson non trovata."
+    echo "ERRORE: Dipendenza Gson non trovata."
     echo "   Imposta GSON_JAR=/percorso/a/gson.jar oppure esegui prima la compilazione su una macchina con Maven."
     exit 1
 fi
 H2_JAR_PATH="$(resolve_h2_jar || true)"
 if [ -z "$H2_JAR_PATH" ]; then
-    echo "❌ Dipendenza H2 non trovata."
+    echo "ERRORE: Dipendenza H2 non trovata."
     echo "   Imposta H2_JAR=/percorso/a/h2.jar oppure esegui prima la compilazione su una macchina con Maven."
     exit 1
 fi
 
 if [ ! -d "$TEST_SRC_DIR" ]; then
-    echo "⚠️ Nessun test trovato in $TEST_SRC_DIR"
+    echo "ATTENZIONE: Nessun test trovato in $TEST_SRC_DIR"
     exit 0
 fi
 
@@ -69,13 +69,13 @@ rm -rf "$MAIN_OUT_DIR"/* "$TEST_OUT_DIR"/*
 MAIN_FILES=$(find "$MAIN_SRC_DIR" -name "*.java")
 TEST_FILES=$(find "$TEST_SRC_DIR" -name "*.java")
 
-echo "📦 Gson: $GSON_JAR_PATH"
-echo "📦 H2: $H2_JAR_PATH"
-echo "⚙️ Compilo i sorgenti principali..."
+echo "Gson: $GSON_JAR_PATH"
+echo "H2: $H2_JAR_PATH"
+echo "Compilo i sorgenti principali..."
 javac -cp "$GSON_JAR_PATH:$H2_JAR_PATH" -d "$MAIN_OUT_DIR" -sourcepath "$MAIN_SRC_DIR" $MAIN_FILES || exit 1
 
-echo "⚙️ Compilo i test..."
+echo "Compilo i test..."
 javac -cp "$MAIN_OUT_DIR:$RES_DIR:$GSON_JAR_PATH:$H2_JAR_PATH" -d "$TEST_OUT_DIR" -sourcepath "$TEST_SRC_DIR" $TEST_FILES || exit 1
 
-echo "🧪 Eseguo gli smoke test..."
+echo "Eseguo gli smoke test..."
 java -Djava.awt.headless=true -ea -cp "$TEST_OUT_DIR:$MAIN_OUT_DIR:$RES_DIR:$GSON_JAR_PATH:$H2_JAR_PATH" com.lost.SmokeTests

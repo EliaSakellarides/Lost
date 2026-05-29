@@ -37,7 +37,7 @@ public final class RecordApiServer {
                 return thread;
             }));
             server.start();
-            System.out.println("🏆 Record API attiva su http://localhost:" + PORT + "/records");
+            System.out.println(" Record API attiva su http://localhost:" + PORT + "/records");
         } catch (IOException | RuntimeException e) {
             server = null;
             System.out.println("Record API non avviata: " + e.getMessage());

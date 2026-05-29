@@ -103,9 +103,9 @@ Tutte le immagini devono essere in stile pixel art, con:
 
 ## ORDINE DI PRIORITÀ
 
-1. ⭐ cap1_crash.png - cap17_freedom.png (17 immagini capitoli)
-2. 📍 beach.png, jungle.png, caves.png (3 location base)
-3. 🔧 Altre immagini di fallback opzionali
+1. cap1_crash.png - cap17_freedom.png (17 immagini capitoli)
+2. beach.png, jungle.png, caves.png (3 location base)
+3. Altre immagini di fallback opzionali
 
 ---
 Ultimo aggiornamento: Struttura 17 capitoli survival-focused

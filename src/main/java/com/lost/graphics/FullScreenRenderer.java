@@ -128,77 +128,59 @@ public class FullScreenRenderer {
         g.setColor(BORDER_COLOR);
         g.drawLine(0, barY, screenWidth, barY);
         
-        // Parsing dello statusInfo per estrarre valori
-        // Formato: "❤️ 85%  |  🧠 90%  |  📅 Giorno 1  |  📍 SPIAGGIA"
+        // Formato: "Salute 85% | Sanita 90% | Giorno 1 | SPIAGGIA"
         int health = 100;
         int sanity = 100;
         int day = 1;
         String location = "";
         
         if (statusInfo != null && !statusInfo.isEmpty()) {
-            try {
-                // Estrai salute
-                int hStart = statusInfo.indexOf("❤️") + 3;
-                int hEnd = statusInfo.indexOf("%");
-                if (hStart > 2 && hEnd > hStart) {
-                    health = Integer.parseInt(statusInfo.substring(hStart, hEnd).trim());
-                }
-                // Estrai sanità
-                int sStart = statusInfo.indexOf("🧠") + 3;
-                int sEnd = statusInfo.indexOf("%", sStart);
-                if (sStart > 2 && sEnd > sStart) {
-                    sanity = Integer.parseInt(statusInfo.substring(sStart, sEnd).trim());
-                }
-                // Estrai giorno
-                int dStart = statusInfo.indexOf("Giorno ") + 7;
-                int dEnd = statusInfo.indexOf(" ", dStart);
-                if (dStart > 6 && dEnd > dStart) {
-                    day = Integer.parseInt(statusInfo.substring(dStart, dEnd).trim());
-                }
-                // Estrai location
-                int lStart = statusInfo.indexOf("📍") + 3;
-                if (lStart > 2) {
-                    location = statusInfo.substring(lStart).trim();
-                }
-            } catch (Exception e) {
-                // Ignora errori di parsing
+            String[] parts = statusInfo.split("\\|");
+            if (parts.length >= 4) {
+                health = parseFirstNumber(parts[0], health);
+                sanity = parseFirstNumber(parts[1], sanity);
+                day = parseFirstNumber(parts[2], day);
+                location = parts[3].trim();
             }
         }
         
         int xPos = 20;
         
-        // === CUORICINI SALUTE ===
-        g.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        int totalHearts = 10;
-        int fullHearts = health / 10;
-        int halfHeart = (health % 10 >= 5) ? 1 : 0;
-        
-        for (int i = 0; i < totalHearts; i++) {
-            if (i < fullHearts) {
-                g.setColor(new Color(255, 80, 80)); // Cuore pieno - rosso
-                g.drawString("❤", xPos + i * 18, barY + 22);
-            } else if (i == fullHearts && halfHeart == 1) {
-                g.setColor(new Color(255, 150, 150)); // Mezzo cuore
-                g.drawString("💔", xPos + i * 18, barY + 22);
-            } else {
-                g.setColor(new Color(80, 80, 80)); // Cuore vuoto - grigio
-                g.drawString("♡", xPos + i * 18, barY + 22);
-            }
-        }
-        
-        // Numero salute
+        // === BARRA SALUTE ===
         g.setFont(new Font("SansSerif", Font.BOLD, 12));
         g.setColor(new Color(255, 150, 150));
-        g.drawString(health + "%", xPos + totalHearts * 18 + 5, barY + 20);
+        g.drawString("Salute", xPos, barY + 20);
+
+        int healthBarX = xPos + 55;
+        int healthBarWidth = 110;
+        int healthBarHeight = 12;
+
+        g.setColor(new Color(70, 35, 35));
+        g.fillRoundRect(healthBarX, barY + 10, healthBarWidth, healthBarHeight, 5, 5);
+
+        Color healthColor;
+        if (health > 70) healthColor = new Color(120, 220, 120);
+        else if (health > 40) healthColor = new Color(255, 200, 100);
+        else healthColor = new Color(255, 100, 100);
+
+        int healthFillWidth = (int) (healthBarWidth * clampPercent(health) / 100.0);
+        g.setColor(healthColor);
+        g.fillRoundRect(healthBarX, barY + 10, healthFillWidth, healthBarHeight, 5, 5);
+
+        g.setColor(new Color(140, 80, 80));
+        g.drawRoundRect(healthBarX, barY + 10, healthBarWidth, healthBarHeight, 5, 5);
+
+        g.setColor(Color.WHITE);
+        g.drawString(health + "%", healthBarX + healthBarWidth + 8, barY + 20);
         
         // === BARRA SANITÀ MENTALE ===
-        int sanityBarX = xPos + totalHearts * 18 + 60;
+        int sanityBarX = healthBarX + healthBarWidth + 60;
         int sanityBarWidth = 100;
         int sanityBarHeight = 12;
         
-        g.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        g.setFont(new Font("SansSerif", Font.BOLD, 12));
         g.setColor(new Color(150, 150, 255));
-        g.drawString("🧠", sanityBarX - 20, barY + 20);
+        g.drawString("Mente", sanityBarX - 42, barY + 20);
         
         // Sfondo barra sanità
         g.setColor(new Color(50, 50, 70));
@@ -210,7 +192,7 @@ public class FullScreenRenderer {
         else if (sanity > 40) sanityColor = new Color(255, 200, 100);
         else sanityColor = new Color(255, 100, 100);
         
-        int fillWidth = (int) (sanityBarWidth * sanity / 100.0);
+        int fillWidth = (int) (sanityBarWidth * clampPercent(sanity) / 100.0);
         g.setColor(sanityColor);
         g.fillRoundRect(sanityBarX, barY + 10, fillWidth, sanityBarHeight, 5, 5);
         
@@ -226,10 +208,10 @@ public class FullScreenRenderer {
         // === GIORNO E LOCATION ===
         g.setFont(new Font("SansSerif", Font.BOLD, 12));
         g.setColor(new Color(255, 220, 100));
-        g.drawString("📅 Giorno " + day, sanityBarX + sanityBarWidth + 30, barY + 20);
+        g.drawString("Giorno " + day, sanityBarX + sanityBarWidth + 30, barY + 20);
         
         g.setColor(new Color(150, 200, 150));
-        g.drawString("📍 " + location, sanityBarX + sanityBarWidth + 120, barY + 20);
+        g.drawString(location, sanityBarX + sanityBarWidth + 120, barY + 20);
         
         // === ISTRUZIONI ===
         g.setFont(new Font("Monospaced", Font.PLAIN, 10));
@@ -245,6 +227,23 @@ public class FullScreenRenderer {
         g.setColor(new Color(50, 60, 50));
         g.setFont(new Font("SansSerif", Font.BOLD, 12));
         g.drawString("LOST", 10, 15);
+    }
+
+    private int parseFirstNumber(String text, int fallback) {
+        if (text == null) return fallback;
+
+        String digits = text.replaceAll("[^0-9]", "");
+        if (digits.isEmpty()) return fallback;
+
+        try {
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
+
+    private int clampPercent(int value) {
+        return Math.max(0, Math.min(100, value));
     }
     
     public PixelArtManager getPixelArtManager() {

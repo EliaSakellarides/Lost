@@ -77,12 +77,12 @@ public class Room {
     /** Restituisce la descrizione completa della stanza con oggetti visibili e uscite. */
     public String getFullDescription() {
         StringBuilder sb = new StringBuilder();
-        sb.append("📍 ").append(name).append("\n\n");
+        sb.append(name).append("\n\n");
         sb.append(description).append("\n");
         
         // Mostra oggetti
         if (!items.isEmpty()) {
-            sb.append("\n🔍 Vedi: ");
+            sb.append("\nVedi: ");
             for (int i = 0; i < items.size(); i++) {
                 sb.append(items.get(i).getName());
                 if (i < items.size() - 1) sb.append(", ");
@@ -92,7 +92,7 @@ public class Room {
         
         // Mostra uscite
         if (!exits.isEmpty()) {
-            sb.append("\n🚪 Uscite: ");
+            sb.append("\nUscite: ");
             sb.append(String.join(", ", exits.keySet()));
         }
         

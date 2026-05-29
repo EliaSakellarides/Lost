@@ -5,7 +5,6 @@ import com.lost.model.Item;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 /**
  * Gestisce tutta la sequenza cinematica introduttiva del gioco.
@@ -45,8 +44,6 @@ public class IntroSequence {
         introWindow.setLocationRelativeTo(parent);
 
         final float[] alpha = {0f};
-        final double[] rotation = {0.0};
-        final double[] scale = {0.3};
 
         JPanel introPanel = new JPanel() {
             @Override
@@ -63,16 +60,6 @@ public class IntroSequence {
                 g2d.setColor(Color.BLACK);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
 
-                AffineTransform originalTransform = g2d.getTransform();
-
-                int centerX = getWidth() / 2;
-                int centerY = getHeight() / 2;
-
-                g2d.translate(centerX, centerY);
-                g2d.rotate(rotation[0]);
-                g2d.scale(scale[0], scale[0]);
-                g2d.translate(-centerX, -centerY);
-
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha[0]));
 
                 Font lostFont = new Font("Times New Roman", Font.BOLD, 180);
@@ -84,8 +71,6 @@ public class IntroSequence {
                 int x = (getWidth() - fm.stringWidth(text)) / 2;
                 int y = (getHeight() + fm.getAscent()) / 2 - 30;
                 g2d.drawString(text, x, y);
-
-                g2d.setTransform(originalTransform);
             }
         };
 
@@ -96,9 +81,10 @@ public class IntroSequence {
         Timer animTimer = new Timer(30, null);
         final int[] frame = {0};
         final boolean[] done = {false};
-        final int FADE_IN_FRAMES = 60;
-        final int ROTATE_FRAMES = 200;
-        final int TOTAL_FRAMES = FADE_IN_FRAMES + ROTATE_FRAMES;
+        final int FADE_IN_FRAMES = 150;
+        final int HOLD_FRAMES = 70;
+        final int FADE_OUT_FRAMES = 45;
+        final int TOTAL_FRAMES = FADE_IN_FRAMES + HOLD_FRAMES + FADE_OUT_FRAMES;
 
         animTimer.addActionListener(e -> {
             if (done[0]) return;
@@ -106,24 +92,19 @@ public class IntroSequence {
 
             if (frame[0] <= FADE_IN_FRAMES) {
                 alpha[0] = (float) frame[0] / FADE_IN_FRAMES;
-                scale[0] = 0.5 + (0.5 * frame[0] / FADE_IN_FRAMES);
-                rotation[0] = Math.toRadians(90.0 * frame[0] / FADE_IN_FRAMES);
-            } else if (frame[0] <= TOTAL_FRAMES) {
+            } else if (frame[0] <= FADE_IN_FRAMES + HOLD_FRAMES) {
                 alpha[0] = 1.0f;
-                scale[0] = 1.0;
-                int rotateFrame = frame[0] - FADE_IN_FRAMES;
-                rotation[0] = Math.toRadians(90.0 + (270.0 * rotateFrame / ROTATE_FRAMES));
-            } else {
-                alpha[0] -= 0.05f;
-                scale[0] += 0.02;
+            } else if (frame[0] <= TOTAL_FRAMES) {
+                int fadeOutFrame = frame[0] - FADE_IN_FRAMES - HOLD_FRAMES;
+                alpha[0] = Math.max(0f, 1.0f - ((float) fadeOutFrame / FADE_OUT_FRAMES));
+            }
 
-                if (alpha[0] <= 0f && currentScene == 0) {
-                    currentScene = 1;
-                    done[0] = true;
-                    animTimer.stop();
-                    introWindow.dispose();
-                    showIntroImages();
-                }
+            if (frame[0] > TOTAL_FRAMES && currentScene == 0) {
+                currentScene = 1;
+                done[0] = true;
+                animTimer.stop();
+                introWindow.dispose();
+                showIntroImages();
             }
 
             introPanel.repaint();
@@ -144,7 +125,7 @@ public class IntroSequence {
             "Un viaggio come tanti altri.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(40, 60, 90), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(40, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showHostessScene();
@@ -212,7 +193,7 @@ public class IntroSequence {
         engine.getPlayer().addItem(whisky);
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(120, 80, 40), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(120, 80, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showTurbulenceScene();
@@ -253,7 +234,7 @@ public class IntroSequence {
             BorderFactory.createEmptyBorder(30, 30, 30, 30)
         ));
 
-        JLabel iconLabel = new JLabel("\uD83C\uDF92", SwingConstants.CENTER);
+        JLabel iconLabel = new JLabel("", SwingConstants.CENTER);
         iconLabel.setFont(new Font("SansSerif", Font.PLAIN, 60));
 
         JLabel titleLabel = new JLabel("NUOVO OGGETTO!", SwingConstants.CENTER);
@@ -305,7 +286,7 @@ public class IntroSequence {
             "Poi il buio.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showPlaneBreakingScene();
@@ -329,7 +310,7 @@ public class IntroSequence {
             "Stai cadendo.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showEyeOpeningScene();
@@ -354,7 +335,7 @@ public class IntroSequence {
             "Non sai quanto tempo e passato.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(60, 60, 90), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(60, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showJungleAwakeningScene();
@@ -378,7 +359,7 @@ public class IntroSequence {
             "In lontananza: urla, e il rumore sordo di qualcosa che brucia.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(50, 80, 50), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(50, 80, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showFollowVincentScene();
@@ -402,7 +383,7 @@ public class IntroSequence {
             "Lo segui.");
 
         JButton continueBtn = GuiButtonFactory.create("Segui Vincent",
-            new Font("Georgia", Font.BOLD, 16), new Color(80, 70, 40), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(80, 70, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showBeachCrashScene();
@@ -437,13 +418,13 @@ public class IntroSequence {
         int health = engine.getPlayer().getHealth();
         int sanity = engine.getPlayer().getSanity();
         JLabel statsLabel = new JLabel(
-            "\u2764\uFE0F " + health + "/100 (-10)  |  \uD83E\uDDE0 " + sanity + "/100 (+10)",
+            "Salute " + health + "/100 (-10)  |  Sanita " + sanity + "/100 (+10)",
             SwingConstants.CENTER);
         statsLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         statsLabel.setForeground(new Color(200, 200, 100));
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Georgia", Font.BOLD, 16), new Color(80, 60, 40), Color.WHITE);
+            new Font("Serif", Font.BOLD, 16), new Color(80, 60, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showJungleHealScene();
@@ -475,11 +456,11 @@ public class IntroSequence {
             "Potrebbe servire come disinfettante.\n\n" +
             "Come ti curi?");
 
-        JButton whiskyBtn = GuiButtonFactory.create("\uD83E\uDD43 Usa il whisky sulle ferite",
+        JButton whiskyBtn = GuiButtonFactory.create("Usa il whisky sulle ferite",
             new Font("SansSerif", Font.BOLD, 14), new Color(120, 80, 40), Color.WHITE);
-        JButton bandageBtn = GuiButtonFactory.create("\uD83E\uDE79 Fasciature di fortuna",
+        JButton bandageBtn = GuiButtonFactory.create("Fasciature di fortuna",
             new Font("SansSerif", Font.BOLD, 14), new Color(60, 100, 60), Color.WHITE);
-        JButton toughBtn = GuiButtonFactory.create("\uD83D\uDCAA Stringi i denti",
+        JButton toughBtn = GuiButtonFactory.create("Stringi i denti",
             new Font("SansSerif", Font.BOLD, 14), new Color(80, 80, 80), Color.WHITE);
 
         whiskyBtn.addActionListener(e -> {
@@ -488,7 +469,7 @@ public class IntroSequence {
             engine.getPlayer().addHealth(15);
             engine.getPlayer().removeSanity(10);
             showHealResultScene(
-                "\uD83E\uDD43 DISINFETTARE LE FERITE",
+                "DISINFETTARE LE FERITE",
                 "curarsi con alchol.jpg",
                 new Color(100, 70, 40), new Color(255, 220, 150),
                 "Apri la bottiglietta di whisky.\n\n" +
@@ -496,7 +477,7 @@ public class IntroSequence {
                 "Ma almeno non si infetteranno.\n\n" +
                 "Bevi un sorso per calmare i nervi...\n" +
                 "Ti senti stordito, ma le ferite sono pulite.",
-                "\u2764\uFE0F +" + 15 + " salute  |  \uD83E\uDDE0 -10 sanit\u00E0");
+                "+15 salute  |  -10 sanita");
         });
 
         bandageBtn.addActionListener(e -> {
@@ -504,14 +485,14 @@ public class IntroSequence {
             // Fasciature: piccola cura, mantieni sanita
             engine.getPlayer().addHealth(5);
             showHealResultScene(
-                "\uD83E\uDE79 FASCIATURE DI FORTUNA",
+                "FASCIATURE DI FORTUNA",
                 "aiuto spravvissuti.jpg",
                 new Color(50, 80, 50), new Color(200, 255, 200),
                 "Strappi strisce di tessuto dalla camicia.\n\n" +
                 "Fasci le ferite pi\u00F9 profonde alla meglio.\n" +
                 "Non \u00E8 il massimo, ma almeno fermi il sangue.\n\n" +
                 "Mantieni la lucidit\u00E0. Devi restare concentrato.",
-                "\u2764\uFE0F +5 salute");
+                "+5 salute");
         });
 
         toughBtn.addActionListener(e -> {
@@ -519,14 +500,14 @@ public class IntroSequence {
             // Stringi i denti: nessuna cura, bonus sanita
             engine.getPlayer().addSanity(5);
             showHealResultScene(
-                "\uD83D\uDCAA STRINGI I DENTI",
+                "STRINGI I DENTI",
                 "risveglio in giungla.jpg",
                 new Color(60, 60, 80), new Color(200, 200, 255),
                 "Non hai tempo per questo. Ci sono cose pi\u00F9 importanti.\n\n" +
                 "Il dolore \u00E8 solo nella testa. Puoi farcela.\n" +
                 "Stringi i denti e ti rialzi.\n\n" +
                 "Sei pi\u00F9 determinato che mai a sopravvivere.",
-                "\uD83E\uDDE0 +5 sanit\u00E0");
+                "+5 sanita");
         });
 
         JPanel btnPanel = scene.createButtonPanel(whiskyBtn, bandageBtn, toughBtn);
@@ -548,7 +529,7 @@ public class IntroSequence {
         statsLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         statsLabel.setForeground(new Color(200, 200, 100));
 
-        JButton continueBtn = GuiButtonFactory.create("\u27A1\uFE0F Continua",
+        JButton continueBtn = GuiButtonFactory.create("Continua",
             new Font("SansSerif", Font.BOLD, 16), titleBg, Color.WHITE);
         continueBtn.addActionListener(e -> {
             if (currentScene != 10) return;

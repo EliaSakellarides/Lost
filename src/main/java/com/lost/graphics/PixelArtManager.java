@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 /**
  * Manager per il caricamento e la gestione delle immagini del gioco.
- * Carica le immagini da file (assets/images/) invece di generarle.
+ * Carica le immagini da src/main/resources/images tramite classpath.
  */
 public class PixelArtManager {
     

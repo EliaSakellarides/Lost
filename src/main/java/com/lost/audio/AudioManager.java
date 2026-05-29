@@ -34,10 +34,6 @@ public class AudioManager {
             
             // Cerca il file audio dal classpath
             InputStream audioStream = getClass().getResourceAsStream("/music/" + filename);
-            if (audioStream == null) {
-                // Prova percorso alternativo
-                audioStream = getClass().getResourceAsStream("/assets/music/" + filename);
-            }
             
             if (audioStream != null) {
                 AudioInputStream ais = AudioSystem.getAudioInputStream(

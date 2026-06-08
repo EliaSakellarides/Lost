@@ -1,6 +1,7 @@
 package com.lost.gui;
 
 import com.lost.engine.GameEngine;
+import com.lost.graphics.GameFonts;
 import com.lost.graphics.FullScreenRenderer;
 import com.lost.graphics.TextColorizer;
 import com.lost.minigames.MiniGame;
@@ -134,11 +135,11 @@ public class FullScreenGUI extends JFrame {
 
     private JPanel createControlPanel() {
         JPanel panel = new JPanel();
-        panel.setBackground(new Color(20, 30, 40));
-        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        panel.setPreferredSize(new Dimension(screenWidth, 70));
+        panel.setBackground(Color.BLACK);
+        panel.setLayout(new FlowLayout(FlowLayout.CENTER, 8, 8));
+        panel.setPreferredSize(new Dimension(screenWidth, 86));
 
-        Font buttonFont = new Font("SansSerif", Font.BOLD, 18);
+        Font buttonFont = GameFonts.retroBold(20f);
         Color buttonBg = new Color(45, 130, 85);
         Color buttonFg = Color.WHITE;
 
@@ -154,9 +155,9 @@ public class FullScreenGUI extends JFrame {
             new Color(50, 150, 100), buttonFg);
         btnAdvance.addActionListener(e -> processInput("avanti"));
 
-        inputField = new JTextField(25);
-        inputField.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        inputField.setBackground(new Color(40, 50, 60));
+        inputField = new JTextField(16);
+        inputField.setFont(GameFonts.retroPlain(20f));
+        inputField.setBackground(new Color(8, 8, 8));
         inputField.setForeground(Color.WHITE);
         inputField.setCaretColor(Color.WHITE);
         inputField.setBorder(BorderFactory.createCompoundBorder(
@@ -202,11 +203,11 @@ public class FullScreenGUI extends JFrame {
         panel.add(btnA);
         panel.add(btnB);
         panel.add(btnC);
-        panel.add(Box.createHorizontalStrut(20));
+        panel.add(Box.createHorizontalStrut(8));
         panel.add(btnAdvance);
-        panel.add(Box.createHorizontalStrut(20));
+        panel.add(Box.createHorizontalStrut(8));
         panel.add(inputField);
-        panel.add(Box.createHorizontalStrut(20));
+        panel.add(Box.createHorizontalStrut(8));
         panel.add(btnSave);
         panel.add(btnMap);
         panel.add(btnRecords);
@@ -279,45 +280,45 @@ public class FullScreenGUI extends JFrame {
         JDialog dialog = new JDialog(this, "LOST", true);
         dialog.setUndecorated(true);
         dialog.setLayout(new BorderLayout());
-        dialog.getContentPane().setBackground(new Color(20, 30, 40));
+        dialog.getContentPane().setBackground(Color.BLACK);
 
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.setBackground(new Color(20, 30, 40));
+        content.setBackground(Color.BLACK);
         content.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
 
         JLabel titleLabel = new JLabel("LOST");
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
+        titleLabel.setFont(GameFonts.retroBold(36f));
         titleLabel.setForeground(new Color(255, 220, 100));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel subLabel = new JLabel("L'Isola Misteriosa");
-        subLabel.setFont(new Font("SansSerif", Font.ITALIC, 16));
+        subLabel.setFont(GameFonts.retro(Font.ITALIC, 22f));
         subLabel.setForeground(new Color(150, 180, 150));
         subLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel msgLabel = new JLabel("Il volo Oceanic 815 \u00E8 precipitato...");
-        msgLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        msgLabel.setFont(GameFonts.retroPlain(20f));
         msgLabel.setForeground(Color.WHITE);
         msgLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel msg2Label = new JLabel("Come ti chiami, sopravvissuto?");
-        msg2Label.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        msg2Label.setFont(GameFonts.retroPlain(20f));
         msg2Label.setForeground(Color.WHITE);
         msg2Label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JTextField nameField = new JTextField("Jack", 20);
-        nameField.setFont(new Font("Monospaced", Font.BOLD, 16));
+        nameField.setFont(GameFonts.retroBold(24f));
         nameField.setMaximumSize(new Dimension(200, 35));
         nameField.setHorizontalAlignment(JTextField.CENTER);
-        nameField.setBackground(new Color(40, 50, 60));
+        nameField.setBackground(new Color(8, 8, 8));
         nameField.setForeground(Color.WHITE);
         nameField.setCaretColor(Color.WHITE);
         nameField.setBorder(BorderFactory.createLineBorder(new Color(100, 150, 100), 2));
         nameField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton startBtn = GuiButtonFactory.create(" INIZIA L'AVVENTURA",
-            new Font("SansSerif", Font.BOLD, 16),
+            GameFonts.retroBold(24f),
             new Color(50, 100, 50), Color.WHITE);
         startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -346,7 +347,7 @@ public class FullScreenGUI extends JFrame {
         if (GameSave.hasSaves()) {
             content.add(Box.createVerticalStrut(10));
             JButton loadBtn = GuiButtonFactory.create(" CARICA PARTITA",
-                new Font("SansSerif", Font.BOLD, 14),
+                GameFonts.retroBold(22f),
                 new Color(70, 70, 100), Color.WHITE);
             loadBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
             loadBtn.addActionListener(e -> {
@@ -590,7 +591,7 @@ public class FullScreenGUI extends JFrame {
     private void showMapDialog() {
         JDialog mapDialog = new JDialog(this, "Mappa dell'Isola", true);
         mapDialog.setLayout(new BorderLayout());
-        mapDialog.getContentPane().setBackground(new Color(20, 30, 40));
+        mapDialog.getContentPane().setBackground(Color.BLACK);
 
         ImageIcon icon = null;
         java.net.URL url = getClass().getClassLoader().getResource("images/mappa_isola.jpg");
@@ -620,11 +621,11 @@ public class FullScreenGUI extends JFrame {
         }
 
         JButton closeBtn = GuiButtonFactory.create("Chiudi",
-            new Font("SansSerif", Font.BOLD, 14),
+            GameFonts.retroBold(22f),
             new Color(50, 70, 50), Color.WHITE);
         closeBtn.addActionListener(e -> mapDialog.dispose());
         JPanel btnPanel = new JPanel();
-        btnPanel.setBackground(new Color(20, 30, 40));
+        btnPanel.setBackground(Color.BLACK);
         btnPanel.add(closeBtn);
         mapDialog.add(btnPanel, BorderLayout.SOUTH);
 

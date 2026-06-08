@@ -1,5 +1,7 @@
 package com.lost.gui;
 
+import com.lost.graphics.GameFonts;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -59,7 +61,7 @@ public class SceneBuilder {
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setBackground(bgColor);
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 26));
+        titleLabel.setFont(GameFonts.retroBold(32f));
         titleLabel.setForeground(fgColor);
         titlePanel.add(titleLabel);
         return titlePanel;
@@ -72,7 +74,7 @@ public class SceneBuilder {
         sceneText.setWrapStyleWord(true);
         sceneText.setBackground(Color.BLACK);
         sceneText.setForeground(Color.WHITE);
-        sceneText.setFont(new Font("Serif", Font.PLAIN, 18));
+        sceneText.setFont(GameFonts.retroPlain(25f));
         sceneText.setText(text);
         return sceneText;
     }

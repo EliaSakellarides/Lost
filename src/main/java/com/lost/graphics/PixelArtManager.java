@@ -175,33 +175,9 @@ public class PixelArtManager {
         BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         
-        // Sfondo gradiente basato sulla location
-        Color topColor, bottomColor;
-        switch (locationKey) {
-            case "giungla":
-            case "esplorazione":
-                topColor = new Color(20, 60, 20);
-                bottomColor = new Color(40, 100, 40);
-                break;
-            case "spiaggia":
-            case "crash":
-            case "campo":
-                topColor = new Color(135, 206, 235);
-                bottomColor = new Color(238, 214, 175);
-                break;
-            case "botola":
-            case "grotte":
-                topColor = new Color(40, 40, 50);
-                bottomColor = new Color(60, 60, 70);
-                break;
-            case "prima_notte":
-                topColor = new Color(15, 20, 40);
-                bottomColor = new Color(30, 35, 50);
-                break;
-            default:
-                topColor = new Color(50, 80, 120);
-                bottomColor = new Color(100, 130, 160);
-        }
+        // Placeholder volutamente nero: se manca un'immagine non deve cambiare atmosfera.
+        Color topColor = Color.BLACK;
+        Color bottomColor = new Color(8, 8, 8);
         
         // Gradiente
         GradientPaint gradient = new GradientPaint(
@@ -213,7 +189,7 @@ public class PixelArtManager {
         
         // Testo location
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Serif", Font.BOLD, 26));
+        g.setFont(GameFonts.retroBold(30f));
         String text = locationKey.toUpperCase().replace("_", " ");
         FontMetrics fm = g.getFontMetrics();
         int textX = (imageWidth - fm.stringWidth(text)) / 2;
@@ -221,7 +197,7 @@ public class PixelArtManager {
         g.drawString(text, textX, textY);
         
         // Nota per creare immagine
-        g.setFont(new Font("Serif", Font.PLAIN, 15));
+        g.setFont(GameFonts.retroPlain(20f));
         String note = "(Immagine da creare)";
         int noteX = (imageWidth - g.getFontMetrics().stringWidth(note)) / 2;
         g.drawString(note, noteX, textY + 30);

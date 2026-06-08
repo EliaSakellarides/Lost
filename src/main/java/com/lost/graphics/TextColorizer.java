@@ -163,8 +163,8 @@ public class TextColorizer {
 
     private static String wrapHtml(String body) {
         return "<html><head><style>"
-                + "body { font-family: 'Consolas', 'Courier New', monospace; "
-                + "font-size: 11pt; "
+                + "body { font-family: 'VT323', 'Courier New', monospace; "
+                + "font-size: 18pt; "
                 + "color: " + DEFAULT_COLOR + "; "
                 + "margin: 8px; "
                 + "padding: 0; }"

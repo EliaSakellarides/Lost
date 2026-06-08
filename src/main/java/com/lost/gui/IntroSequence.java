@@ -1,6 +1,7 @@
 package com.lost.gui;
 
 import com.lost.engine.GameEngine;
+import com.lost.graphics.GameFonts;
 import com.lost.model.Item;
 
 import javax.swing.*;
@@ -62,7 +63,7 @@ public class IntroSequence {
 
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha[0]));
 
-                Font lostFont = new Font("Times New Roman", Font.BOLD, 180);
+                Font lostFont = GameFonts.retroBold(190f);
                 g2d.setFont(lostFont);
                 g2d.setColor(Color.WHITE);
 
@@ -125,7 +126,7 @@ public class IntroSequence {
             "Un viaggio come tanti altri.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(40, 60, 90), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(40, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showHostessScene();
@@ -144,7 +145,7 @@ public class IntroSequence {
         JDialog dialog = scene.createFullScreenDialog();
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(30, 40, 50));
+        mainPanel.setBackground(Color.BLACK);
 
         // Immagine hostess (caricamento custom per fallback jpg/png)
         JPanel imagePanel = new JPanel() {
@@ -169,13 +170,13 @@ public class IntroSequence {
                     g2d.setColor(new Color(50, 60, 80));
                     g2d.fillRect(0, 0, getWidth(), getHeight());
                     g2d.setColor(Color.WHITE);
-                    g2d.setFont(new Font("SansSerif", Font.ITALIC, 16));
+                    g2d.setFont(GameFonts.retro(Font.ITALIC, 22f));
                     g2d.drawString("[ Immagine: hostess.png ]", getWidth()/2 - 80, getHeight()/2);
                 }
             }
         };
         imagePanel.setPreferredSize(new Dimension(screenWidth, (int)(screenHeight * 0.55)));
-        imagePanel.setBackground(new Color(30, 40, 50));
+        imagePanel.setBackground(Color.BLACK);
 
         JTextArea sceneText = scene.createSceneText(
             "Un'hostess si avvicina con il carrello delle bevande.\n\n" +
@@ -193,20 +194,20 @@ public class IntroSequence {
         engine.getPlayer().addItem(whisky);
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(120, 80, 40), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(120, 80, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showTurbulenceScene();
         });
 
         JPanel buttonPanel = scene.createButtonPanel(continueBtn);
-        buttonPanel.setBackground(new Color(30, 40, 50));
+        buttonPanel.setBackground(Color.BLACK);
 
         JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.setBackground(new Color(30, 40, 50));
+        textPanel.setBackground(Color.BLACK);
         textPanel.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
         textPanel.add(sceneText, BorderLayout.CENTER);
-        sceneText.setBackground(new Color(30, 40, 50));
+        sceneText.setBackground(Color.BLACK);
         textPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -228,26 +229,26 @@ public class IntroSequence {
         itemDialog.setLocationRelativeTo(parent);
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(new Color(30, 50, 30));
+        panel.setBackground(Color.BLACK);
         panel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(100, 200, 100), 3),
             BorderFactory.createEmptyBorder(30, 30, 30, 30)
         ));
 
         JLabel iconLabel = new JLabel("", SwingConstants.CENTER);
-        iconLabel.setFont(new Font("SansSerif", Font.PLAIN, 60));
+        iconLabel.setFont(GameFonts.retroPlain(72f));
 
         JLabel titleLabel = new JLabel("NUOVO OGGETTO!", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
+        titleLabel.setFont(GameFonts.retroBold(34f));
         titleLabel.setForeground(new Color(100, 255, 100));
 
         JLabel itemLabel = new JLabel(itemName, SwingConstants.CENTER);
-        itemLabel.setFont(new Font("SansSerif", Font.ITALIC, 18));
+        itemLabel.setFont(GameFonts.retro(Font.ITALIC, 26f));
         itemLabel.setForeground(Color.WHITE);
 
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBackground(new Color(30, 50, 30));
+        centerPanel.setBackground(Color.BLACK);
         centerPanel.add(Box.createVerticalGlue());
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -286,7 +287,7 @@ public class IntroSequence {
             "Poi il buio.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showPlaneBreakingScene();
@@ -310,7 +311,7 @@ public class IntroSequence {
             "Stai cadendo.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(100, 50, 50), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showEyeOpeningScene();
@@ -335,7 +336,7 @@ public class IntroSequence {
             "Non sai quanto tempo e passato.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(60, 60, 90), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(60, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showJungleAwakeningScene();
@@ -359,7 +360,7 @@ public class IntroSequence {
             "In lontananza: urla, e il rumore sordo di qualcosa che brucia.");
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(50, 80, 50), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(50, 80, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showFollowVincentScene();
@@ -383,7 +384,7 @@ public class IntroSequence {
             "Lo segui.");
 
         JButton continueBtn = GuiButtonFactory.create("Segui Vincent",
-            new Font("Serif", Font.BOLD, 16), new Color(80, 70, 40), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(80, 70, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showBeachCrashScene();
@@ -420,11 +421,11 @@ public class IntroSequence {
         JLabel statsLabel = new JLabel(
             "Salute " + health + "/100 (-10)  |  Sanita " + sanity + "/100 (+10)",
             SwingConstants.CENTER);
-        statsLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        statsLabel.setFont(GameFonts.retroBold(22f));
         statsLabel.setForeground(new Color(200, 200, 100));
 
         JButton continueBtn = GuiButtonFactory.create("Continua...",
-            new Font("Serif", Font.BOLD, 16), new Color(80, 60, 40), Color.WHITE);
+            GameFonts.retroBold(24f), new Color(80, 60, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
             dialog.dispose();
             showJungleHealScene();
@@ -457,11 +458,11 @@ public class IntroSequence {
             "Come ti curi?");
 
         JButton whiskyBtn = GuiButtonFactory.create("Usa il whisky sulle ferite",
-            new Font("SansSerif", Font.BOLD, 14), new Color(120, 80, 40), Color.WHITE);
+            GameFonts.retroBold(22f), new Color(120, 80, 40), Color.WHITE);
         JButton bandageBtn = GuiButtonFactory.create("Fasciature di fortuna",
-            new Font("SansSerif", Font.BOLD, 14), new Color(60, 100, 60), Color.WHITE);
+            GameFonts.retroBold(22f), new Color(60, 100, 60), Color.WHITE);
         JButton toughBtn = GuiButtonFactory.create("Stringi i denti",
-            new Font("SansSerif", Font.BOLD, 14), new Color(80, 80, 80), Color.WHITE);
+            GameFonts.retroBold(22f), new Color(80, 80, 80), Color.WHITE);
 
         whiskyBtn.addActionListener(e -> {
             dialog.dispose();
@@ -526,11 +527,11 @@ public class IntroSequence {
         JTextArea text = scene.createSceneText(description);
 
         JLabel statsLabel = new JLabel(statsText, SwingConstants.CENTER);
-        statsLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        statsLabel.setFont(GameFonts.retroBold(22f));
         statsLabel.setForeground(new Color(200, 200, 100));
 
         JButton continueBtn = GuiButtonFactory.create("Continua",
-            new Font("SansSerif", Font.BOLD, 16), titleBg, Color.WHITE);
+            GameFonts.retroBold(24f), titleBg, Color.WHITE);
         continueBtn.addActionListener(e -> {
             if (currentScene != 10) return;
             currentScene = 11;

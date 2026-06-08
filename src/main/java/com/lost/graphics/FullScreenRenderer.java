@@ -27,8 +27,8 @@ public class FullScreenRenderer {
     private int textBoxHeight;
     
     // Colori tema LOST
-    public static final Color BACKGROUND_COLOR = new Color(10, 15, 20);
-    public static final Color TEXT_BOX_COLOR = new Color(20, 30, 40, 230);
+    public static final Color BACKGROUND_COLOR = Color.BLACK;
+    public static final Color TEXT_BOX_COLOR = new Color(0, 0, 0, 235);
     public static final Color BORDER_COLOR = new Color(100, 150, 100);
     public static final Color TEXT_COLOR = new Color(200, 220, 200);
     public static final Color TITLE_COLOR = new Color(255, 220, 100);
@@ -121,7 +121,7 @@ public class FullScreenRenderer {
         int barY = screenHeight - barHeight;
         
         // Sfondo barra
-        g.setColor(new Color(30, 40, 50));
+        g.setColor(Color.BLACK);
         g.fillRect(0, barY, screenWidth, barHeight);
         
         // Linea superiore
@@ -147,7 +147,7 @@ public class FullScreenRenderer {
         int xPos = 20;
         
         // === BARRA SALUTE ===
-        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setFont(GameFonts.retroBold(18f));
         g.setColor(new Color(255, 150, 150));
         g.drawString("Salute", xPos, barY + 20);
 
@@ -178,7 +178,7 @@ public class FullScreenRenderer {
         int sanityBarWidth = 100;
         int sanityBarHeight = 12;
         
-        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setFont(GameFonts.retroBold(18f));
         g.setColor(new Color(150, 150, 255));
         g.drawString("Mente", sanityBarX - 42, barY + 20);
         
@@ -201,12 +201,12 @@ public class FullScreenRenderer {
         g.drawRoundRect(sanityBarX, barY + 10, sanityBarWidth, sanityBarHeight, 5, 5);
         
         // Percentuale sanità
-        g.setFont(new Font("SansSerif", Font.BOLD, 10));
+        g.setFont(GameFonts.retroBold(15f));
         g.setColor(Color.WHITE);
         g.drawString(sanity + "%", sanityBarX + sanityBarWidth/2 - 10, barY + 20);
         
         // === GIORNO E LOCATION ===
-        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setFont(GameFonts.retroBold(18f));
         g.setColor(new Color(255, 220, 100));
         g.drawString("Giorno " + day, sanityBarX + sanityBarWidth + 30, barY + 20);
         
@@ -214,7 +214,7 @@ public class FullScreenRenderer {
         g.drawString(location, sanityBarX + sanityBarWidth + 120, barY + 20);
         
         // === ISTRUZIONI ===
-        g.setFont(new Font("Monospaced", Font.PLAIN, 10));
+        g.setFont(GameFonts.retroPlain(15f));
         String instructions = "[A/B/C] Scegli | [INVIO] Avanti";
         FontMetrics fm = g.getFontMetrics();
         int instWidth = fm.stringWidth(instructions);
@@ -225,7 +225,7 @@ public class FullScreenRenderer {
     private void renderLogo(Graphics2D g) {
         // Logo "LOST" stilizzato
         g.setColor(new Color(50, 60, 50));
-        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        g.setFont(GameFonts.retroBold(18f));
         g.drawString("LOST", 10, 15);
     }
 

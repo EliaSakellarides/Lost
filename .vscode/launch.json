@@ -6,7 +6,10 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "com.lost.Main",
-            "projectName": "lost"
+            "projectName": "lost",
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "-XstartOnFirstThread",
+            "console": "integratedTerminal"
         },
         {
             "type": "java",

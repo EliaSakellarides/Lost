@@ -37,22 +37,22 @@ public class PixelArtManager {
         
         // Location principali del gioco
         IMAGE_FILES.put("spiaggia", "spiaggia.jpeg");
-        IMAGE_FILES.put("giungla", "giungla.jpg");
+        IMAGE_FILES.put("giungla", "risveglio in giungla.jpg");
         IMAGE_FILES.put("botola", "botola.jpg");
-        IMAGE_FILES.put("grotte", "grotte.jpg");
-        IMAGE_FILES.put("campo", "campo.jpg");
-        IMAGE_FILES.put("villaggio", "villaggio.jpg");
-        IMAGE_FILES.put("tempio", "tempio.jpg");
-        IMAGE_FILES.put("roccianera", "roccianera.jpg");
-        IMAGE_FILES.put("faro", "faro.jpg");
-        IMAGE_FILES.put("pista", "pista.jpg");
+        IMAGE_FILES.put("grotte", "scoperta grotte.jpg");
+        IMAGE_FILES.put("campo", "campo sopravvissuti.png");
+        IMAGE_FILES.put("villaggio", "arrivo alle barracks.jpg");
+        IMAGE_FILES.put("tempio", "mappa_isola.jpg");
+        IMAGE_FILES.put("roccianera", "black rock in lontananza.jpg");
+        IMAGE_FILES.put("faro", "l isola è nostra.jpg");
+        IMAGE_FILES.put("pista", "cap15_pista_nascosta.png");
         
         // Scene Giorno 1
-        IMAGE_FILES.put("giorno1_mattino", "giorno1_mattino.jpg");
-        IMAGE_FILES.put("riunione", "riunione.jpg");
-        IMAGE_FILES.put("esplorazione", "esplorazione.jpg");
-        IMAGE_FILES.put("prima_notte", "prima_notte.jpg");
-        IMAGE_FILES.put("mostro_fumo", "mostro_fumo.jpg");
+        IMAGE_FILES.put("giorno1_mattino", "spiaggia.jpeg");
+        IMAGE_FILES.put("riunione", "campo sopravvissuti.png");
+        IMAGE_FILES.put("esplorazione", "risveglio in giungla.jpg");
+        IMAGE_FILES.put("prima_notte", "cap1_prima_notte.png");
+        IMAGE_FILES.put("mostro_fumo", "mostro di fumo.jpg");
         
         // ═══════════════════════════════════════════════════════════
         // IMMAGINI CAPITOLI - MAPPATE ALLE IMMAGINI ESISTENTI

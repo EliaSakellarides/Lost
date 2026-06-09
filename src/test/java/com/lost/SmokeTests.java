@@ -7,6 +7,7 @@ import com.lost.records.GameRecord;
 import com.lost.records.RecordRepository;
 import com.lost.records.RecordService;
 import com.lost.save.GameConverter;
+import com.lost.save.GameSave;
 import com.lost.save.GameState;
 
 import java.util.List;
@@ -23,6 +24,10 @@ public class SmokeTests {
         run("enigma radio riparabile", SmokeTests::testRadioRepairPuzzle);
         run("scelte multiple esatte", SmokeTests::testMultipleChoiceRequiresExactOption);
         run("salto minigioco avanza", SmokeTests::testMiniGameSkipAdvancesChapter);
+        run("la scoperta accetta prendi", SmokeTests::testLaScopertaAcceptsBarePrendi);
+        run("tesi ottenuta solo alla scoperta", SmokeTests::testTesiAwardedOnlyAfterLaScoperta);
+        run("giorno narrativo nello status", SmokeTests::testStatusDayTracksNarrativeDay);
+        run("slot salvataggio sanitizzato", SmokeTests::testSaveSlotSanitization);
         run("record H2 migliori tempi", SmokeTests::testRecordServiceStoresBestTimes);
         run("save/load round-trip", SmokeTests::testSaveRoundTripPreservesState);
 
@@ -206,6 +211,63 @@ public class SmokeTests {
         assertEquals("La Botola", engine.getCurrentChapterTitle(), "titolo dopo salto minigioco");
     }
 
+    private static void testLaScopertaAcceptsBarePrendi() {
+        GameEngine engine = newStartedEngine("Desmond");
+        advanceToLaScoperta(engine);
+
+        assertEquals("La Scoperta", engine.getCurrentChapterTitle(), "capitolo prima di prendi");
+
+        String response = engine.processCommand("prendi");
+
+        assertContains(response, "CORRETTO");
+        assertContains(response, "Hai recuperato la TESI");
+        assertTrue(engine.getPlayer().hasItem("TESI"), "TESI mancante dopo La Scoperta");
+        assertEquals("La Pista Nascosta", engine.getCurrentChapterTitle(), "capitolo dopo La Scoperta");
+    }
+
+    private static void testTesiAwardedOnlyAfterLaScoperta() {
+        GameEngine engine = newStartedEngine("Charlie");
+        advanceToFlashback(engine);
+
+        assertEquals("Flashback", engine.getCurrentChapterTitle(), "capitolo flashback");
+        assertFalse(engine.getPlayer().hasItem("TESI"), "TESI ottenuta troppo presto");
+
+        answerAndContinue(engine, "A");
+        assertEquals("La Scoperta", engine.getCurrentChapterTitle(), "capitolo scoperta");
+        assertFalse(engine.getPlayer().hasItem("TESI"), "TESI ottenuta prima di prenderla");
+
+        assertContains(engine.processCommand("prendi"), "Hai recuperato la TESI");
+        assertTrue(engine.getPlayer().hasItem("TESI"), "TESI non ottenuta alla scoperta");
+    }
+
+    private static void testStatusDayTracksNarrativeDay() {
+        GameEngine engine = newStartedEngine("Sun");
+
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        assertEquals("Le Grotte", engine.getCurrentChapterTitle(), "capitolo giorno 3");
+        assertEquals(3, engine.getPlayer().getDaysOnIsland(), "giorno grotte");
+        assertContains(engine.processCommand("stato"), "Giorno 3");
+
+        answerAndContinue(engine, "C");
+        assertEquals("La Caccia", engine.getCurrentChapterTitle(), "capitolo giorno 5");
+        assertEquals(5, engine.getPlayer().getDaysOnIsland(), "giorno caccia");
+        assertContains(engine.processCommand("stato"), "Giorno 5");
+
+        assertContains(engine.processCommand("A"), "MINI GIOCO");
+        assertContains(engine.processCommand("salta"), "saltato");
+        engine.processCommand("avanti");
+        assertEquals("La Botola", engine.getCurrentChapterTitle(), "capitolo giorno 8");
+        assertEquals(8, engine.getPlayer().getDaysOnIsland(), "giorno botola");
+        assertContains(engine.processCommand("stato"), "Giorno 8");
+    }
+
+    private static void testSaveSlotSanitization() {
+        assertEquals("fake_h2", GameSave.sanitizeSlotName("../../fake h2"), "slot traversal");
+        assertEquals("", GameSave.sanitizeSlotName(""), "slot vuoto");
+    }
+
     private static void testRecordServiceStoresBestTimes() {
         String dbName = "lost_smoke_" + System.nanoTime();
         RecordService service = new RecordService(
@@ -228,6 +290,40 @@ public class SmokeTests {
         String response = engine.processCommand(answer);
         assertContains(response, "CORRETTO");
         engine.processCommand("avanti");
+    }
+
+    private static GameEngine newStartedEngine(String playerName) {
+        GameEngine engine = new GameEngine();
+        engine.getAudioManager().toggleMusic();
+        engine.initializeGame(playerName);
+        engine.forceStartFirstChapter();
+        return engine;
+    }
+
+    private static void advanceToFlashback(GameEngine engine) {
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "C");
+
+        assertContains(engine.processCommand("A"), "MINI GIOCO");
+        assertContains(engine.processCommand("salta"), "saltato");
+        engine.processCommand("avanti");
+
+        answerAndContinue(engine, "C");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "C");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "nuotare");
+    }
+
+    private static void advanceToLaScoperta(GameEngine engine) {
+        advanceToFlashback(engine);
+        answerAndContinue(engine, "A");
     }
 
     private static void run(String name, CheckedTest test) {

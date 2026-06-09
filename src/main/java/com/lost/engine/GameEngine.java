@@ -142,7 +142,8 @@ public class GameEngine {
             "cap2_survivors",
             "I Sopravvissuti",
             "Sei sulla spiaggia con gli altri sopravvissuti.\n\n" +
-            player.getName() + ", il medico, sta organizzando il campo.\n" +
+            "Jack, il medico, sta organizzando il campo.\n" +
+            player.getName() + " lo aiuta a contare i sopravvissuti.\n" +
             "Kate raccoglie provviste dai rottami.\n" +
             "Sawyer sta già litigando con qualcuno...\n\n" +
             "Qualcuno chiede: 'Quanti siamo sopravvissuti?'\n\n" +
@@ -440,13 +441,14 @@ public class GameEngine {
             "Esplori la stazione Il Cigno più a fondo.\n" +
             "Trovi una stanza segreta dietro una parete!\n\n" +
             "All'interno... documenti DHARMA!\n" +
-            "E tra questi... una MAPPA!\n\n" +
+            "Tra le cartelle trovi la tua TESI, protetta in una busta impermeabile.\n" +
+            "Dentro c'e' anche una MAPPA con coordinate scritte a mano.\n\n" +
             "'COORDINATE: PISTA DI ATTERRAGGIO HYDRA'\n" +
             "'Per emergenze. Aereo funzionante.'\n\n" +
             "C'è un AEREO nascosto sull'isola!\n\n" +
-            "Digita 'prendi' per prendere la mappa!",
-            Arrays.asList("prendi", "raccogli", "ok", "si", "a"),
-            "Prendila!"
+            "Digita 'prendi' per recuperare la TESI e la mappa.",
+            Arrays.asList("prendi", "raccogli", "tesi", "mappa", "ok", "si", "a"),
+            "Prendi la TESI: e' il tuo obiettivo principale."
         );
         storyChapters.add(cap14);
         
@@ -462,13 +464,15 @@ public class GameEngine {
             "Segui le coordinate della mappa.\n" +
             "Attraversi territori pericolosi.\n" +
             "Il Mostro di Fumo ruggisce in lontananza.\n\n" +
+            "La radio riparata puo' confermare il segnale, ma la mappa basta per orientarti.\n" +
+            "Portare tutto il gruppo adesso sarebbe troppo rischioso.\n\n" +
             "Ma finalmente... LA VEDI!\n" +
             "Una pista di atterraggio nascosta!\n" +
             "E un piccolo AEREO Cessna sotto un telo!\n\n" +
             "Come procedi?",
             cap15Choices,
             "B",
-            "Meglio prepararsi: carburante, provviste, e verificare l'aereo!"
+            "Meglio prepararsi: andare subito o portare tutti metterebbe il gruppo in pericolo."
         ));
         
         // CAPITOLO 16: PREPARAZIONE AL VOLO
@@ -497,13 +501,15 @@ public class GameEngine {
         cap17Choices.put("C", "Tornare indietro");
         storyChapters.add(new Level(
             "cap17_escape",
-            "La Fuga",
+            "Il Decollo",
             "IL MOMENTO È ARRIVATO!\n\n" +
             "Il motore si accende! L'elica gira!\n" +
             "Ma qualcosa non va...\n\n" +
             "Il MOSTRO DI FUMO appare dalla giungla!\n" +
             "Gli ALTRI corrono verso la pista!\n" +
             "Ben grida: 'NON PUOI ANDARTENE!'\n\n" +
+            "Gli altri sopravvissuti sono nascosti al sicuro. Se aspetti, perdi l'unica finestra.\n" +
+            "Partire ora puo' permetterti di tornare con soccorsi veri.\n\n" +
             "Hai solo pochi secondi per decidere!\n\n" +
             "Cosa fai?",
             cap17Choices,
@@ -708,14 +714,15 @@ public class GameEngine {
                     break;
 
                 case PRENDI:
+                    if (isCurrentChapter("cap14_thesis")) {
+                        response = answerChapter(target.isEmpty() ? "prendi" : target);
+                        advanceTurn = true;
+                        break;
+                    }
                     if (target.isEmpty()) {
-                        return " Cosa vuoi prendere?";
+                        return "Cosa vuoi prendere?";
                     }
-                    if (currentChapter == 12) {
-                        response = answerChapter("prendi");
-                    } else {
-                        response = takeItemFromRoom(target);
-                    }
+                    response = takeItemFromRoom(target);
                     advanceTurn = true;
                     break;
 
@@ -806,6 +813,7 @@ public class GameEngine {
     
     private String startNextChapter() {
         if (currentChapterStarted && !currentChapterCompleted && currentChapter < storyChapters.size()) {
+            updatePlayerDayByChapter(currentChapter);
             Level chapter = storyChapters.get(currentChapter);
             String msg = "CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
                          ": " + chapter.getTitle() + "\n\n" +
@@ -897,13 +905,13 @@ public class GameEngine {
                 success += "Hai trovato la dinamite nella cassa della Roccia Nera!\n\n";
             }
 
-            // Aggiungi la TESI all'inventario nel capitolo giusto
-            if (currentChapter == 15) {
+            // Aggiungi la TESI quando viene davvero recuperata nel bunker.
+            if ("cap14_thesis".equals(chapter.getKey()) && !player.hasItem("TESI")) {
                 Item tesi = new Item("TESI",
                     "La TESI perduta! Contiene le coordinate per fuggire dall'isola!",
                     true, Item.ItemType.TESI, 0, -1);
                 player.addItem(tesi);
-                success += "Hai ottenuto la TESI!\n\n";
+                success += "Hai recuperato la TESI e la mappa per la pista Hydra!\n\n";
             }
 
             if (currentChapter >= storyChapters.size()) {
@@ -941,6 +949,11 @@ public class GameEngine {
             return msg;
         }
     }
+
+    private boolean isCurrentChapter(String key) {
+        return currentChapter < storyChapters.size()
+            && key.equals(storyChapters.get(currentChapter).getKey());
+    }
     
     private String takeItemFromRoom(String itemName) {
         Room room = player.getCurrentRoom();
@@ -966,6 +979,7 @@ public class GameEngine {
     
     private void updateRoomByChapter(int chapter) {
         String roomKey;
+        updatePlayerDayByChapter(chapter);
         switch (chapter) {
             case 0: case 1: roomKey = "spiaggia"; break;
             case 2: roomKey = "giungla"; break;
@@ -986,6 +1000,20 @@ public class GameEngine {
         if (allRooms.containsKey(roomKey)) {
             player.setCurrentRoom(allRooms.get(roomKey));
         }
+    }
+
+    private void updatePlayerDayByChapter(int chapter) {
+        player.setDaysOnIsland(getNarrativeDayForChapter(chapter));
+    }
+
+    private int getNarrativeDayForChapter(int chapter) {
+        if (chapter <= 2) return 1;
+        if (chapter == 3) return 3;
+        if (chapter == 4) return 5;
+        if (chapter <= 7) return 8;
+        if (chapter <= 11) return 12;
+        if (chapter <= 13) return 25;
+        return 30;
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -1755,22 +1783,32 @@ public class GameEngine {
     // ═══════════════════════════════════════════════════════════════
 
     private String saveGame(String slotName) {
-        boolean ok = GameSave.save(this, slotName);
+        String safeSlotName = GameSave.sanitizeSlotName(slotName);
+        if (safeSlotName.isEmpty()) {
+            return "Nome salvataggio non valido.";
+        }
+
+        boolean ok = GameSave.save(this, safeSlotName);
         if (ok) {
-            return "Partita salvata nello slot '" + slotName + "'!\n" +
-                   "Usa 'carica " + slotName + "' per ricaricarla.";
+            return "Partita salvata nello slot '" + safeSlotName + "'!\n" +
+                   "Usa 'carica " + safeSlotName + "' per ricaricarla.";
         }
         return "Errore durante il salvataggio!";
     }
 
     private String loadGame(String slotName) {
-        GameState state = GameSave.load(slotName);
+        String safeSlotName = GameSave.sanitizeSlotName(slotName);
+        if (safeSlotName.isEmpty()) {
+            return "Nome salvataggio non valido.";
+        }
+
+        GameState state = GameSave.load(safeSlotName);
         if (state == null) {
-            return "Nessun salvataggio trovato con nome '" + slotName + "'.\n" +
+            return "Nessun salvataggio trovato con nome '" + safeSlotName + "'.\n" +
                    "Usa 'carica' per vedere i salvataggi disponibili.";
         }
         loadGameState(state);
-        return "Partita caricata dallo slot '" + slotName + "'!\n" +
+        return "Partita caricata dallo slot '" + safeSlotName + "'!\n" +
                player.getName() + " | Cap. " + getCurrentChapterNumber() +
                "/" + getTotalChapters() + " | Salute " + player.getHealth() +
                " | Sanita " + player.getSanity() + "\n\n" +
@@ -1829,16 +1867,7 @@ public class GameEngine {
         if (sanityDiff > 0) player.addSanity(sanityDiff);
         else if (sanityDiff < 0) player.removeSanity(-sanityDiff);
 
-        // Giorni
-        while (player.getDaysOnIsland() < state.getDaysOnIsland()) {
-            // nextDay() toglie anche sanita', quindi usiamo un approccio diretto
-            // incrementiamo senza effetti collaterali
-            player.nextDay();
-        }
-        // Ricalcola sanity dopo i giorni
-        int finalSanityDiff = state.getSanity() - player.getSanity();
-        if (finalSanityDiff > 0) player.addSanity(finalSanityDiff);
-        else if (finalSanityDiff < 0) player.removeSanity(-finalSanityDiff);
+        player.setDaysOnIsland(state.getDaysOnIsland());
 
         // Stanza corrente
         Room room = allRooms.get(state.getCurrentRoomKey());

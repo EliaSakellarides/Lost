@@ -569,8 +569,8 @@ public class FullScreenGUI extends JFrame {
 
         engine = new GameEngine();
         engine.loadGameState(state);
-        victoryDialogShown = false;
-        completionRecordSaved = false;
+        victoryDialogShown = engine.isGameWon();
+        completionRecordSaved = true;
         gameStartMillis = System.currentTimeMillis();
 
         currentLocation = engine.getCurrentRoomKey();
@@ -581,6 +581,7 @@ public class FullScreenGUI extends JFrame {
             "/" + engine.getTotalChapters() +
             " | Salute " + engine.getPlayer().getHealth() +
             " | Sanita " + engine.getPlayer().getSanity() + "\n\n" +
+            "I record sono disponibili solo per le nuove partite.\n\n" +
             "Premi AVANTI per continuare...";
         currentTitle = "PARTITA CARICATA";
 

@@ -8,8 +8,10 @@
             "mainClass": "com.lost.Main",
             "projectName": "lost",
             "cwd": "${workspaceFolder}",
-            "vmArgs": "-XstartOnFirstThread",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "osx": {
+                "vmArgs": "-XstartOnFirstThread"
+            }
         },
         {
             "type": "java",
@@ -18,8 +20,10 @@
             "mainClass": "com.lost.Main",
             "projectName": "lost",
             "cwd": "${workspaceFolder}",
-            "vmArgs": "-XstartOnFirstThread",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "osx": {
+                "vmArgs": "-XstartOnFirstThread"
+            }
         }
     ]
 }

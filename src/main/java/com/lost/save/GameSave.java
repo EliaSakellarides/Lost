@@ -30,17 +30,21 @@ public class GameSave {
     public static boolean save(GameEngine engine, String slotName) {
         try {
             Files.createDirectories(SAVE_DIR);
+            String safeSlotName = sanitizeSlotName(slotName);
+            if (safeSlotName.isEmpty()) {
+                return false;
+            }
 
             GameState state = GameConverter.extractState(engine);
             String json = GameConverter.toJson(state);
 
             // Scrivi il file di salvataggio
-            Path saveFile = SAVE_DIR.resolve(slotName + ".json");
+            Path saveFile = resolveSlotFile(SAVE_DIR, safeSlotName);
             Files.writeString(saveFile, json);
 
             // Aggiorna indice salvataggi
             GameSaveInstance instance = new GameSaveInstance(
-                    slotName,
+                    safeSlotName,
                     engine.getPlayer().getName(),
                     engine.getCurrentChapterNumber(),
                     engine.getCurrentChapterTitle()
@@ -60,7 +64,7 @@ public class GameSave {
     public static GameState load(String slotName) {
         try {
             Path saveFile = resolveSaveFile(slotName);
-            if (!Files.exists(saveFile)) {
+            if (saveFile == null || !Files.exists(saveFile)) {
                 return null;
             }
             String json = Files.readString(saveFile);
@@ -92,9 +96,13 @@ public class GameSave {
             GameSaveInstance[] instances = GSON.fromJson(json, GameSaveInstance[].class);
             if (instances != null) {
                 for (GameSaveInstance inst : instances) {
-                    // Verifica che il file di salvataggio esista ancora
-                    if (Files.exists(saveDir.resolve(inst.getFilename()))
-                            && saves.stream().noneMatch(s -> s.getSlotName().equals(inst.getSlotName()))) {
+                    String safeSlotName = sanitizeSlotName(inst.getSlotName());
+                    Path saveFile = resolveSlotFile(saveDir, safeSlotName);
+                    if (!safeSlotName.isEmpty()
+                            && Files.exists(saveFile)
+                            && saves.stream().noneMatch(s -> s.getSlotName().equals(safeSlotName))) {
+                        inst.setSlotName(safeSlotName);
+                        inst.setFilename(safeSlotName + ".json");
                         saves.add(inst);
                     }
                 }
@@ -109,13 +117,17 @@ public class GameSave {
      */
     public static boolean delete(String slotName) {
         try {
-            Path saveFile = SAVE_DIR.resolve(slotName + ".json");
-            Files.deleteIfExists(saveFile);
-            Files.deleteIfExists(LEGACY_SAVE_DIR.resolve(slotName + ".json"));
+            String safeSlotName = sanitizeSlotName(slotName);
+            if (safeSlotName.isEmpty()) {
+                return false;
+            }
+
+            Files.deleteIfExists(resolveSlotFile(SAVE_DIR, safeSlotName));
+            Files.deleteIfExists(resolveSlotFile(LEGACY_SAVE_DIR, safeSlotName));
 
             // Aggiorna indice
             List<GameSaveInstance> saves = listSaves();
-            saves.removeIf(s -> s.getSlotName().equals(slotName));
+            saves.removeIf(s -> s.getSlotName().equals(safeSlotName));
             writeIndex(saves);
 
             return true;
@@ -148,11 +160,38 @@ public class GameSave {
         Files.writeString(indexFile, GSON.toJson(saves));
     }
 
+    public static String sanitizeSlotName(String slotName) {
+        if (slotName == null) {
+            return "";
+        }
+        String safe = slotName.trim().replaceAll("[^a-zA-Z0-9_-]", "_");
+        safe = safe.replaceAll("_+", "_");
+        safe = safe.replaceAll("^_+|_+$", "");
+        if (safe.length() > 40) {
+            safe = safe.substring(0, 40);
+        }
+        return safe;
+    }
+
     private static Path resolveSaveFile(String slotName) {
-        Path saveFile = SAVE_DIR.resolve(slotName + ".json");
+        String safeSlotName = sanitizeSlotName(slotName);
+        if (safeSlotName.isEmpty()) {
+            return null;
+        }
+
+        Path saveFile = resolveSlotFile(SAVE_DIR, safeSlotName);
         if (Files.exists(saveFile)) {
             return saveFile;
         }
-        return LEGACY_SAVE_DIR.resolve(slotName + ".json");
+        return resolveSlotFile(LEGACY_SAVE_DIR, safeSlotName);
+    }
+
+    private static Path resolveSlotFile(Path saveDir, String slotName) {
+        Path normalizedDir = saveDir.toAbsolutePath().normalize();
+        Path file = normalizedDir.resolve(slotName + ".json").normalize();
+        if (!file.startsWith(normalizedDir)) {
+            throw new IllegalArgumentException("Slot salvataggio non valido");
+        }
+        return file;
     }
 }

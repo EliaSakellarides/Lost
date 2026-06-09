@@ -144,6 +144,10 @@ public class Player {
         // Ogni giorno perdi un po' di sanità
         removeSanity(5);
     }
+
+    public void setDaysOnIsland(int daysOnIsland) {
+        this.daysOnIsland = Math.max(1, daysOnIsland);
+    }
     
     public String getStatus() {
         String status = name + " - Giorno " + daysOnIsland + " sull'isola\n";

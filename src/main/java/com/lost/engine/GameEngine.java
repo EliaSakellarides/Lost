@@ -652,11 +652,19 @@ public class GameEngine {
      */
     public String processCommand(String command) {
         if (!gameRunning) {
+            // A partita finita resta possibile caricare un salvataggio.
+            CommandParser.ParsedCommand endParsed =
+                commandParser.parse(command == null ? "" : command.trim().toLowerCase());
+            if (endParsed.getType() == CommandType.CARICA_PARTITA) {
+                String slot = endParsed.getTarget();
+                return slot.isEmpty() ? listSaves() : loadGame(slot);
+            }
             if (gameWon) {
-                return "Hai gia' completato l'avventura su LOST.";
+                return "Hai gia' completato l'avventura su LOST.\n" +
+                       "Usa 'carica [nome]' per riprendere un salvataggio.";
             }
             if (isGameOver()) {
-                return "Sei morto. Inizia una nuova partita o carica un salvataggio.";
+                return "Sei morto. Inizia una nuova partita o usa 'carica [nome]'.";
             }
             return "Il gioco e' terminato!";
         }

@@ -32,7 +32,7 @@ public class JungleTrackingGame implements MiniGame {
         "Le impronte puntano chiaramente verso NORD.\nIl fango e' ancora fresco, la preda e' passata da poco.",
         "Segni di scavo nel terreno, il cinghiale ha cercato radici.\nLe tracce vanno verso EST, verso il sole che sorge.",
         "Trovi escrementi freschi. Il cinghiale si dirige verso SUD,\ndove senti il rumore dell'acqua.",
-        "Le foglie calpestaste formano un sentiero chiaro verso OVEST.\nLa preda sta tornando verso la sua tana."
+        "Le foglie calpestate formano un sentiero chiaro verso OVEST.\nLa preda sta tornando verso la sua tana."
     };
 
     private final String[] soundClues = {

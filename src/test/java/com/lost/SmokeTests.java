@@ -215,6 +215,12 @@ public class SmokeTests {
         assertFalse(engine.isGameRunning(), "il gioco deve terminare a salute 0");
         assertTrue(engine.isGameOver(), "deve risultare game over");
         assertContains(engine.processCommand("avanti"), "Sei morto");
+
+        // A partita finita il comando carica deve restare disponibile
+        String load = engine.processCommand("carica");
+        assertFalse(load.contains("Sei morto"), "carica deve funzionare anche da morto");
+        assertTrue(load.toLowerCase().contains("salvataggi"),
+            "carica deve elencare i salvataggi a partita finita");
     }
 
     private static void testMiniGameSkipAdvancesChapter() {

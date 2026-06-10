@@ -444,13 +444,22 @@ public class FullScreenGUI extends JFrame {
                 String recordLine = record != null
                     ? "Tempo finale: " + record.getFormattedTime() + "\n"
                     : "";
-                JOptionPane.showMessageDialog(this,
+                String[] options = {"Nuova partita", "Continua a leggere", "Esci"};
+                int choice = JOptionPane.showOptionDialog(this,
                     "HAI COMPLETATO LOST!\n\n" +
                     "Sei fuggito dall'isola!\n" +
                     "La TESI ti ha salvato!\n\n" +
                     recordLine +
                     "Grazie per aver giocato!",
-                    "VITTORIA!", JOptionPane.INFORMATION_MESSAGE);
+                    "VITTORIA!",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null, options, options[1]);
+                if (choice == 0) {
+                    askPlayerName();
+                } else if (choice == 2) {
+                    System.exit(0);
+                }
             });
             timer.setRepeats(false);
             timer.start();

@@ -14,7 +14,10 @@ import java.util.Map;
 /**
  * Converte tra GameEngine e GameState (JSON) usando Gson
  */
-public class GameConverter {
+public final class GameConverter {
+
+    private GameConverter() {
+    }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 

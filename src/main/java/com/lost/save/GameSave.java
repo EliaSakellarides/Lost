@@ -16,7 +16,10 @@ import java.util.List;
  * I salvataggi sono memorizzati in ~/.lost/saves/ come JSON.
  * I vecchi salvataggi in ~/.lostthesis/saves/ restano caricabili.
  */
-public class GameSave {
+public final class GameSave {
+
+    private GameSave() {
+    }
 
     private static final Path SAVE_DIR = Paths.get(
             System.getProperty("user.home"), ".lost", "saves");

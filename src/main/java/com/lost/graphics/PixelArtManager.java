@@ -24,35 +24,35 @@ public class PixelArtManager {
     static {
         // Scene intro
         IMAGE_FILES.put("hostess", "hostess.png");
-        IMAGE_FILES.put("aereo_iniziale", "areo scena iniziale.jpg");
+        IMAGE_FILES.put("aereo_iniziale", "aereo_scena_iniziale.jpg");
         IMAGE_FILES.put("turbolenza", "aereotrema.jpg");
-        IMAGE_FILES.put("aereo_rompe", "aereo si rompe in volo.jpg");
-        IMAGE_FILES.put("crash", "aereo distrutto su spiaggia.jpg");
-        IMAGE_FILES.put("occhio", "occhio aperto -2.jpg");
-        IMAGE_FILES.put("risveglio", "risveglio in giungla.jpg");
-        IMAGE_FILES.put("vincent", "segui vincent.jpg");
-        IMAGE_FILES.put("aiuto_sopravvissuti", "aiuto spravvissuti.jpg");
-        IMAGE_FILES.put("curare_feriti", "curare feriti.jpg");
-        IMAGE_FILES.put("curarsi_alcol", "curarsi con alchol.jpg");
-        
+        IMAGE_FILES.put("aereo_rompe", "aereo_si_rompe_in_volo.jpg");
+        IMAGE_FILES.put("crash", "aereo_distrutto_su_spiaggia.jpg");
+        IMAGE_FILES.put("occhio", "occhio_aperto.jpg");
+        IMAGE_FILES.put("risveglio", "risveglio_in_giungla.jpg");
+        IMAGE_FILES.put("vincent", "segui_vincent.jpg");
+        IMAGE_FILES.put("aiuto_sopravvissuti", "aiuto_sopravvissuti.jpg");
+        IMAGE_FILES.put("curare_feriti", "curare_feriti.jpg");
+        IMAGE_FILES.put("curarsi_alcol", "curarsi_con_alcol.jpg");
+
         // Location principali del gioco
         IMAGE_FILES.put("spiaggia", "spiaggia.jpeg");
-        IMAGE_FILES.put("giungla", "risveglio in giungla.jpg");
+        IMAGE_FILES.put("giungla", "risveglio_in_giungla.jpg");
         IMAGE_FILES.put("botola", "botola.jpg");
-        IMAGE_FILES.put("grotte", "scoperta grotte.jpg");
-        IMAGE_FILES.put("campo", "campo sopravvissuti.png");
-        IMAGE_FILES.put("villaggio", "arrivo alle barracks.jpg");
+        IMAGE_FILES.put("grotte", "scoperta_grotte.jpg");
+        IMAGE_FILES.put("campo", "campo_sopravvissuti.png");
+        IMAGE_FILES.put("villaggio", "arrivo_alle_barracks.jpg");
         IMAGE_FILES.put("tempio", "mappa_isola.jpg");
-        IMAGE_FILES.put("roccianera", "black rock in lontananza.jpg");
-        IMAGE_FILES.put("faro", "l isola è nostra.jpg");
+        IMAGE_FILES.put("roccianera", "black_rock_in_lontananza.jpg");
+        IMAGE_FILES.put("faro", "l_isola_e_nostra.jpg");
         IMAGE_FILES.put("pista", "cap15_pista_nascosta.png");
-        
+
         // Scene Giorno 1
         IMAGE_FILES.put("giorno1_mattino", "spiaggia.jpeg");
-        IMAGE_FILES.put("riunione", "campo sopravvissuti.png");
-        IMAGE_FILES.put("esplorazione", "risveglio in giungla.jpg");
+        IMAGE_FILES.put("riunione", "campo_sopravvissuti.png");
+        IMAGE_FILES.put("esplorazione", "risveglio_in_giungla.jpg");
         IMAGE_FILES.put("prima_notte", "cap1_prima_notte.png");
-        IMAGE_FILES.put("mostro_fumo", "mostro di fumo.jpg");
+        IMAGE_FILES.put("mostro_fumo", "mostro_di_fumo.jpg");
         
         // ═══════════════════════════════════════════════════════════
         // IMMAGINI CAPITOLI - MAPPATE ALLE IMMAGINI ESISTENTI
@@ -79,16 +79,16 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap18_freedom", "cap18_liberta.png");
         
         // Immagini extra disponibili
-        IMAGE_FILES.put("black_rock_interno", "black rock da vicnino .jpg");
-        IMAGE_FILES.put("interno_botola", "inteerno botola.jpg");
-        IMAGE_FILES.put("discesa_botola", "discesa botola.jpg");
-        IMAGE_FILES.put("scoperta_dinamite", "scoperta dinamite.jpg");
-        IMAGE_FILES.put("cattura", "cattura del prigionieor.jpg");
-        IMAGE_FILES.put("prigioniero_giungla", "giungla con prigionerio .jpg");
-        IMAGE_FILES.put("scambio_prigioniero", "scambio prigioneiro .jpg");
-        IMAGE_FILES.put("riunione_altri", "riunione per scoprire qualcosa sugli altri .jpg");
-        IMAGE_FILES.put("barracks", "arrivo alle barracks.jpg");
-        IMAGE_FILES.put("birre_blackrock", "traporto birre nelle casse dentro la black rock.png");
+        IMAGE_FILES.put("black_rock_interno", "black_rock_da_vicino.jpg");
+        IMAGE_FILES.put("interno_botola", "interno_botola.jpg");
+        IMAGE_FILES.put("discesa_botola", "discesa_botola.jpg");
+        IMAGE_FILES.put("scoperta_dinamite", "scoperta_dinamite.jpg");
+        IMAGE_FILES.put("cattura", "cattura_del_prigioniero.jpg");
+        IMAGE_FILES.put("prigioniero_giungla", "giungla_con_prigioniero.jpg");
+        IMAGE_FILES.put("scambio_prigioniero", "scambio_prigioniero.jpg");
+        IMAGE_FILES.put("riunione_altri", "riunione_sugli_altri.jpg");
+        IMAGE_FILES.put("barracks", "arrivo_alle_barracks.jpg");
+        IMAGE_FILES.put("birre_blackrock", "trasporto_birre_black_rock.png");
         IMAGE_FILES.put("item_enigmi_radio", "item_enigmi_radio.png");
     }
     

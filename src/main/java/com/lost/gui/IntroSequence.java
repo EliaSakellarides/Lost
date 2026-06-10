@@ -120,7 +120,7 @@ public class IntroSequence {
         if (currentScene != 1) return;
         currentScene = 2;
         JDialog dialog = scene.createFullScreenDialog();
-        JPanel imagePanel = scene.createImagePanel("areo scena iniziale.jpg");
+        JPanel imagePanel = scene.createImagePanel("aereo_scena_iniziale.jpg");
         JTextArea text = scene.createSceneText(
             "Sei a bordo del volo Oceanic 815, direzione Los Angeles.\n" +
             "Un viaggio come tanti altri.");
@@ -304,7 +304,7 @@ public class IntroSequence {
         if (currentScene != 4) return;
         currentScene = 5;
         JDialog dialog = scene.createFullScreenDialog();
-        JPanel imagePanel = scene.createImagePanel("aereo si rompe in volo.jpg");
+        JPanel imagePanel = scene.createImagePanel("aereo_si_rompe_in_volo.jpg");
         JTextArea text = scene.createSceneText(
             "Un boato. La fusoliera si spezza in due.\n" +
             "Passeggeri, sedili, detriti — tutto vola nel vuoto.\n" +
@@ -328,7 +328,7 @@ public class IntroSequence {
         if (currentScene != 5) return;
         currentScene = 6;
         JDialog dialog = scene.createFullScreenDialog();
-        JPanel imagePanel = scene.createImagePanel("occhio aperto -2.jpg");
+        JPanel imagePanel = scene.createImagePanel("occhio_aperto.jpg");
         JTextArea text = scene.createSceneText(
             "Apri gli occhi.\n\n" +
             "Foglie di bambu oscillano sopra di te.\n" +
@@ -353,7 +353,7 @@ public class IntroSequence {
         if (currentScene != 6) return;
         currentScene = 7;
         JDialog dialog = scene.createFullScreenDialog();
-        JPanel imagePanel = scene.createImagePanel("risveglio in giungla.jpg");
+        JPanel imagePanel = scene.createImagePanel("risveglio_in_giungla.jpg");
         JTextArea text = scene.createSceneText(
             "Ti alzi a fatica. Sei nella giungla.\n" +
             "Alberi di bambu, luce filtrata, silenzio.\n" +
@@ -377,7 +377,7 @@ public class IntroSequence {
         if (currentScene != 7) return;
         currentScene = 8;
         JDialog dialog = scene.createFullScreenDialog();
-        JPanel imagePanel = scene.createImagePanel("segui vincent.jpg");
+        JPanel imagePanel = scene.createImagePanel("segui_vincent.jpg");
         JTextArea text = scene.createSceneText(
             "Un cane Labrador bianco sbuca dalla vegetazione.\n" +
             "Ti guarda. Abbaia. Corre via verso la spiaggia.\n\n" +
@@ -402,7 +402,7 @@ public class IntroSequence {
         currentScene = 9;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "spiaggia", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("aereo distrutto su spiaggia.jpg");
+        JPanel imagePanel = scene.createImagePanel("aereo_distrutto_su_spiaggia.jpg");
         JTextArea text = scene.createSceneText(
             "Emergi dalla giungla e ti fermi.\n\n" +
             "La spiaggia e' una scena di guerra. Rottami fumanti, bagagli\n" +
@@ -448,7 +448,7 @@ public class IntroSequence {
         currentScene = 10;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("risveglio in giungla.jpg");
+        JPanel imagePanel = scene.createImagePanel("risveglio_in_giungla.jpg");
         JTextArea text = scene.createSceneText(
             "Ti allontani dalla spiaggia per riprendere fiato.\n\n" +
             "Sei ferito, " + playerName + ". Tagli sulle braccia, lividi ovunque.\n" +
@@ -471,7 +471,7 @@ public class IntroSequence {
             engine.getPlayer().removeSanity(10);
             showHealResultScene(
                 "DISINFETTARE LE FERITE",
-                "curarsi con alchol.jpg",
+                "curarsi_con_alcol.jpg",
                 new Color(100, 70, 40), new Color(255, 220, 150),
                 "Apri la bottiglietta di whisky.\n\n" +
                 "Versi l'alcol sulle ferite. BRUCIA TERRIBILMENTE!\n" +
@@ -487,7 +487,7 @@ public class IntroSequence {
             engine.getPlayer().addHealth(5);
             showHealResultScene(
                 "FASCIATURE DI FORTUNA",
-                "aiuto spravvissuti.jpg",
+                "aiuto_sopravvissuti.jpg",
                 new Color(50, 80, 50), new Color(200, 255, 200),
                 "Strappi strisce di tessuto dalla camicia.\n\n" +
                 "Fasci le ferite pi\u00F9 profonde alla meglio.\n" +
@@ -502,7 +502,7 @@ public class IntroSequence {
             engine.getPlayer().addSanity(5);
             showHealResultScene(
                 "STRINGI I DENTI",
-                "risveglio in giungla.jpg",
+                "risveglio_in_giungla.jpg",
                 new Color(60, 60, 80), new Color(200, 200, 255),
                 "Non hai tempo per questo. Ci sono cose pi\u00F9 importanti.\n\n" +
                 "Il dolore \u00E8 solo nella testa. Puoi farcela.\n" +

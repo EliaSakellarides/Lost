@@ -24,10 +24,7 @@ public class GameState {
     private boolean gameWon;
 
     // Flag di stato eventi
-    private boolean hatchOpened;
     private boolean blackRockExplored;
-    private boolean jacobMet;
-    private boolean templeBathed;
     private boolean radioBatteryInstalled;
     private boolean radioAntennaInstalled;
     private boolean radioFuseInstalled;
@@ -35,8 +32,6 @@ public class GameState {
     private boolean radioMessageReceived;
     private boolean dynamiteActive;
     private int dynamiteTimer;
-    private int smokeMonsterTimer;
-    private int othersTimer;
 
     // Oggetti nelle stanze (roomKey -> lista oggetti)
     private Map<String, List<ItemData>> roomItems;
@@ -70,14 +65,8 @@ public class GameState {
     public void setGameWon(boolean gameWon) { this.gameWon = gameWon; }
 
     // Flag eventi
-    public boolean isHatchOpened() { return hatchOpened; }
-    public void setHatchOpened(boolean hatchOpened) { this.hatchOpened = hatchOpened; }
     public boolean isBlackRockExplored() { return blackRockExplored; }
     public void setBlackRockExplored(boolean blackRockExplored) { this.blackRockExplored = blackRockExplored; }
-    public boolean isJacobMet() { return jacobMet; }
-    public void setJacobMet(boolean jacobMet) { this.jacobMet = jacobMet; }
-    public boolean isTempleBathed() { return templeBathed; }
-    public void setTempleBathed(boolean templeBathed) { this.templeBathed = templeBathed; }
     public boolean isRadioBatteryInstalled() { return radioBatteryInstalled; }
     public void setRadioBatteryInstalled(boolean radioBatteryInstalled) { this.radioBatteryInstalled = radioBatteryInstalled; }
     public boolean isRadioAntennaInstalled() { return radioAntennaInstalled; }
@@ -92,10 +81,6 @@ public class GameState {
     public void setDynamiteActive(boolean dynamiteActive) { this.dynamiteActive = dynamiteActive; }
     public int getDynamiteTimer() { return dynamiteTimer; }
     public void setDynamiteTimer(int dynamiteTimer) { this.dynamiteTimer = dynamiteTimer; }
-    public int getSmokeMonsterTimer() { return smokeMonsterTimer; }
-    public void setSmokeMonsterTimer(int smokeMonsterTimer) { this.smokeMonsterTimer = smokeMonsterTimer; }
-    public int getOthersTimer() { return othersTimer; }
-    public void setOthersTimer(int othersTimer) { this.othersTimer = othersTimer; }
 
     // Stanze
     public Map<String, List<ItemData>> getRoomItems() { return roomItems; }

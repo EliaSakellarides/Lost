@@ -42,6 +42,7 @@ public class FullScreenGUI extends JFrame {
     private String currentImageKey = "spiaggia";
     private boolean introRunning = false;
     private boolean victoryDialogShown = false;
+    private boolean gameOverDialogShown = false;
     private boolean completionRecordSaved = false;
     private long gameStartMillis = 0L;
 
@@ -376,6 +377,7 @@ public class FullScreenGUI extends JFrame {
         engine = new GameEngine();
         engine.initializeGame(playerName);
         victoryDialogShown = false;
+        gameOverDialogShown = false;
         completionRecordSaved = false;
         gameStartMillis = System.currentTimeMillis();
         introRunning = true;
@@ -453,10 +455,37 @@ public class FullScreenGUI extends JFrame {
             timer.setRepeats(false);
             timer.start();
         }
+
+        if (engine.isGameOver() && !gameOverDialogShown) {
+            gameOverDialogShown = true;
+            showGameOverDialog();
+        }
+    }
+
+    private void showGameOverDialog() {
+        String[] options = {"Nuova partita", "Carica partita", "Esci"};
+        int choice = JOptionPane.showOptionDialog(this,
+            "SEI MORTO\n\n" +
+            "L'isola ha avuto la meglio su di te.\n" +
+            "\"Vivere insieme, morire soli.\"",
+            "GAME OVER",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null, options, options[0]);
+
+        if (choice == 0) {
+            askPlayerName();
+        } else if (choice == 1) {
+            showLoadDialog();
+        } else if (choice == 2) {
+            System.exit(0);
+        }
+        // Dialog chiuso senza scelta: il giocatore puo' riaprire con ESCI o ricominciare.
     }
 
     private GameRecord saveCompletionRecord() {
-        if (completionRecordSaved || engine == null || engine.getPlayer() == null) {
+        if (completionRecordSaved || engine == null || engine.getPlayer() == null
+                || engine.isLoadedFromSave()) {
             return null;
         }
 
@@ -570,6 +599,7 @@ public class FullScreenGUI extends JFrame {
         engine = new GameEngine();
         engine.loadGameState(state);
         victoryDialogShown = engine.isGameWon();
+        gameOverDialogShown = false;
         completionRecordSaved = true;
         gameStartMillis = System.currentTimeMillis();
 

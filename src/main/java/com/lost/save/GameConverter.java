@@ -46,10 +46,7 @@ public class GameConverter {
         state.setGameWon(engine.isGameWon());
 
         // Flag eventi
-        state.setHatchOpened(engine.isHatchOpened());
         state.setBlackRockExplored(engine.isBlackRockExplored());
-        state.setJacobMet(engine.isJacobMet());
-        state.setTempleBathed(engine.isTempleBathed());
         state.setRadioBatteryInstalled(engine.isRadioBatteryInstalled());
         state.setRadioAntennaInstalled(engine.isRadioAntennaInstalled());
         state.setRadioFuseInstalled(engine.isRadioFuseInstalled());
@@ -57,8 +54,6 @@ public class GameConverter {
         state.setRadioMessageReceived(engine.isRadioMessageReceived());
         state.setDynamiteActive(engine.isDynamiteActive());
         state.setDynamiteTimer(engine.getDynamiteTimer());
-        state.setSmokeMonsterTimer(engine.getSmokeMonsterTimer());
-        state.setOthersTimer(engine.getOthersTimer());
 
         // Oggetti nelle stanze
         Map<String, List<ItemData>> roomItems = new HashMap<>();

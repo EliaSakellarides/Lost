@@ -19,6 +19,7 @@ public class GameEngine {
     private Room startRoom;
     private boolean gameRunning;
     private boolean gameWon;
+    private boolean loadedFromSave;
     private List<String> gameLog;
     
     // Modalità narrativa LOST
@@ -30,25 +31,16 @@ public class GameEngine {
     
     // Audio manager
     private AudioManager audioManager;
-    
-    // I numeri misteriosi di LOST
-    private static final int[] NUMBERS = {4, 8, 15, 16, 23, 42};
 
     // Parser comandi con alias
     private final CommandParser commandParser;
-    
+
     // TIMER per eventi temporizzati (stile guida Colombini)
-    private int smokeMonsterTimer = 0;      // Mostro di fumo si avvicina
     private int dynamiteTimer = 0;          // Dinamite attivata
-    private int othersTimer = 0;            // Gli Altri ti cercano
     private boolean dynamiteActive = false;
-    private boolean smokeMonsterNearby = false;
-    
+
     // Variabili di stato per eventi (v1...v9 dalla guida)
-    private boolean hatchOpened = false;
     private boolean blackRockExplored = false;
-    private boolean jacobMet = false;
-    private boolean templeBathed = false;
     private boolean radioBatteryInstalled = false;
     private boolean radioAntennaInstalled = false;
     private boolean radioFuseInstalled = false;
@@ -59,8 +51,7 @@ public class GameEngine {
     private MiniGame activeMiniGame;
     private Map<String, MiniGame> miniGames;
     private boolean miniGameIntroShown;
-    private boolean miniGameOutroShown;
-    
+
     public GameEngine() {
         this.allRooms = new HashMap<>();
         this.gameLog = new ArrayList<>();
@@ -75,7 +66,6 @@ public class GameEngine {
         this.commandParser = new CommandParser();
         this.activeMiniGame = null;
         this.miniGameIntroShown = false;
-        this.miniGameOutroShown = false;
         this.miniGames = new HashMap<>();
         miniGames.put("jungle_tracking", new JungleTrackingGame());
     }
@@ -144,6 +134,7 @@ public class GameEngine {
             "Sei sulla spiaggia con gli altri sopravvissuti.\n\n" +
             "Jack, il medico, sta organizzando il campo.\n" +
             player.getName() + " lo aiuta a contare i sopravvissuti.\n" +
+            "Jack mormora: 'Quasi cinquanta... ne mancano due alla conta di ieri.'\n" +
             "Kate raccoglie provviste dai rottami.\n" +
             "Sawyer sta già litigando con qualcuno...\n\n" +
             "Qualcuno chiede: 'Quanti siamo sopravvissuti?'\n\n" +
@@ -362,8 +353,9 @@ public class GameEngine {
             "La Fuga",
             "DEVI SCAPPARE!\n\n" +
             "Riesci a liberarti dalle corde durante la notte.\n" +
-            "Il villaggio è silenzioso, le guardie distratte.\n\n" +
-            "Hai tre vie di fuga possibili:\n" +
+            "Il villaggio è silenzioso, le guardie distratte.\n" +
+            "Ti rifugi tra le mura di un antico TEMPIO ai margini del villaggio.\n\n" +
+            "Da qui vedi tre vie di fuga possibili:\n" +
             "• La giungla - pericolosa ma diretta\n" +
             "• Il fiume - più lungo ma facile da seguire\n" +
             "• La costa - esposto ma familiare\n\n" +
@@ -427,6 +419,8 @@ public class GameEngine {
             "Era il tuo lavoro di anni!\n\n" +
             "La tesi... DOVE L'HAI MESSA?\n" +
             "Forse è ancora nei rottami dell'aereo?\n\n" +
+            "Nella tasca trovi il biglietto sgualcito: OCEANIC 8_5.\n" +
+            "La cifra di mezzo e' illeggibile... ma la somma dei Numeri e' 108.\n\n" +
             "Qual era il numero del volo Oceanic?",
             cap13Choices,
             "A",
@@ -463,6 +457,7 @@ public class GameEngine {
             "LA SPERANZA!\n\n" +
             "Segui le coordinate della mappa.\n" +
             "Attraversi territori pericolosi.\n" +
+            "Raggiungi il vecchio FARO sulla scogliera e da lassu' scruti la costa.\n" +
             "Il Mostro di Fumo ruggisce in lontananza.\n\n" +
             "La radio riparata puo' confermare il segnale, ma la mappa basta per orientarti.\n" +
             "Portare tutto il gruppo adesso sarebbe troppo rischioso.\n\n" +
@@ -657,9 +652,13 @@ public class GameEngine {
      */
     public String processCommand(String command) {
         if (!gameRunning) {
-            return gameWon
-                ? "Hai gia' completato l'avventura su LOST."
-                : "Il gioco e' terminato!";
+            if (gameWon) {
+                return "Hai gia' completato l'avventura su LOST.";
+            }
+            if (isGameOver()) {
+                return "Sei morto. Inizia una nuova partita o carica un salvataggio.";
+            }
+            return "Il gioco e' terminato!";
         }
 
         if (command == null) {
@@ -777,10 +776,16 @@ public class GameEngine {
 
                 case SCONOSCIUTO:
                 default:
-                    // Prova come risposta diretta al capitolo
-                    response = answerChapter(cmd);
-                    advanceTurn = true;
-                    break;
+                    // Solo nei capitoli a risposta libera l'input vale come risposta.
+                    // Nei capitoli A/B/C un typo non deve contare come errore.
+                    if (currentChapter < storyChapters.size()
+                            && !storyChapters.get(currentChapter).hasChoices()) {
+                        response = answerChapter(cmd);
+                        advanceTurn = true;
+                        break;
+                    }
+                    return getIronicResponse(cmd) +
+                           "\nPremi A, B o C per rispondere, o scrivi 'aiuto'.";
             }
 
             return finalizeTurn(response, advanceTurn);
@@ -832,15 +837,10 @@ public class GameEngine {
         }
         
         if (currentChapter >= storyChapters.size()) {
-            gameWon = true;
-            gameRunning = false;
-            return "HAI COMPLETATO LOST!\n\n" +
-                   "Sei fuggito dall'isola!\n" +
-                   "La TESI ti ha salvato!\n" +
-                   "Ora puoi laurearti!\n\n" +
-                   "CONGRATULAZIONI!";
+            // La vittoria viene gestita in answerChapter/endMiniGame
+            return "Hai gia' completato l'avventura su LOST.";
         }
-        
+
         Level chapter = storyChapters.get(currentChapter);
         currentChapterCompleted = false;
         currentChapterStarted = true;
@@ -990,10 +990,11 @@ public class GameEngine {
             case 7: case 8: roomKey = "botola"; break;
             case 9: roomKey = "giungla"; break;
             case 10: roomKey = "villaggio"; break;
-            case 11: roomKey = "giungla"; break;
+            case 11: roomKey = "tempio"; break;
             case 12: case 13: case 14: roomKey = "spiaggia"; break;
             case 15: roomKey = "botola"; break;
-            case 16: case 17: case 18: case 19: roomKey = "pista"; break;
+            case 16: roomKey = "faro"; break;
+            case 17: case 18: case 19: roomKey = "pista"; break;
             default: roomKey = "spiaggia";
         }
         
@@ -1609,27 +1610,6 @@ public class GameEngine {
             }
         }
 
-        // Timer mostro di fumo (casuale)
-        if (smokeMonsterTimer > 0) {
-            smokeMonsterTimer--;
-            if (smokeMonsterTimer == 0) {
-                smokeMonsterNearby = true;
-                appendEvent(events,
-                    "Il Mostro di Fumo e' vicino.\n" +
-                    "TICK... TICK... TICK...");
-            }
-        }
-
-        // Timer degli Altri
-        if (othersTimer > 0) {
-            othersTimer--;
-            if (othersTimer == 0) {
-                appendEvent(events,
-                    "Senti voci nella giungla.\n" +
-                    "Gli Altri ti stanno cercando.");
-            }
-        }
-
         return events.toString();
     }
     
@@ -1677,19 +1657,7 @@ public class GameEngine {
         ending.append("═══════════════════════════════════════════════════════\n");
         ending.append("      L I B E R T À \n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
-        
-        ending.append("L'aereo decolla, lasciandosi alle spalle l'isola.\n\n");
-        
-        ending.append("Sotto di te, la giungla diventa sempre più piccola.\n");
-        ending.append("Il Mostro di Fumo ruggisce impotente.\n");
-        ending.append("Il Tempio, la Stazione Il Cigno, la Roccia Nera...\n");
-        ending.append("tutto scompare all'orizzonte.\n\n");
-        
-        ending.append("L'oceano infinito si stende davanti a te.\n");
-        ending.append("Finalmente LIBERO.\n\n");
-        
-        ending.append("═══════════════════════════════════════════════════════\n\n");
-        
+
         ending.append("Stringi la TESI tra le mani.\n");
         ending.append("Quella tesi che ti ha salvato la vita.\n");
         ending.append("Quella tesi che ti ha mostrato la via.\n\n");
@@ -1776,6 +1744,7 @@ public class GameEngine {
     public boolean isNarrativeMode() { return narrativeMode; }
     public boolean isGameWon() { return gameWon; }
     public boolean isGameRunning() { return gameRunning; }
+    public boolean isLoadedFromSave() { return loadedFromSave; }
     public AudioManager getAudioManager() { return audioManager; }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1812,6 +1781,7 @@ public class GameEngine {
                player.getName() + " | Cap. " + getCurrentChapterNumber() +
                "/" + getTotalChapters() + " | Salute " + player.getHealth() +
                " | Sanita " + player.getSanity() + "\n\n" +
+               "I record valgono solo per le partite giocate dall'inizio.\n\n" +
                "Premi AVANTI per continuare...";
     }
 
@@ -1833,10 +1803,7 @@ public class GameEngine {
     public int getCurrentChapter() { return currentChapter; }
     public boolean isCurrentChapterCompleted() { return currentChapterCompleted; }
     public boolean isCurrentChapterStarted() { return currentChapterStarted; }
-    public boolean isHatchOpened() { return hatchOpened; }
     public boolean isBlackRockExplored() { return blackRockExplored; }
-    public boolean isJacobMet() { return jacobMet; }
-    public boolean isTempleBathed() { return templeBathed; }
     public boolean isRadioBatteryInstalled() { return radioBatteryInstalled; }
     public boolean isRadioAntennaInstalled() { return radioAntennaInstalled; }
     public boolean isRadioFuseInstalled() { return radioFuseInstalled; }
@@ -1844,8 +1811,6 @@ public class GameEngine {
     public boolean isRadioMessageReceived() { return radioMessageReceived; }
     public boolean isDynamiteActive() { return dynamiteActive; }
     public int getDynamiteTimer() { return dynamiteTimer; }
-    public int getSmokeMonsterTimer() { return smokeMonsterTimer; }
-    public int getOthersTimer() { return othersTimer; }
     public Map<String, Room> getAllRooms() { return allRooms; }
 
     /**
@@ -1907,10 +1872,7 @@ public class GameEngine {
         this.narrativeMode = true;
 
         // Flag eventi
-        this.hatchOpened = state.isHatchOpened();
         this.blackRockExplored = state.isBlackRockExplored();
-        this.jacobMet = state.isJacobMet();
-        this.templeBathed = state.isTempleBathed();
         this.radioBatteryInstalled = state.isRadioBatteryInstalled();
         this.radioAntennaInstalled = state.isRadioAntennaInstalled();
         this.radioFuseInstalled = state.isRadioFuseInstalled();
@@ -1918,13 +1880,13 @@ public class GameEngine {
         this.radioMessageReceived = state.isRadioMessageReceived();
         this.dynamiteActive = state.isDynamiteActive();
         this.dynamiteTimer = state.getDynamiteTimer();
-        this.smokeMonsterTimer = state.getSmokeMonsterTimer();
-        this.othersTimer = state.getOthersTimer();
+
+        // Una partita caricata non concorre ai record
+        this.loadedFromSave = true;
 
         // Mini gioco resettato
         this.activeMiniGame = null;
         this.miniGameIntroShown = false;
-        this.miniGameOutroShown = false;
     }
 
     private String finalizeTurn(String response, boolean advanceTurn) {
@@ -1933,15 +1895,34 @@ public class GameEngine {
         }
 
         String timerEvents = processTimers();
-        if (timerEvents.isEmpty()) {
-            return response;
+        if (!timerEvents.isEmpty()) {
+            response = (response == null || response.isBlank())
+                ? timerEvents
+                : response + "\n\n" + timerEvents;
         }
 
-        if (response == null || response.isBlank()) {
-            return timerEvents;
+        // La dinamite gestisce gia' la propria morte: qui copriamo ogni altro danno.
+        if (gameRunning && player != null && !player.isAlive()) {
+            gameRunning = false;
+            String death = getDeathMessage();
+            response = (response == null || response.isBlank())
+                ? death
+                : response + "\n\n" + death;
         }
 
-        return response + "\n\n" + timerEvents;
+        return response;
+    }
+
+    public boolean isGameOver() {
+        return !gameRunning && !gameWon && player != null && !player.isAlive();
+    }
+
+    private String getDeathMessage() {
+        return "═══════════════════════════════════════\n" +
+               "            SEI MORTO\n" +
+               "═══════════════════════════════════════\n\n" +
+               "L'isola ha avuto la meglio su di te.\n\n" +
+               "\"Vivere insieme, morire soli.\" - Jack";
     }
 
     private void appendEvent(StringBuilder events, String message) {

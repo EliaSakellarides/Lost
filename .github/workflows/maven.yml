@@ -24,6 +24,9 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      - name: Smoke test
+        run: bash ./scripts/test.sh
+
       - name: Upload runnable JAR
         uses: actions/upload-artifact@v4
         with:

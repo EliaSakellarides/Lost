@@ -266,16 +266,33 @@ public class FullScreenGUI extends JFrame {
         if (engine != null && engine.hasMiniGameActive()) {
             MiniGame mg = engine.getActiveMiniGame();
             setButtonLabels(mg.getButtonALabel(), mg.getButtonBLabel(), mg.getButtonCLabel());
-        } else {
-            resetButtonLabels();
+            btnA.setEnabled(true);
+            btnB.setEnabled(true);
+            btnC.setEnabled(true);
+            return;
         }
 
-        // Nei capitoli a risposta libera le scelte A/B/C non servono
-        boolean choicesAvailable = engine != null &&
-            (engine.hasMiniGameActive() || engine.currentChapterHasChoices());
-        btnA.setEnabled(choicesAvailable);
-        btnB.setEnabled(choicesAvailable);
-        btnC.setEnabled(choicesAvailable);
+        resetButtonLabels();
+        boolean hasChoices = engine != null && engine.currentChapterHasChoices();
+        String quickLabel = engine != null ? engine.getCurrentChapterQuickAnswerLabel() : null;
+
+        if (hasChoices) {
+            // Capitolo a scelte: A/B/C attivi
+            btnA.setEnabled(true);
+            btnB.setEnabled(true);
+            btnC.setEnabled(true);
+        } else if (quickLabel != null) {
+            // Capitolo conferma: il bottone A diventa il bottone rapido (es. FINE)
+            btnA.setText(quickLabel);
+            btnA.setEnabled(true);
+            btnB.setEnabled(false);
+            btnC.setEnabled(false);
+        } else {
+            // Capitolo a risposta libera: si risponde scrivendo
+            btnA.setEnabled(false);
+            btnB.setEnabled(false);
+            btnC.setEnabled(false);
+        }
     }
 
     private void setupKeyBindings() {

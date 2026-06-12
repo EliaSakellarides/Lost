@@ -440,10 +440,11 @@ public class GameEngine {
             "'COORDINATE: PISTA DI ATTERRAGGIO HYDRA'\n" +
             "'Per emergenze. Aereo funzionante.'\n\n" +
             "C'è un AEREO nascosto sull'isola!\n\n" +
-            "Digita 'prendi' per recuperare la mappa.",
+            "Premi PRENDI per recuperare la mappa.",
             Arrays.asList("prendi", "raccogli", "mappa", "ok", "si", "a"),
             "Prendi la MAPPA: e' la tua via di fuga."
         );
+        cap14.setQuickAnswerLabel("PRENDI");
         storyChapters.add(cap14);
         
         // CAPITOLO 15: LA PISTA NASCOSTA
@@ -513,7 +514,7 @@ public class GameEngine {
         ));
         
         // CAPITOLO 18: LIBERTÀ - FINALE
-        storyChapters.add(new Level(
+        Level cap18 = new Level(
             "cap18_freedom",
             "Libertà",
             "CE L'HAI FATTA!\n\n" +
@@ -525,10 +526,12 @@ public class GameEngine {
             "L'oceano infinito si stende davanti a te.\n" +
             "Sei LIBERO. Finalmente LIBERO!\n\n" +
             "Ce l'hai fatta davvero.\n\n" +
-            "Digita 'fine' per concludere.",
+            "Premi FINE per concludere.",
             Arrays.asList("fine", "finito", "ok", "si", "a"),
             "È finita... o forse no?"
-        ));
+        );
+        cap18.setQuickAnswerLabel("FINE");
+        storyChapters.add(cap18);
     }
 
     private void createWorld() {
@@ -808,16 +811,36 @@ public class GameEngine {
         if (!choice.matches("[ABC]")) {
             return "Scegli A, B o C!";
         }
-        
+
         if (currentChapter < storyChapters.size()) {
             Level chapter = storyChapters.get(currentChapter);
             if (chapter.hasChoices()) {
                 return answerChapter(choice);
             }
+            // Nei capitoli conferma il bottone rapido (A) vale come risposta
+            if ("A".equals(choice) && chapter.getQuickAnswerLabel() != null) {
+                return answerChapter("a");
+            }
         }
-        
+
         return "Questo capitolo non ha scelte A/B/C:\n" +
                "scrivi la risposta nella casella di testo e premi INVIO.";
+    }
+
+    /** {@return l'etichetta del bottone rapido del capitolo corrente, null se assente} */
+    public String getCurrentChapterQuickAnswerLabel() {
+        if (currentChapter >= storyChapters.size()) {
+            return null;
+        }
+        return storyChapters.get(currentChapter).getQuickAnswerLabel();
+    }
+
+    private String freeAnswerPrompt(Level chapter) {
+        String quick = chapter.getQuickAnswerLabel();
+        if (quick != null) {
+            return "Premi " + quick + " oppure scrivi la risposta nella casella di testo.";
+        }
+        return "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
     }
 
     /** {@return true se il capitolo corrente offre scelte A/B/C} */
@@ -851,7 +874,7 @@ public class GameEngine {
                 if (choices.containsKey("C")) msg += "C=" + choices.get("C");
                 msg += "\n\nPremi A, B o C";
             } else {
-                msg += "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
+                msg += freeAnswerPrompt(chapter);
             }
             return msg;
         }
@@ -879,7 +902,7 @@ public class GameEngine {
             if (choices.containsKey("C")) msg += "C=" + choices.get("C");
             msg += "\n\nPremi A, B o C";
         } else {
-            msg += "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
+            msg += freeAnswerPrompt(chapter);
         }
         
         addLog(msg);
@@ -964,7 +987,7 @@ public class GameEngine {
                 if (choices.containsKey("C")) msg += "C=" + choices.get("C");
                 msg += "\n\nPremi A, B o C";
             } else {
-                msg += "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
+                msg += freeAnswerPrompt(chapter);
             }
             return msg;
         }

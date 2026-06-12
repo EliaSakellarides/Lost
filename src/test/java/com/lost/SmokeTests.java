@@ -251,6 +251,10 @@ public class SmokeTests {
 
         assertEquals("La Scoperta", engine.getCurrentChapterTitle(), "capitolo prima di prendi");
 
+        String wrong = engine.processCommand("banana");
+        assertFalse(wrong.contains("CORRETTO"),
+            "una risposta senza senso non deve superare il capitolo");
+
         String response = engine.processCommand("prendi");
 
         assertContains(response, "CORRETTO");

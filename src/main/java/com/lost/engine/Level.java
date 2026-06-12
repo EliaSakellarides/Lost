@@ -13,6 +13,7 @@ public class Level {
     private String hint;
     private Map<String, String> choices; // A -> risposta, B -> risposta, C -> risposta
     private String miniGameKey; // chiave del mini gioco opzionale (es. "jungle_tracking")
+    private String quickAnswerLabel; // etichetta del bottone rapido nei capitoli a risposta libera
 
     /**
      * Crea un capitolo a risposta libera.
@@ -72,6 +73,15 @@ public class Level {
     public void setMiniGameKey(String miniGameKey) { this.miniGameKey = miniGameKey; }
     /** {@return true se il capitolo ha un mini gioco associato} */
     public boolean hasMiniGame() { return miniGameKey != null && !miniGameKey.isEmpty(); }
+    /** {@return l'etichetta del bottone rapido, null se il capitolo non lo prevede} */
+    public String getQuickAnswerLabel() { return quickAnswerLabel; }
+    /**
+     * Imposta l'etichetta del bottone rapido per i capitoli a risposta libera
+     * di tipo conferma (es. FINE, PRENDI). Premendo il bottone viene
+     * inviata la risposta "a", che il capitolo deve accettare.
+     * @param quickAnswerLabel testo del bottone
+     */
+    public void setQuickAnswerLabel(String quickAnswerLabel) { this.quickAnswerLabel = quickAnswerLabel; }
 
     /**
      * Verifica se una risposta del giocatore e' corretta.
@@ -92,7 +102,10 @@ public class Level {
         }
 
         for (String ok : acceptableAnswers) {
-            if (a.equals(ok) || a.contains(ok)) return true;
+            if (a.equals(ok)) return true;
+            // Il match parziale vale solo per risposte lunghe: altrimenti
+            // qualsiasi testo contenente "a" o "ok" verrebbe accettato.
+            if (ok.length() >= 4 && a.contains(ok)) return true;
         }
         return false;
     }

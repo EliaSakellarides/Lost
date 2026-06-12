@@ -84,8 +84,6 @@ public final class TextColorizer {
             return span(escapeHtml(line), AZURE, true, false);
         }
         if (trimmed.contains("ATTENZIONE") ||
-                trimmed.contains("Salute -") ||
-                trimmed.contains("Sanita -") ||
                 trimmed.contains("Penalita")) {
             return span(escapeHtml(line), AMBER, true, false);
         }

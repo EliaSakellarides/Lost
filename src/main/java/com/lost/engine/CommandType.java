@@ -27,7 +27,7 @@ public enum CommandType {
     USA,
     /** Mostra il contenuto dell'inventario. */
     INVENTARIO,
-    /** Mostra salute, sanita' e stato del giocatore. */
+    /** Mostra giorno, posizione e inventario del giocatore. */
     STATO,
     /** Mostra l'elenco dei comandi disponibili. */
     AIUTO,

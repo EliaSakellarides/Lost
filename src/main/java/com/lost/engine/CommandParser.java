@@ -94,10 +94,9 @@ public class CommandParser {
             "inventario", "zaino", "borsa", "tasca", "oggetti",
             "inventory", "inv", "i");
 
-        // STATO - mostrare salute/status
+        // STATO - mostrare giorno, posizione e inventario
         register(CommandType.STATO,
-            "stato", "status", "salute", "vita",
-            "health", "hp", "st");
+            "stato", "status", "giorno", "st");
 
         // AIUTO - mostrare comandi
         register(CommandType.AIUTO,

@@ -77,7 +77,7 @@ public class FullScreenGUI extends JFrame {
     private int screenHeight;
 
     // Pannello stato permanente
-    /** Barra di stato permanente (salute, sanita', giorno, luogo). */
+    /** Barra di stato permanente (giorno e luogo). */
     private StatusPanelFactory.StatusPanel statusPanel;
     /** Timer Swing che aggiorna la barra di stato. */
     private Timer statusUpdateTimer;
@@ -627,9 +627,7 @@ public class FullScreenGUI extends JFrame {
 
             String status = "";
             if (engine != null && engine.getPlayer() != null) {
-                status = String.format("Salute %d%% | Sanita %d%% | Giorno %d | %s",
-                    engine.getPlayer().getHealth(),
-                    engine.getPlayer().getSanity(),
+                status = String.format("Giorno %d | %s",
                     engine.getPlayer().getDaysOnIsland(),
                     currentLocation.toUpperCase());
             }
@@ -722,8 +720,7 @@ public class FullScreenGUI extends JFrame {
             engine.getPlayer().getName() +
             " | Cap. " + engine.getCurrentChapterNumber() +
             "/" + engine.getTotalChapters() +
-            " | Salute " + engine.getPlayer().getHealth() +
-            " | Sanita " + engine.getPlayer().getSanity() + "\n\n" +
+            " | Giorno " + engine.getPlayer().getDaysOnIsland() + "\n\n" +
             "I record sono disponibili solo per le nuove partite.\n\n" +
             "Premi AVANTI per continuare...";
         currentTitle = "PARTITA CARICATA";

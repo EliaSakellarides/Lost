@@ -31,8 +31,6 @@ public final class GameConverter {
 
         // Player
         state.setPlayerName(engine.getPlayer().getName());
-        state.setHealth(engine.getPlayer().getHealth());
-        state.setSanity(engine.getPlayer().getSanity());
         state.setDaysOnIsland(engine.getPlayer().getDaysOnIsland());
         state.setCurrentRoomKey(engine.getCurrentRoomKey());
 

@@ -429,18 +429,6 @@ public class IntroSequence {
             "Ma sai che il mondo sa che il volo e' sparito.\n" +
             "E' solo questione di resistere.");
 
-        // Effetto: +10 sanita, -10 vita (sforzo fisico)
-        engine.getPlayer().addSanity(10);
-        engine.getPlayer().removeHealth(10);
-
-        int health = engine.getPlayer().getHealth();
-        int sanity = engine.getPlayer().getSanity();
-        JLabel statsLabel = new JLabel(
-            "Salute " + health + "/100 (-10)  |  Sanita " + sanity + "/100 (+10)",
-            SwingConstants.CENTER);
-        statsLabel.setFont(GameFonts.retroBold(22f));
-        statsLabel.setForeground(new Color(200, 200, 100));
-
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(80, 60, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
@@ -450,8 +438,6 @@ public class IntroSequence {
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnPanel.setBackground(Color.BLACK);
-        btnPanel.add(statsLabel);
-        btnPanel.add(Box.createHorizontalStrut(30));
         btnPanel.add(continueBtn);
 
         scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
@@ -483,9 +469,6 @@ public class IntroSequence {
 
         whiskyBtn.addActionListener(e -> {
             dialog.dispose();
-            // Whisky: cura bene ma brucia e stordisce
-            engine.getPlayer().addHealth(15);
-            engine.getPlayer().removeSanity(10);
             showHealResultScene(
                 "DISINFETTARE LE FERITE",
                 "curarsi_con_alcol.jpg",
@@ -495,13 +478,11 @@ public class IntroSequence {
                 "Ma almeno non si infetteranno.\n\n" +
                 "Bevi un sorso per calmare i nervi...\n" +
                 "Ti senti stordito, ma le ferite sono pulite.",
-                "+15 salute  |  -10 sanita");
+                "Ferite disinfettate");
         });
 
         bandageBtn.addActionListener(e -> {
             dialog.dispose();
-            // Fasciature: piccola cura, mantieni sanita
-            engine.getPlayer().addHealth(5);
             showHealResultScene(
                 "FASCIATURE DI FORTUNA",
                 "aiuto_sopravvissuti.jpg",
@@ -510,13 +491,11 @@ public class IntroSequence {
                 "Fasci le ferite pi\u00F9 profonde alla meglio.\n" +
                 "Non \u00E8 il massimo, ma almeno fermi il sangue.\n\n" +
                 "Mantieni la lucidit\u00E0. Devi restare concentrato.",
-                "+5 salute");
+                "Sanguinamento fermato");
         });
 
         toughBtn.addActionListener(e -> {
             dialog.dispose();
-            // Stringi i denti: nessuna cura, bonus sanita
-            engine.getPlayer().addSanity(5);
             showHealResultScene(
                 "STRINGI I DENTI",
                 "risveglio_in_giungla.jpg",
@@ -525,7 +504,7 @@ public class IntroSequence {
                 "Il dolore \u00E8 solo nella testa. Puoi farcela.\n" +
                 "Stringi i denti e ti rialzi.\n\n" +
                 "Sei pi\u00F9 determinato che mai a sopravvivere.",
-                "+5 sanita");
+                "Determinazione pura");
         });
 
         JPanel btnPanel = scene.createButtonPanel(whiskyBtn, bandageBtn, toughBtn);

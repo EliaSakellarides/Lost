@@ -23,7 +23,6 @@ public class SmokeTests {
         run("timer dinamite", SmokeTests::testDynamiteTimerTriggersExplosion);
         run("enigma radio riparabile", SmokeTests::testRadioRepairPuzzle);
         run("scelte multiple esatte", SmokeTests::testMultipleChoiceRequiresExactOption);
-        run("morte a salute zero", SmokeTests::testZeroHealthEndsGame);
         run("movimento e dinamite alla botola", SmokeTests::testMovementAndDynamiteGating);
         run("salto minigioco avanza", SmokeTests::testMiniGameSkipAdvancesChapter);
         run("la scoperta accetta prendi", SmokeTests::testLaScopertaAcceptsBarePrendi);
@@ -95,7 +94,6 @@ public class SmokeTests {
             "ATTENZIONE: Altamente instabile!",
             true,
             Item.ItemType.STRUMENTO,
-            0,
             1
         ));
 
@@ -111,6 +109,13 @@ public class SmokeTests {
         String boom = engine.processCommand("guarda");
         assertContains(boom, "BOOM");
         assertFalse(engine.isGameRunning(), "il gioco dovrebbe terminare dopo l'esplosione");
+        assertTrue(engine.isGameOver(), "l'esplosione in mano deve essere game over");
+
+        // A partita finita il comando carica deve restare disponibile
+        String load = engine.processCommand("carica");
+        assertFalse(load.contains("Sei morto"), "carica deve funzionare anche da morto");
+        assertTrue(load.toLowerCase().contains("salvataggi"),
+            "carica deve elencare i salvataggi a partita finita");
     }
 
     private static void testRadioRepairPuzzle() {
@@ -154,13 +159,11 @@ public class SmokeTests {
         engine.initializeGame("Sawyer");
         engine.forceStartFirstChapter();
         engine.processCommand("A");
-        engine.getPlayer().removeHealth(15);
         engine.getPlayer().addItem(new Item(
             "Bussola",
             "Una vecchia bussola.",
             true,
             Item.ItemType.STRUMENTO,
-            0,
             -1
         ));
 
@@ -172,7 +175,6 @@ public class SmokeTests {
         restored.loadGameState(serialized);
 
         assertEquals("Sawyer", restored.getPlayer().getName(), "nome giocatore");
-        assertEquals(85, restored.getPlayer().getHealth(), "salute");
         assertEquals(2, restored.getCurrentChapterNumber(), "numero capitolo");
         assertEquals("I Sopravvissuti", restored.getCurrentChapterTitle(), "titolo capitolo");
         assertTrue(restored.getPlayer().hasItem("Bussola"), "oggetto inventario mancante");
@@ -197,31 +199,6 @@ public class SmokeTests {
         String wrongChoice = engine.processCommand("B");
         assertContains(wrongChoice, "Risposta sbagliata");
         assertEquals(1, engine.getCurrentChapterNumber(), "capitolo dopo scelta errata");
-    }
-
-    private static void testZeroHealthEndsGame() {
-        GameEngine engine = newStartedEngine("Boone");
-        answerAndContinue(engine, "A");
-        answerAndContinue(engine, "A");
-        assertEquals("Il Mostro di Fumo", engine.getCurrentChapterTitle(), "capitolo mostro di fumo");
-
-        for (int i = 0; i < 3; i++) {
-            String wrong = engine.processCommand("A");
-            assertContains(wrong, "Salute -25");
-            assertTrue(engine.isGameRunning(), "il gioco non deve finire prima di salute 0");
-        }
-
-        String fatal = engine.processCommand("A");
-        assertContains(fatal, "SEI MORTO");
-        assertFalse(engine.isGameRunning(), "il gioco deve terminare a salute 0");
-        assertTrue(engine.isGameOver(), "deve risultare game over");
-        assertContains(engine.processCommand("avanti"), "Sei morto");
-
-        // A partita finita il comando carica deve restare disponibile
-        String load = engine.processCommand("carica");
-        assertFalse(load.contains("Sei morto"), "carica deve funzionare anche da morto");
-        assertTrue(load.toLowerCase().contains("salvataggi"),
-            "carica deve elencare i salvataggi a partita finita");
     }
 
     private static void testMovementAndDynamiteGating() {

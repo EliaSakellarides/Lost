@@ -65,8 +65,8 @@ l'unica via per lasciare l'isola a bordo di un piccolo aereo.
 - **Enigma a oggetti**: la riparazione della radio del cockpit
   (batteria + cavo antenna + fusibile)
 - **Minigioco** di tracciamento nella giungla integrato nella storia
-- **Game over**: la salute del giocatore può azzerarsi (scelte sbagliate,
-  dinamite innescata) e termina la partita
+- **Game over**: maneggiare la dinamite innescata senza liberarsene
+  termina la partita
 - **Salvataggio/caricamento** su file JSON con slot multipli
 - **Classifica dei migliori tempi** su database H2 locale
 - **API REST** locale per consultare e inserire record
@@ -152,12 +152,10 @@ classDiagram
         +hasChoices() boolean
     }
     class Player {
-        -int health
-        -int sanity
+        -int daysOnIsland
         -List~Item~ inventory
         -Room currentRoom
         +addItem(Item) boolean
-        +isAlive() boolean
     }
     class Room {
         -String key
@@ -238,7 +236,7 @@ classDiagram
 | `GameEngine` | Cuore del gioco: gestisce la progressione tra i 20 capitoli, il mondo (stanze e oggetti), i timer di gioco, il game over e la vittoria. |
 | `CommandParser` | Traduce l'input dell'utente in un `CommandType` canonico tramite una mappa di alias (sinonimi italiani, inglesi e abbreviazioni). |
 | `Level` | Un capitolo della storia: testo, scelte multiple o risposte libere accettate, suggerimento, eventuale minigioco collegato. |
-| `Player` | Stato del giocatore: salute, sanità mentale, giorni sull'isola, inventario, stanza corrente. |
+| `Player` | Stato del giocatore: giorni sull'isola, inventario, stanza corrente. |
 | `Room` / `Item` | Il modello del mondo: stanze collegate tra loro e oggetti raccoglibili con tipo ed effetto. |
 | `MiniGame` | Classe astratta per i minigiochi; `JungleTrackingGame` la implementa per la caccia al cinghiale. |
 | `FullScreenGUI` | Finestra principale Swing: pannello immagine, area testo HTML, pulsanti A/B/C, dialoghi di salvataggio/caricamento/record. |
@@ -599,7 +597,7 @@ Il progetto include una suite di **14 smoke test** automatizzati
 - il timer della dinamite e l'esplosione;
 - l'enigma completo della radio (raccolta pezzi, montaggio, messaggio);
 - la gestione delle scelte multiple e degli input non riconosciuti;
-- il **game over a salute zero**;
+- il **game over per l'esplosione della dinamite**;
 - il salto del minigioco con penalità;
 - l'assegnazione della mappa della pista solo nel capitolo corretto;
 - l'avanzamento del giorno narrativo;
@@ -636,10 +634,9 @@ la parola da digitare.
 | 19 | Il Decollo | **A** — Decollare ORA! |
 | 20 | Libertà | digitare `fine` |
 
-**Minigioco della caccia (cap. 5):** seguire le tracce del cinghiale
-scegliendo la direzione corretta con i pulsanti A/B/C; in caso di
-difficoltà è possibile digitare `salta` (con una penalità di 10 punti
-salute).
+**Minigioco della caccia (cap. 5):** raccogliere un indizio con i
+pulsanti A/B e indicare la direzione corretta; in caso di difficoltà è
+possibile digitare `salta` (si rinuncia solo alla caccia).
 
 **Enigma facoltativo — la radio del cockpit:** nel corso del gioco si
 possono raccogliere la *radio danneggiata* (Giungla), il *cavo antenna*
@@ -653,10 +650,9 @@ raccoglierla (`prendi dinamite`) prima di tornare alla botola. Chi la
 dimentica può tornare alla Roccia Nera in qualsiasi momento: dalla botola,
 `vai ovest`, `vai ovest`, `prendi dinamite` e ritorno.
 
-**Attenzione:** rispondere in modo sbagliato al capitolo 3 costa 25 punti
-salute; a salute zero la partita termina. La dinamite innescata fuori
-contesto (`attiva dinamite`) esplode dopo 5 turni: va lasciata (`lascia
-dinamite`) prima dello scoppio.
+**Attenzione:** la dinamite innescata fuori contesto (`attiva dinamite`)
+esplode dopo 5 turni: va lasciata (`lascia dinamite`) prima dello
+scoppio, o la partita finisce.
 
 # 7. Compilazione ed esecuzione
 

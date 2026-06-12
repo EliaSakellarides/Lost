@@ -10,7 +10,6 @@ public class ItemData {
     private String description;
     private boolean takeable;
     private String type;
-    private int healthBoost;
     private int usesRemaining;
 
     /** Costruttore vuoto richiesto per la deserializzazione JSON. */
@@ -27,7 +26,6 @@ public class ItemData {
         data.description = item.getDescription();
         data.takeable = item.isTakeable();
         data.type = item.getType().name();
-        data.healthBoost = item.getHealthBoost();
         data.usesRemaining = item.getUsesRemaining();
         return data;
     }
@@ -43,7 +41,7 @@ public class ItemData {
         } catch (Exception e) {
             itemType = Item.ItemType.GENERICO;
         }
-        return new Item(name, description, takeable, itemType, healthBoost, usesRemaining);
+        return new Item(name, description, takeable, itemType, usesRemaining);
     }
 
     /** {@return il nome dell'oggetto} */
@@ -54,8 +52,6 @@ public class ItemData {
     public boolean isTakeable() { return takeable; }
     /** {@return la categoria dell'oggetto come stringa} */
     public String getType() { return type; }
-    /** {@return i punti salute restituiti all'uso} */
-    public int getHealthBoost() { return healthBoost; }
     /** {@return il numero di usi rimanenti (-1 = illimitati)} */
     public int getUsesRemaining() { return usesRemaining; }
 }

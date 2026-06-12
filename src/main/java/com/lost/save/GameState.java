@@ -10,8 +10,6 @@ public class GameState {
 
     // Stato giocatore
     private String playerName;
-    private int health;
-    private int sanity;
     private int daysOnIsland;
     private String currentRoomKey;
     private List<ItemData> inventory;
@@ -47,20 +45,6 @@ public class GameState {
      * @param playerName nome del giocatore
      */
     public void setPlayerName(String playerName) { this.playerName = playerName; }
-    /** {@return la salute del giocatore (0-100)} */
-    public int getHealth() { return health; }
-    /**
-     * Imposta la salute del giocatore.
-     * @param health salute (0-100)
-     */
-    public void setHealth(int health) { this.health = health; }
-    /** {@return la sanita' mentale del giocatore (0-100)} */
-    public int getSanity() { return sanity; }
-    /**
-     * Imposta la sanita' mentale del giocatore.
-     * @param sanity sanita' mentale (0-100)
-     */
-    public void setSanity(int sanity) { this.sanity = sanity; }
     /** {@return i giorni trascorsi sull'isola} */
     public int getDaysOnIsland() { return daysOnIsland; }
     /**

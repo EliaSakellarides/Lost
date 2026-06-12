@@ -19,6 +19,7 @@ public class GameEngine {
     private Room startRoom;
     private boolean gameRunning;
     private boolean gameWon;
+    private boolean playerDead;
     private boolean loadedFromSave;
     private List<String> gameLog;
     
@@ -606,35 +607,35 @@ public class GameEngine {
         
         // Oggetti
         spiaggia.addItem(new Item("Acqua", "Bottiglia d'acqua dai rottami", true, 
-            Item.ItemType.CIBO, 20, 3));
+            Item.ItemType.CIBO, 3));
         spiaggia.addItem(new Item("Kit Medico", "Kit di pronto soccorso", true,
-            Item.ItemType.MEDICINA, 50, 2));
+            Item.ItemType.MEDICINA, 2));
         spiaggia.addItem(new Item("Cavo antenna",
             "Un cavo coassiale strappato dal sistema radio dell'aereo.",
-            true, Item.ItemType.STRUMENTO, 0, -1));
+            true, Item.ItemType.STRUMENTO, -1));
 
         giungla.addItem(new Item("Radio danneggiata",
             "La radio del cockpit: schermo crepato, antenna spezzata e vano batteria vuoto.",
-            true, Item.ItemType.STRUMENTO, 0, -1));
+            true, Item.ItemType.STRUMENTO, -1));
         
         botola.addItem(new Item("Cibo DHARMA", "Scatolette con logo DHARMA", true,
-            Item.ItemType.CIBO, 30, 5));
+            Item.ItemType.CIBO, 5));
         botola.addItem(new Item("Mappa DHARMA", "Mappa delle stazioni sull'isola", true,
-            Item.ItemType.DOCUMENTO, 0, -1));
+            Item.ItemType.DOCUMENTO, -1));
         botola.addItem(new Item("Batteria DHARMA",
             "Una batteria pesante con morsetti ossidati ma ancora carica.",
-            true, Item.ItemType.STRUMENTO, 0, -1));
+            true, Item.ItemType.STRUMENTO, -1));
         botola.addItem(new Item("Fusibile",
             "Un fusibile di ricambio conservato in una scatola etichettata COMUNICAZIONI.",
-            true, Item.ItemType.STRUMENTO, 0, -1));
+            true, Item.ItemType.STRUMENTO, -1));
         
         rocciaNera.addItem(new Item("Dinamite", "ATTENZIONE: Altamente instabile!", true,
-            Item.ItemType.STRUMENTO, 0, 1));
+            Item.ItemType.STRUMENTO, 1));
         rocciaNera.addItem(new Item("Diario", "Diario del capitano con mappe", true,
-            Item.ItemType.DOCUMENTO, 0, -1));
+            Item.ItemType.DOCUMENTO, -1));
         
         faro.addItem(new Item("Bussola", "Una vecchia bussola che punta sempre a nord", true,
-            Item.ItemType.STRUMENTO, 0, -1));
+            Item.ItemType.STRUMENTO, -1));
         
         // La mappa della pista Hydra viene consegnata nel capitolo La Scoperta
 
@@ -955,7 +956,7 @@ public class GameEngine {
             if ("cap14_map".equals(chapter.getKey()) && !player.hasItem("Mappa della pista Hydra")) {
                 Item mappaPista = new Item("Mappa della pista Hydra",
                     "Coordinate della pista nascosta e appunti per far volare il Cessna.",
-                    true, Item.ItemType.DOCUMENTO, 0, -1);
+                    true, Item.ItemType.DOCUMENTO, -1);
                 player.addItem(mappaPista);
                 success += "Hai recuperato la mappa della pista Hydra!\n\n";
             }
@@ -971,11 +972,9 @@ public class GameEngine {
             return success;
         } else {
             if ("cap3_smoke".equals(chapter.getKey())) {
-                player.removeHealth(25);
                 return "Ti muovi troppo in fretta.\n\n" +
                        "Il Mostro di Fumo scatta verso di te e ti trascina per alcuni metri nella giungla.\n" +
-                       "Jack e Kate riescono a tirarti via all'ultimo momento.\n\n" +
-                       "Salute -25.\n\n" +
+                       "Jack e Kate riescono a tirarti via all'ultimo momento, illeso per miracolo.\n\n" +
                        "Il fumo torna davanti a voi.\n" +
                        "Devi scegliere con calma: A, B o C.";
             }
@@ -1118,15 +1117,14 @@ public class GameEngine {
             }
             result = activeMiniGame.getCurrentDisplay();
         } else if (upper.equals("SKIP") || upper.equals("SALTA")) {
-            // Skip con penalità
+            // Skip senza penalita': si perde solo la caccia
             activeMiniGame = null;
             miniGameIntroShown = false;
-            player.removeHealth(10);
             currentChapter++;
             currentChapterCompleted = true;
             currentChapterStarted = false;
             return "Hai saltato il mini gioco.\n" +
-                   "Penalita': -10 salute.\n\n" +
+                   "Locke scuote la testa: stasera niente carne fresca.\n\n" +
                    "Premi AVANTI per continuare la storia...";
         } else {
             // Testo libero
@@ -1261,7 +1259,7 @@ public class GameEngine {
                " mangia [obj]  - Mangia/bevi\n" +
                " attiva [obj]  - Attiva oggetto\n" +
                " inventario    - Vedi oggetti (i)\n" +
-               " stato         - Vedi salute (st/hp)\n" +
+               " stato         - Giorno e posizione (st)\n" +
                " salva [nome]  - Salva partita\n" +
                " carica/load [nome] - Carica partita\n" +
                " mappa         - Mappa dell'isola (m)\n" +
@@ -1376,7 +1374,7 @@ public class GameEngine {
                    "Cibo in scatola degli anni '70.\n" +
                    "Etichetta: 'DHARMA Initiative - Ranch Composite'\n" +
                    "Scadenza: 1977 (gulp!)\n" +
-                   "Usa 'mangia cibo' per recuperare salute.";
+                   "Usa 'mangia cibo' per uno spuntino vintage.";
         }
         if (name.contains("diario")) {
             return "DIARIO DEL CAPITANO\n" +
@@ -1549,7 +1547,7 @@ public class GameEngine {
         player.removeItem("Radio danneggiata");
         player.addItem(new Item("Trasmettitore riparato",
             "Radio del cockpit riparata con componenti DHARMA.",
-            true, Item.ItemType.STRUMENTO, 0, -1));
+            true, Item.ItemType.STRUMENTO, -1));
 
         return currentMessage + "\n" +
                "La radio gracchia, poi prende vita.\n" +
@@ -1753,7 +1751,7 @@ public class GameEngine {
         Item dinamite = player.getItem("dinamite");
         if (dinamite != null) {
             // Se ce l'hai in mano... BOOM!
-            player.removeHealth(100);
+            playerDead = true;
             String message = "BOOM!\n" +
                              "La dinamite e' esplosa TRA LE TUE MANI!\n" +
                              "Non avresti dovuto tenerla...\n\n" +
@@ -1803,8 +1801,6 @@ public class GameEngine {
         // Statistiche finali
         ending.append("LE TUE STATISTICHE:\n");
         ending.append("   Giorni sull'isola: ").append(player.getDaysOnIsland()).append("\n");
-        ending.append("   Salute finale: ").append(player.getHealth()).append("/100\n");
-        ending.append("   Sanita mentale: ").append(player.getSanity()).append("/100\n");
         ending.append("   Oggetti raccolti: ").append(player.getInventory().size()).append("\n\n");
         
         ending.append("═══════════════════════════════════════════════════════\n");
@@ -1923,8 +1919,7 @@ public class GameEngine {
         loadGameState(state);
         return "Partita caricata dallo slot '" + safeSlotName + "'!\n" +
                player.getName() + " | Cap. " + getCurrentChapterNumber() +
-               "/" + getTotalChapters() + " | Salute " + player.getHealth() +
-               " | Sanita " + player.getSanity() + "\n\n" +
+               "/" + getTotalChapters() + " | Giorno " + player.getDaysOnIsland() + "\n\n" +
                "I record valgono solo per le partite giocate dall'inizio.\n\n" +
                "Premi AVANTI per continuare...";
     }
@@ -1979,16 +1974,6 @@ public class GameEngine {
         createWorld();
         createStoryChapters();
 
-        // Ripristina stato giocatore (via reflection-free: setter diretti)
-        // Health e sanity vanno impostati partendo da 100 e sottraendo/aggiungendo
-        int healthDiff = state.getHealth() - player.getHealth();
-        if (healthDiff > 0) player.addHealth(healthDiff);
-        else if (healthDiff < 0) player.removeHealth(-healthDiff);
-
-        int sanityDiff = state.getSanity() - player.getSanity();
-        if (sanityDiff > 0) player.addSanity(sanityDiff);
-        else if (sanityDiff < 0) player.removeSanity(-sanityDiff);
-
         player.setDaysOnIsland(state.getDaysOnIsland());
 
         // Stanza corrente
@@ -2026,6 +2011,8 @@ public class GameEngine {
         this.currentChapterStarted = state.isCurrentChapterStarted();
         this.gameRunning = state.isGameRunning();
         this.gameWon = state.isGameWon();
+        // Un salvataggio non in corso e non vinto e' una partita finita male
+        this.playerDead = !state.isGameRunning() && !state.isGameWon();
         this.narrativeMode = true;
 
         // Flag eventi
@@ -2058,29 +2045,12 @@ public class GameEngine {
                 : response + "\n\n" + timerEvents;
         }
 
-        // La dinamite gestisce gia' la propria morte: qui copriamo ogni altro danno.
-        if (gameRunning && player != null && !player.isAlive()) {
-            gameRunning = false;
-            String death = getDeathMessage();
-            response = (response == null || response.isBlank())
-                ? death
-                : response + "\n\n" + death;
-        }
-
         return response;
     }
 
     /** {@return true se la partita e' finita per morte del giocatore} */
     public boolean isGameOver() {
-        return !gameRunning && !gameWon && player != null && !player.isAlive();
-    }
-
-    private String getDeathMessage() {
-        return "═══════════════════════════════════════\n" +
-               "            SEI MORTO\n" +
-               "═══════════════════════════════════════\n\n" +
-               "L'isola ha avuto la meglio su di te.\n\n" +
-               "\"Vivere insieme, morire soli.\" - Jack";
+        return !gameRunning && !gameWon && playerDead;
     }
 
     private void appendEvent(StringBuilder events, String message) {

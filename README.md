@@ -91,7 +91,7 @@ Se vuoi eseguire solo gli smoke test senza GUI:
 | mangia | bevi, divora, sgranocchia, eat, drink | Consuma cibo o bevande |
 | attiva | accendi, carica, innesca, activate, light | Attiva un oggetto |
 | inventario | zaino, borsa, tasca, oggetti, inventory, inv, i | Mostra l'inventario |
-| stato | status, salute, vita, health, hp, st | Mostra la salute |
+| stato | status, giorno, st | Mostra giorno, posizione e inventario |
 | salva | save, salvataggio | Salva la partita |
 | load | carica, caricapartita, carica_partita, ricarica | Carica una partita salvata |
 | aiuto | help, comandi, h, ? | Mostra i comandi disponibili |

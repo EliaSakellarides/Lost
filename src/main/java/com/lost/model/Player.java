@@ -10,22 +10,16 @@ public class Player {
     private Room currentRoom;
     private List<Item> inventory;
     private int maxInventorySize;
-    private int health;           // Salute del giocatore
-    private int maxHealth;
-    private int sanity;           // Sanità mentale (l'isola è strana...)
     private int daysOnIsland;     // Giorni sull'isola
-    
+
     /**
-     * Crea il giocatore con statistiche iniziali al massimo.
+     * Crea il giocatore al primo giorno sull'isola.
      * @param name nome del giocatore
      */
     public Player(String name) {
         this.name = name;
         this.inventory = new ArrayList<>();
         this.maxInventorySize = 10;
-        this.health = 100;
-        this.maxHealth = 100;
-        this.sanity = 100;
         this.daysOnIsland = 1;
     }
     
@@ -99,7 +93,7 @@ public class Player {
     
     /**
      * Usa un oggetto dall'inventario. L'effetto dipende dal tipo:
-     * CIBO/MEDICINA ripristinano salute, DOCUMENTO mostra testo, ecc.
+     * CIBO/MEDICINA danno una risposta narrativa, DOCUMENTO mostra testo, ecc.
      * Se l'oggetto esaurisce gli usi rimanenti, viene rimosso.
      * @param itemName nome (anche parziale) dell'oggetto da usare
      * @return testo che descrive l'effetto dell'uso
@@ -109,18 +103,15 @@ public class Player {
         if (item == null) {
             return "Non hai questo oggetto nell'inventario!";
         }
-        
+
         String result = "";
         switch (item.getType()) {
             case CIBO:
-                health = Math.min(maxHealth, health + item.getHealthBoost());
-                result = "Mangi " + item.getName() + ". +" + item.getHealthBoost() + " salute!";
+                result = "Mangi " + item.getName() + ". Ti rimette in forze!";
                 item.use();
                 break;
             case MEDICINA:
-                health = Math.min(maxHealth, health + item.getHealthBoost());
-                sanity = Math.min(100, sanity + 10);
-                result = "Usi " + item.getName() + ". Salute e sanità mentale migliorate!";
+                result = "Usi " + item.getName() + ". Le ferite sono medicate.";
                 item.use();
                 break;
             case ARMA:
@@ -145,45 +136,6 @@ public class Player {
     }
     
     /**
-     * Aumenta la salute, senza superare il massimo.
-     * @param amount punti salute da aggiungere
-     */
-    public void addHealth(int amount) {
-        health = Math.min(maxHealth, health + amount);
-    }
-
-    /**
-     * Riduce la salute, senza scendere sotto zero.
-     * @param amount punti salute da togliere
-     */
-    public void removeHealth(int amount) {
-        health = Math.max(0, health - amount);
-    }
-
-    /**
-     * Aumenta la sanita' mentale, senza superare 100.
-     * @param amount punti sanita' da aggiungere
-     */
-    public void addSanity(int amount) {
-        sanity = Math.min(100, sanity + amount);
-    }
-
-    /**
-     * Riduce la sanita' mentale, senza scendere sotto zero.
-     * @param amount punti sanita' da togliere
-     */
-    public void removeSanity(int amount) {
-        sanity = Math.max(0, sanity - amount);
-    }
-    
-    /** Avanza di un giorno. Ogni giorno sull'isola riduce la sanita' di 5 punti. */
-    public void nextDay() {
-        daysOnIsland++;
-        // Ogni giorno perdi un po' di sanità
-        removeSanity(5);
-    }
-
-    /**
      * Imposta i giorni trascorsi sull'isola (minimo 1).
      * @param daysOnIsland numero di giorni
      */
@@ -193,12 +145,13 @@ public class Player {
     
     /**
      * Riepilogo testuale dello stato del giocatore.
-     * @return testo con giorno, salute, sanita' e inventario
+     * @return testo con giorno, posizione e inventario
      */
     public String getStatus() {
         String status = name + " - Giorno " + daysOnIsland + " sull'isola\n";
-        status += "Salute: " + health + "/" + maxHealth + "\n";
-        status += "Sanità: " + sanity + "/100\n";
+        if (currentRoom != null) {
+            status += "Posizione: " + currentRoom.getName() + "\n";
+        }
         status += "Inventario: " + inventory.size() + "/" + maxInventorySize + " oggetti";
         return status;
     }
@@ -234,14 +187,6 @@ public class Player {
     public void setCurrentRoom(Room room) { this.currentRoom = room; }
     /** {@return la lista degli oggetti nell'inventario} */
     public List<Item> getInventory() { return inventory; }
-    /** {@return la salute corrente (0-100)} */
-    public int getHealth() { return health; }
-    /** {@return la sanita' mentale corrente (0-100)} */
-    public int getSanity() { return sanity; }
     /** {@return i giorni trascorsi sull'isola} */
     public int getDaysOnIsland() { return daysOnIsland; }
-    /** {@return true se il giocatore e' vivo} */
-    public boolean isAlive() { return health > 0; }
-    /** {@return true se il giocatore e' ancora sano di mente} */
-    public boolean isSane() { return sanity > 0; }
 }

@@ -152,90 +152,25 @@ public class FullScreenRenderer {
         g.setColor(BORDER_COLOR);
         g.drawLine(0, barY, screenWidth, barY);
         
-        // Formato: "Salute 85% | Sanita 90% | Giorno 1 | SPIAGGIA"
-        int health = 100;
-        int sanity = 100;
+        // Formato: "Giorno 1 | SPIAGGIA"
         int day = 1;
         String location = "";
-        
+
         if (statusInfo != null && !statusInfo.isEmpty()) {
             String[] parts = statusInfo.split("\\|");
-            if (parts.length >= 4) {
-                health = parseFirstNumber(parts[0], health);
-                sanity = parseFirstNumber(parts[1], sanity);
-                day = parseFirstNumber(parts[2], day);
-                location = parts[3].trim();
+            if (parts.length >= 2) {
+                day = parseFirstNumber(parts[0], day);
+                location = parts[1].trim();
             }
         }
-        
-        int xPos = 20;
-        
-        // === BARRA SALUTE ===
-        g.setFont(GameFonts.retroBold(18f));
-        g.setColor(new Color(255, 150, 150));
-        g.drawString("Salute", xPos, barY + 20);
 
-        int healthBarX = xPos + 55;
-        int healthBarWidth = 110;
-        int healthBarHeight = 12;
-
-        g.setColor(new Color(70, 35, 35));
-        g.fillRoundRect(healthBarX, barY + 10, healthBarWidth, healthBarHeight, 5, 5);
-
-        Color healthColor;
-        if (health > 70) healthColor = new Color(120, 220, 120);
-        else if (health > 40) healthColor = new Color(255, 200, 100);
-        else healthColor = new Color(255, 100, 100);
-
-        int healthFillWidth = (int) (healthBarWidth * clampPercent(health) / 100.0);
-        g.setColor(healthColor);
-        g.fillRoundRect(healthBarX, barY + 10, healthFillWidth, healthBarHeight, 5, 5);
-
-        g.setColor(new Color(140, 80, 80));
-        g.drawRoundRect(healthBarX, barY + 10, healthBarWidth, healthBarHeight, 5, 5);
-
-        g.setColor(Color.WHITE);
-        g.drawString(health + "%", healthBarX + healthBarWidth + 8, barY + 20);
-        
-        // === BARRA SANITÀ MENTALE ===
-        int sanityBarX = healthBarX + healthBarWidth + 60;
-        int sanityBarWidth = 100;
-        int sanityBarHeight = 12;
-        
-        g.setFont(GameFonts.retroBold(18f));
-        g.setColor(new Color(150, 150, 255));
-        g.drawString("Mente", sanityBarX - 42, barY + 20);
-        
-        // Sfondo barra sanità
-        g.setColor(new Color(50, 50, 70));
-        g.fillRoundRect(sanityBarX, barY + 10, sanityBarWidth, sanityBarHeight, 5, 5);
-        
-        // Riempimento barra sanità
-        Color sanityColor;
-        if (sanity > 70) sanityColor = new Color(100, 150, 255);
-        else if (sanity > 40) sanityColor = new Color(255, 200, 100);
-        else sanityColor = new Color(255, 100, 100);
-        
-        int fillWidth = (int) (sanityBarWidth * clampPercent(sanity) / 100.0);
-        g.setColor(sanityColor);
-        g.fillRoundRect(sanityBarX, barY + 10, fillWidth, sanityBarHeight, 5, 5);
-        
-        // Bordo barra
-        g.setColor(new Color(100, 100, 150));
-        g.drawRoundRect(sanityBarX, barY + 10, sanityBarWidth, sanityBarHeight, 5, 5);
-        
-        // Percentuale sanità
-        g.setFont(GameFonts.retroBold(15f));
-        g.setColor(Color.WHITE);
-        g.drawString(sanity + "%", sanityBarX + sanityBarWidth/2 - 10, barY + 20);
-        
         // === GIORNO E LOCATION ===
-        g.setFont(GameFonts.retroBold(18f));
+        g.setFont(GameFonts.retroBold(20f));
         g.setColor(new Color(255, 220, 100));
-        g.drawString("Giorno " + day, sanityBarX + sanityBarWidth + 30, barY + 20);
-        
+        g.drawString("Giorno " + day, 20, barY + 22);
+
         g.setColor(new Color(150, 200, 150));
-        g.drawString(location, sanityBarX + sanityBarWidth + 120, barY + 20);
+        g.drawString(location, 150, barY + 22);
         
         // === ISTRUZIONI ===
         g.setFont(GameFonts.retroPlain(15f));
@@ -266,10 +201,6 @@ public class FullScreenRenderer {
         }
     }
 
-    private int clampPercent(int value) {
-        return Math.max(0, Math.min(100, value));
-    }
-    
     /** {@return il gestore delle immagini pixel art} */
     public PixelArtManager getPixelArtManager() {
         return pixelArtManager;

@@ -5,6 +5,8 @@ import com.lost.graphics.GameFonts;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.InputStream;
 
 /**
@@ -12,6 +14,11 @@ import java.io.InputStream;
  * immagine in alto (55%), titolo, testo narrativo e bottoni in basso
  */
 public class SceneBuilder {
+    /** Caratteri rivelati a ogni tick: l'intro scorre lenta, da film. */
+    private static final int INTRO_CHARS_PER_TICK = 1;
+    /** Millisecondi tra un carattere e l'altro. */
+    private static final int INTRO_TICK_MS = 35;
+
     private final JFrame parent;
     private final int screenWidth;
     private final int screenHeight;
@@ -91,6 +98,8 @@ public class SceneBuilder {
 
     /**
      * Crea l'area di testo narrativo della scena.
+     * Il testo appare con effetto macchina da scrivere, lento e
+     * cinematografico; un click sul testo lo completa subito.
      * @param text testo da mostrare
      * @return area di testo non editabile con font retro'
      */
@@ -102,8 +111,36 @@ public class SceneBuilder {
         sceneText.setBackground(Color.BLACK);
         sceneText.setForeground(Color.WHITE);
         sceneText.setFont(GameFonts.retroPlain(25f));
-        sceneText.setText(text);
+        startTypewriter(sceneText, text);
         return sceneText;
+    }
+
+    private static void startTypewriter(JTextArea area, String fullText) {
+        if (fullText == null || fullText.isEmpty()) {
+            area.setText("");
+            return;
+        }
+
+        final int[] index = {0};
+        Timer timer = new Timer(INTRO_TICK_MS, null);
+        timer.addActionListener(e -> {
+            index[0] = Math.min(fullText.length(), index[0] + INTRO_CHARS_PER_TICK);
+            area.setText(fullText.substring(0, index[0]));
+            if (index[0] >= fullText.length()) {
+                timer.stop();
+            }
+        });
+
+        // Un click sul testo completa subito la digitazione
+        area.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                timer.stop();
+                area.setText(fullText);
+            }
+        });
+
+        timer.start();
     }
 
     /**

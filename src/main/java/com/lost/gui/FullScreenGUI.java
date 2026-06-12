@@ -705,6 +705,9 @@ public class FullScreenGUI extends JFrame {
         completionRecordSaved = true;
         gameStartMillis = System.currentTimeMillis();
 
+        // Chi carica salta l'intro: il tema dell'isola parte subito
+        engine.getAudioManager().playBackgroundMusic(IntroSequence.ISLAND_THEME);
+
         currentLocation = engine.getCurrentRoomKey();
         currentImageKey = engine.getCurrentChapterImageKey();
         currentText = "Partita caricata!\n\n" +

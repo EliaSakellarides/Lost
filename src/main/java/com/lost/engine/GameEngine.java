@@ -72,8 +72,8 @@ public class GameEngine {
     }
     
     /**
-     * Inizializza una nuova partita: crea il mondo, i capitoli,
-     * posiziona il giocatore sulla spiaggia e avvia la colonna sonora.
+     * Inizializza una nuova partita: crea il mondo, i capitoli
+     * e posiziona il giocatore sulla spiaggia.
      * @param playerName nome del giocatore
      */
     public void initializeGame(String playerName) {
@@ -82,10 +82,7 @@ public class GameEngine {
         createStoryChapters();
         player.setCurrentRoom(startRoom);
         gameRunning = true;
-        
-        // Avvia la sigla di LOST! (suona per 15 secondi, poi fade out)
-        audioManager.playBackgroundMusic("lost___opening_titles.wav", false, 15000);
-        
+
         addLog("═══════════════════════════════════════════════════");
         addLog("   OCEANIC FLIGHT 815 - GIORNO 1");
         addLog("═══════════════════════════════════════════════════");

@@ -98,9 +98,12 @@ public class AudioManager {
     
     /** Ferma e chiude la clip in riproduzione, se presente. */
     public void stopBackgroundMusic() {
-        if (backgroundMusic != null && backgroundMusic.isRunning()) {
-            backgroundMusic.stop();
+        if (backgroundMusic != null) {
+            if (backgroundMusic.isRunning()) {
+                backgroundMusic.stop();
+            }
             backgroundMusic.close();
+            backgroundMusic = null;
         }
     }
     

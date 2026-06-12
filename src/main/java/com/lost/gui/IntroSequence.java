@@ -12,6 +12,9 @@ import java.awt.*;
  * Contiene 13 scene: dall'animazione LOST fino alla scelta sulla spiaggia.
  */
 public class IntroSequence {
+    private static final String INTRO_THEME = "lost___opening_titles.wav";
+    /** Tema dell'isola: parte dallo schianto e accompagna tutta la partita. */
+    static final String ISLAND_THEME = "lost_life_and_death.wav";
 
     private final JFrame parent;
     private final GameEngine engine;
@@ -46,6 +49,7 @@ public class IntroSequence {
      */
     public void start(String playerName) {
         this.playerName = playerName;
+        engine.getAudioManager().playBackgroundMusic(INTRO_THEME, false, 0);
         showLostIntro();
     }
 
@@ -412,6 +416,7 @@ public class IntroSequence {
     private void showBeachCrashScene() {
         if (currentScene != 8) return;
         currentScene = 9;
+        engine.getAudioManager().playBackgroundMusic(ISLAND_THEME);
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "spiaggia", screenWidth);
         JPanel imagePanel = scene.createImagePanel("aereo_distrutto_su_spiaggia.jpg");

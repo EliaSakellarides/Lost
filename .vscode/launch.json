@@ -6,6 +6,13 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "com.lost.Main",
+            "projectName": "lost-thesis"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "com.lost.Main",
             "projectName": "lost",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",

@@ -65,6 +65,18 @@ public class FullScreenGUI extends JFrame {
     /** Inizio partita, per il tempo di completamento. */
     private long gameStartMillis = 0L;
 
+    // Effetto macchina da scrivere
+    /** Timer che rivela il testo un po' alla volta. */
+    private Timer typewriterTimer;
+    /** Testo completo in corso di digitazione. */
+    private String typewriterFullText = "";
+    /** Quanti caratteri del testo sono gia' visibili. */
+    private int typewriterIndex = 0;
+    /** Caratteri rivelati a ogni tick del timer. */
+    private static final int TYPEWRITER_CHARS_PER_TICK = 3;
+    /** Millisecondi tra un tick e l'altro. */
+    private static final int TYPEWRITER_TICK_MS = 16;
+
     // Etichette originali dei bottoni
     private static final String DEFAULT_BTN_A = "A";
     private static final String DEFAULT_BTN_B = "B";
@@ -108,6 +120,15 @@ public class FullScreenGUI extends JFrame {
         textPane.setEditable(false);
         textPane.setOpaque(false);
         textPane.setFocusable(false);
+        // Un click sul testo completa la digitazione in corso
+        textPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (isTypewriterRunning()) {
+                    finishTypewriter();
+                }
+            }
+        });
 
         textScrollPane = new JScrollPane(textPane);
         textScrollPane.setOpaque(false);
@@ -502,6 +523,12 @@ public class FullScreenGUI extends JFrame {
      * non ignorano una risposta gia' scritta.
      */
     private void submitInputOrAdvance() {
+        // Se il testo sta ancora scorrendo, il primo AVANTI lo completa
+        if (isTypewriterRunning() && inputField.getText().trim().isEmpty()) {
+            finishTypewriter();
+            return;
+        }
+
         String pending = inputField.getText().trim();
         if (!pending.isEmpty()) {
             inputField.setText("");
@@ -812,8 +839,53 @@ public class FullScreenGUI extends JFrame {
         if (currentTitle != null && !currentTitle.isEmpty()) {
             fullText = currentTitle + "\n\n" + currentText;
         }
-        textPane.setText(TextColorizer.colorize(fullText));
-        textPane.setCaretPosition(0);
+        startTypewriter(fullText);
+    }
+
+    /**
+     * Avvia l'effetto macchina da scrivere sul testo dato.
+     * @param fullText testo completo da rivelare gradualmente
+     */
+    private void startTypewriter(String fullText) {
+        stopTypewriter();
+        typewriterFullText = fullText == null ? "" : fullText;
+        typewriterIndex = 0;
+        renderTypewriterText();
+
+        typewriterTimer = new Timer(TYPEWRITER_TICK_MS, e -> {
+            typewriterIndex = Math.min(typewriterFullText.length(),
+                typewriterIndex + TYPEWRITER_CHARS_PER_TICK);
+            renderTypewriterText();
+            if (typewriterIndex >= typewriterFullText.length()) {
+                stopTypewriter();
+            }
+        });
+        typewriterTimer.start();
+    }
+
+    private void renderTypewriterText() {
+        String visible = typewriterFullText.substring(0, typewriterIndex);
+        textPane.setText(TextColorizer.colorize(visible));
+        // Segui il testo mentre scorre
+        textPane.setCaretPosition(textPane.getDocument().getLength());
+    }
+
+    private boolean isTypewriterRunning() {
+        return typewriterTimer != null && typewriterTimer.isRunning();
+    }
+
+    private void stopTypewriter() {
+        if (typewriterTimer != null) {
+            typewriterTimer.stop();
+            typewriterTimer = null;
+        }
+    }
+
+    /** Completa subito il testo in corso di digitazione. */
+    private void finishTypewriter() {
+        stopTypewriter();
+        typewriterIndex = typewriterFullText.length();
+        renderTypewriterText();
     }
 
     private void repositionTextPane() {

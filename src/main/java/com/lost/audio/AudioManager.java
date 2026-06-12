@@ -10,6 +10,8 @@ public class AudioManager {
     private Clip backgroundMusic;
     private boolean musicEnabled;
     private float volume;
+    private String lastFilename;
+    private boolean lastLoop;
     
     /** Crea il gestore audio con musica abilitata e volume al massimo. */
     public AudioManager() {
@@ -32,6 +34,11 @@ public class AudioManager {
      * @param stopAfterMs ferma dopo N millisecondi (0 = mai)
      */
     public void playBackgroundMusic(String filename, boolean loop, int stopAfterMs) {
+        // Ricorda il brano richiesto: se la musica e' spenta,
+        // riattivandola riprende da qui.
+        this.lastFilename = filename;
+        this.lastLoop = loop;
+
         if (!musicEnabled) return;
         
         try {
@@ -128,9 +135,23 @@ public class AudioManager {
     
     /** Abilita/disabilita la musica; se disabilitata ferma la riproduzione. */
     public void toggleMusic() {
-        musicEnabled = !musicEnabled;
-        if (!musicEnabled) {
+        setMusicEnabled(!musicEnabled);
+    }
+
+    /**
+     * Imposta lo stato della musica: spegnendola ferma la riproduzione,
+     * riaccendendola riprende l'ultimo brano richiesto.
+     * @param enabled true per attivare la musica
+     */
+    public void setMusicEnabled(boolean enabled) {
+        if (this.musicEnabled == enabled) {
+            return;
+        }
+        this.musicEnabled = enabled;
+        if (!enabled) {
             stopBackgroundMusic();
+        } else if (lastFilename != null) {
+            playBackgroundMusic(lastFilename, lastLoop, 0);
         }
     }
 

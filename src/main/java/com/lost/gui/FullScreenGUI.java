@@ -95,6 +95,8 @@ public class FullScreenGUI extends JFrame {
     private Timer statusUpdateTimer;
     /** Servizio della classifica dei record. */
     private RecordService recordService;
+    /** Preferenza musica: sopravvive a nuove partite e caricamenti. */
+    private boolean musicMuted = false;
 
     /** Crea la finestra principale e mostra la schermata del menu. */
     public FullScreenGUI() {
@@ -235,6 +237,17 @@ public class FullScreenGUI extends JFrame {
         btnRecords.setToolTipText("Record");
         btnRecords.addActionListener(e -> showRecordsDialog());
 
+        JButton btnAudio = GuiButtonFactory.create("🔊",
+            new Font(Font.DIALOG, Font.PLAIN, 20), buttonBg, buttonFg);
+        btnAudio.setToolTipText("Attiva/disattiva la musica");
+        btnAudio.addActionListener(e -> {
+            musicMuted = !musicMuted;
+            btnAudio.setText(musicMuted ? "🔇" : "🔊");
+            if (engine != null) {
+                engine.getAudioManager().setMusicEnabled(!musicMuted);
+            }
+        });
+
         btnInventory.addActionListener(e -> processInput("inventario"));
         btnStatus.addActionListener(e -> processInput("stato"));
         btnHelp.addActionListener(e -> processInput("aiuto"));
@@ -258,6 +271,7 @@ public class FullScreenGUI extends JFrame {
         panel.add(btnSave);
         panel.add(btnMap);
         panel.add(btnRecords);
+        panel.add(btnAudio);
         panel.add(btnInventory);
         panel.add(btnStatus);
         panel.add(btnHelp);
@@ -481,6 +495,8 @@ public class FullScreenGUI extends JFrame {
 
     private void initializeGame(String playerName) {
         engine = new GameEngine();
+        // Rispetta la preferenza musica prima che parta qualsiasi brano
+        engine.getAudioManager().setMusicEnabled(!musicMuted);
         engine.initializeGame(playerName);
         victoryDialogShown = false;
         gameOverDialogShown = false;
@@ -731,6 +747,7 @@ public class FullScreenGUI extends JFrame {
         }
 
         engine = new GameEngine();
+        engine.getAudioManager().setMusicEnabled(!musicMuted);
         engine.loadGameState(state);
         victoryDialogShown = engine.isGameWon();
         gameOverDialogShown = false;

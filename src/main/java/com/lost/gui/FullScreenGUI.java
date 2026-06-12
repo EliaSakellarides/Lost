@@ -565,7 +565,7 @@ public class FullScreenGUI extends JFrame {
         currentText = response;
         currentLocation = engine.getCurrentRoomKey();
 
-        currentImageKey = engine.getCurrentChapterImageKey();
+        currentImageKey = engine.getCurrentSceneImageKey();
 
         if (response.contains("CAP.")) {
             int start = response.indexOf(": ");
@@ -759,7 +759,7 @@ public class FullScreenGUI extends JFrame {
         engine.getAudioManager().playBackgroundMusic(IntroSequence.ISLAND_THEME);
 
         currentLocation = engine.getCurrentRoomKey();
-        currentImageKey = engine.getCurrentChapterImageKey();
+        currentImageKey = engine.getCurrentSceneImageKey();
         currentText = "Partita caricata!\n\n" +
             engine.getPlayer().getName() +
             " | Cap. " + engine.getCurrentChapterNumber() +

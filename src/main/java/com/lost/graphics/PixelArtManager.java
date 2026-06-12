@@ -64,7 +64,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap5_hunt", "cap5_caccia.png");
         IMAGE_FILES.put("cap6_hatch", "cap6_botola_scoperta.png");
         IMAGE_FILES.put("cap7_blackrock", "cap7_roccia_nera.png");
-        IMAGE_FILES.put("cap8_openhatch", "cap8_botola_aperta.png");
+        IMAGE_FILES.put("cap8_openhatch", "dinamite_alla_botola.png");
         IMAGE_FILES.put("cap9_swan", "cap9_cigno_radio.png");
         IMAGE_FILES.put("cap10_henrygale", "cap10_prigioniero.png");
         IMAGE_FILES.put("cap11_others", "cap11_altri.png");
@@ -78,6 +78,15 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap17_escape", "cap17_fuga_finale.png");
         IMAGE_FILES.put("cap18_freedom", "cap18_liberta.png");
         
+        // Immagini-evento: momenti chiave che cambiano la scena
+        IMAGE_FILES.put("botola_aperta", "cap8_botola_aperta.png");
+        IMAGE_FILES.put("caccia_al_cinghiale", "caccia_al_cinghiale.jpg");
+        IMAGE_FILES.put("terminale_numero", "terminale_numero.jpg");
+        IMAGE_FILES.put("circondati", "circondati.jpg");
+        IMAGE_FILES.put("fuga_dal_fumo_nero", "fuga_dal_fumo_nero.jpg");
+        IMAGE_FILES.put("spari_e_fuoco", "spari_e_fuoco_sulla_spiaggia.jpg");
+        IMAGE_FILES.put("desmond", "desmond.jpg");
+
         // Immagini extra disponibili
         IMAGE_FILES.put("black_rock_interno", "black_rock_da_vicino.jpg");
         IMAGE_FILES.put("interno_botola", "interno_botola.jpg");

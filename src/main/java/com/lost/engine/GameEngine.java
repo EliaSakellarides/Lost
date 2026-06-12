@@ -21,6 +21,9 @@ public class GameEngine {
     private boolean gameWon;
     private boolean playerDead;
     private boolean loadedFromSave;
+
+    // Immagine-evento: sostituisce temporaneamente quella del capitolo
+    private String eventImageKey;
     private List<String> gameLog;
     
     // Modalità narrativa LOST
@@ -860,6 +863,9 @@ public class GameEngine {
     }
     
     private String startNextChapter() {
+        // Tornando alla storia si torna all'immagine del capitolo
+        eventImageKey = null;
+
         if (currentChapterStarted && !currentChapterCompleted && currentChapter < storyChapters.size()) {
             updatePlayerDayByChapter(currentChapter);
             Level chapter = storyChapters.get(currentChapter);
@@ -947,9 +953,20 @@ public class GameEngine {
             // giocatore raccoglierla prima di tornare alla botola.
             if ("cap7_blackrock".equals(chapter.getKey())) {
                 blackRockExplored = true;
+                eventImageKey = "black_rock_interno";
                 success += "Schiodi il coperchio del baule: dentro, file ordinate\n" +
                            "di candelotti di DINAMITE, vecchi ma asciutti.\n\n" +
                            "Usa 'prendi dinamite' prima di lasciare la stiva!\n\n";
+            }
+
+            // Immagini-evento per i momenti chiave della storia
+            switch (chapter.getKey()) {
+                case "cap9_swan": eventImageKey = "terminale_numero"; break;
+                case "cap10_henrygale": eventImageKey = "cattura"; break;
+                case "cap11_others": eventImageKey = "circondati"; break;
+                case "cap11_escape_others": eventImageKey = "fuga_dal_fumo_nero"; break;
+                case "cap13_walt": eventImageKey = "spari_e_fuoco"; break;
+                default: break;
             }
 
             // Consegna la mappa quando viene davvero recuperata nel bunker.
@@ -1026,6 +1043,8 @@ public class GameEngine {
 
         player.setCurrentRoom(destination);
         destination.setVisited(true);
+        // Esplorando si vede l'arte della stanza
+        eventImageKey = destination.getKey();
         String result = "Ti sposti verso " + direction.trim().toUpperCase() + "...\n\n" +
                         destination.getFullDescription();
         if (destination.isDangerous()) {
@@ -1049,6 +1068,9 @@ public class GameEngine {
         }
         
         if (player.addItem(item)) {
+            if (item.getName().toLowerCase().contains("dinamite")) {
+                eventImageKey = "scoperta_dinamite";
+            }
             return " Hai preso: " + item.getName();
         } else {
             room.addItem(item);
@@ -1152,6 +1174,9 @@ public class GameEngine {
         game.reset();
         activeMiniGame = game;
         miniGameIntroShown = true;
+        if ("jungle_tracking".equals(miniGameKey)) {
+            eventImageKey = "caccia_al_cinghiale";
+        }
 
         return getMiniGameIntroText(miniGameKey) + "\n\n" +
                game.getInstructions() + "\n\n" +
@@ -1449,6 +1474,17 @@ public class GameEngine {
             return " La radio del cockpit e' recuperabile, ma non funzionera'\n" +
                    "finche' non trovi batteria, antenna e fusibile.";
         }
+        if (target.contains("desmond")) {
+            eventImageKey = "desmond";
+            return " Desmond Hume. Tre anni qui sotto,\n" +
+                   "a premere un pulsante ogni 108 minuti.\n" +
+                   "'See you in another life, brother.'";
+        }
+        if (target.contains("birr") || target.contains("casse")) {
+            eventImageKey = "birre_blackrock";
+            return " Casse di birra DHARMA, ancora chiuse.\n" +
+                   "Scadute da decenni. Qualcuno le berrebbe lo stesso.";
+        }
         if (target.contains("jacob")) {
             return " Jacob è il protettore dell'isola.\n" +
                    "Vive al Faro e osserva i candidati.\n" +
@@ -1544,6 +1580,7 @@ public class GameEngine {
         }
 
         radioRepaired = true;
+        eventImageKey = "item_enigmi_radio";
         player.removeItem("Radio danneggiata");
         player.addItem(new Item("Trasmettitore riparato",
             "Radio del cockpit riparata con componenti DHARMA.",
@@ -1574,6 +1611,7 @@ public class GameEngine {
         }
 
         radioMessageReceived = true;
+        eventImageKey = "item_enigmi_radio";
         return " ACCENDI IL TRASMETTITORE\n\n" +
                "KRRR... KRRR...\n" +
                "Tra scariche e fischi, una voce lontana emerge:\n\n" +
@@ -1677,6 +1715,7 @@ public class GameEngine {
         currentChapter++;
         currentChapterCompleted = true;
         currentChapterStarted = false;
+        eventImageKey = "botola_aperta";
 
         return "Sistemi i candelotti sul portello e accendi la miccia.\n" +
                "'AL RIPARO!'\n" +
@@ -1841,6 +1880,16 @@ public class GameEngine {
         }
         Level chapter = storyChapters.get(currentChapter);
         return chapter.getKey();
+    }
+
+    /**
+     * Chiave dell'immagine di scena da mostrare adesso: quella di un
+     * evento appena accaduto (esplorazione, scoperte, esplosioni) se
+     * presente, altrimenti quella del capitolo corrente.
+     * @return chiave dell'immagine per la GUI
+     */
+    public String getCurrentSceneImageKey() {
+        return eventImageKey != null ? eventImageKey : getCurrentChapterImageKey();
     }
     
     /**

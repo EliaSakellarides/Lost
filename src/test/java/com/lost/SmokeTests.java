@@ -224,8 +224,10 @@ public class SmokeTests {
 
         // si torna alla Roccia Nera a piedi e si rimedia
         assertContains(engine.processCommand("vai ovest"), "Giungla");
+        assertEquals("giungla", engine.getCurrentSceneImageKey(), "esplorando si vede la stanza");
         assertContains(engine.processCommand("ovest"), "Roccia Nera");
         assertContains(engine.processCommand("prendi dinamite"), "Dinamite");
+        assertEquals("scoperta_dinamite", engine.getCurrentSceneImageKey(), "immagine evento dinamite");
 
         // la dinamite va usata alla botola, non altrove
         assertContains(engine.processCommand("usa dinamite"), "BOTOLA");

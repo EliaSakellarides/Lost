@@ -255,26 +255,23 @@ public class GameEngine {
             "La cosa piu' promettente e' quella cassa chiusa nella stiva."
         ));
         
-        // CAPITOLO 8: APRIRE LA BOTOLA
-        Map<String, String> cap8Choices = new HashMap<>();
-        cap8Choices.put("A", "Spegnere subito la miccia");
-        cap8Choices.put("B", "Allontanarsi e cercare riparo");
-        cap8Choices.put("C", "Restare vicino alla botola per osservare");
-        storyChapters.add(new Level(
+        // CAPITOLO 8: APRIRE LA BOTOLA (azione: serve la dinamite)
+        Level cap8 = new Level(
             "cap8_openhatch",
             "Aprire la Botola",
             "IL MOMENTO DELLA VERITÀ\n\n" +
-            "Siete tornati alla botola con la dinamite.\n" +
-            "Locke sistema la carica sulla botola e accende la miccia.\n" +
+            "Siete tornati alla botola.\n" +
+            "Locke ti fissa: 'Tocca a te. Sistema la carica.'\n" +
             "Hurley impallidisce vedendo i numeri incisi sul metallo:\n" +
             "4 8 15 16 23 42.\n\n" +
-            "'Non mi piacciono per niente...'\n" +
-            "La miccia sfrigola. Hai solo pochi secondi.\n\n" +
-            "Cosa fai?",
-            cap8Choices,
-            "B",
-            "Con della dinamite accesa, la scelta giusta e' mettersi al riparo."
-        ));
+            "'Non mi piacciono per niente...'\n\n" +
+            "Scrivi 'usa dinamite' per piazzare la carica sulla botola.\n" +
+            "(L'avete presa dalla stiva della Roccia Nera, vero?)",
+            Arrays.asList("usa dinamite", "dinamite", "attiva dinamite", "a"),
+            "Serve la dinamite della Roccia Nera: prendila e poi 'usa dinamite'."
+        );
+        cap8.setQuickAnswerLabel("USA DINAMITE");
+        storyChapters.add(cap8);
         
         // CAPITOLO 9: IL CIGNO - Desmond + MINI GIOCO
         Map<String, String> cap9Choices = new HashMap<>();
@@ -709,6 +706,11 @@ public class GameEngine {
                     advanceTurn = true;
                     break;
 
+                case VAI:
+                    response = movePlayer(target);
+                    advanceTurn = true;
+                    break;
+
                 case RISPONDI:
                     if (target.isEmpty()) {
                         return "Devi scrivere una risposta!";
@@ -918,6 +920,11 @@ public class GameEngine {
         boolean correct = chapter.checkAnswer(answer);
         
         if (correct) {
+            // L'apertura della botola e' un'azione: richiede davvero la dinamite
+            if ("cap8_openhatch".equals(chapter.getKey())) {
+                return useDynamiteOnHatch();
+            }
+
             String success = "CORRETTO!\n\n";
 
             if ("cap3_smoke".equals(chapter.getKey())) {
@@ -938,14 +945,13 @@ public class GameEngine {
             currentChapterCompleted = true;
             currentChapterStarted = false;
 
-            // Ricompense narrative dei capitoli chiave
-            if (currentChapter == 7 && !player.hasItem("Dinamite")) {
-                Item dinamite = new Item("Dinamite",
-                    "Candelotti trovati nella Roccia Nera. Vecchi, ma ancora pericolosi.",
-                    true, Item.ItemType.STRUMENTO, 0, 1);
-                player.addItem(dinamite);
+            // La cassa della Roccia Nera rivela la dinamite: sta al
+            // giocatore raccoglierla prima di tornare alla botola.
+            if ("cap7_blackrock".equals(chapter.getKey())) {
                 blackRockExplored = true;
-                success += "Hai trovato la dinamite nella cassa della Roccia Nera!\n\n";
+                success += "Schiodi il coperchio del baule: dentro, file ordinate\n" +
+                           "di candelotti di DINAMITE, vecchi ma asciutti.\n\n" +
+                           "Usa 'prendi dinamite' prima di lasciare la stiva!\n\n";
             }
 
             // Consegna la mappa quando viene davvero recuperata nel bunker.
@@ -996,6 +1002,40 @@ public class GameEngine {
     private boolean isCurrentChapter(String key) {
         return currentChapter < storyChapters.size()
             && key.equals(storyChapters.get(currentChapter).getKey());
+    }
+
+    /**
+     * Sposta il giocatore in una direzione usando le uscite della stanza.
+     * Il movimento e' libero: all'avvio del capitolo successivo la storia
+     * riporta comunque il giocatore dove serve.
+     * @param direction direzione richiesta (nord/sud/est/ovest)
+     * @return descrizione della nuova stanza o messaggio di errore
+     */
+    private String movePlayer(String direction) {
+        Room current = player.getCurrentRoom();
+        if (current == null) {
+            return "Errore!";
+        }
+
+        String exits = String.join(", ", current.getExits().keySet());
+        if (direction == null || direction.trim().isEmpty()) {
+            return "Dove vuoi andare?\nUscite da qui: " + exits;
+        }
+
+        Room destination = current.getExit(direction.trim());
+        if (destination == null) {
+            return "Non puoi andare a " + direction.trim().toUpperCase() + " da qui.\n" +
+                   "Uscite: " + exits;
+        }
+
+        player.setCurrentRoom(destination);
+        destination.setVisited(true);
+        String result = "Ti sposti verso " + direction.trim().toUpperCase() + "...\n\n" +
+                        destination.getFullDescription();
+        if (destination.isDangerous()) {
+            result += "\n\n" + destination.getDangerDescription();
+        }
+        return result;
     }
     
     private String takeItemFromRoom(String itemName) {
@@ -1216,6 +1256,7 @@ public class GameEngine {
                "═══════════════════════════════════════\n" +
                " A, B, C      - Scegli un'opzione\n" +
                " avanti        - Continua la storia\n" +
+               " vai [dir]     - Spostati (nord/sud/est/ovest)\n" +
                " prendi [obj]  - Raccogli oggetto (p)\n" +
                " lascia [obj]  - Lascia oggetto (l)\n" +
                " guarda [obj]  - Osserva oggetto (g/x)\n" +
@@ -1440,6 +1481,14 @@ public class GameEngine {
     private String useItem(String target) {
         String normalizedTarget = target.toLowerCase(Locale.ROOT);
 
+        if (mentionsAny(normalizedTarget, "dinamite", "dynamite", "esplosivo")) {
+            if (isCurrentChapter("cap8_openhatch")) {
+                return useDynamiteOnHatch();
+            }
+            return "Meglio non giocare con l'esplosivo finche' non serve.\n" +
+                   "Se proprio vuoi rischiare: 'attiva dinamite'.";
+        }
+
         if (mentionsAny(normalizedTarget, "batteria", "battery")) {
             return installRadioPart("Batteria DHARMA", "batteria");
         }
@@ -1587,6 +1636,9 @@ public class GameEngine {
         }
         
         if (target.toLowerCase().contains("dinamite")) {
+            if (isCurrentChapter("cap8_openhatch")) {
+                return useDynamiteOnHatch();
+            }
             if (!player.hasItem("dinamite")) {
                 return " Non hai dinamite!";
             }
@@ -1606,6 +1658,40 @@ public class GameEngine {
         return " Non puoi attivare '" + target + "'.";
     }
     
+    /**
+     * Apre la botola con la dinamite (capitolo 8).
+     * Richiede di avere davvero la dinamite nell'inventario e di trovarsi
+     * alla botola: altrimenti il gioco indica come tornare a prenderla.
+     * @return esito dell'azione (esplosione, oppure indicazioni)
+     */
+    private String useDynamiteOnHatch() {
+        if (!player.hasItem("dinamite")) {
+            return "Non avete esplosivi!\n\n" +
+                   "La dinamite e' rimasta nella stiva della ROCCIA NERA.\n" +
+                   "Torna a prenderla: 'vai ovest' verso la giungla,\n" +
+                   "ancora 'vai ovest' fino alla nave, poi 'prendi dinamite'\n" +
+                   "e rifai la strada al contrario ('vai est', 'vai est').";
+        }
+
+        if (!"botola".equals(getCurrentRoomKey())) {
+            return "Qui non c'e' nulla da far esplodere.\n" +
+                   "La carica va piazzata alla BOTOLA: torna li' con 'vai'.";
+        }
+
+        player.removeItem("dinamite");
+        currentChapter++;
+        currentChapterCompleted = true;
+        currentChapterStarted = false;
+
+        return "Sistemi i candelotti sul portello e accendi la miccia.\n" +
+               "'AL RIPARO!'\n" +
+               "Vi lanciate dietro i tronchi mentre la miccia sfrigola...\n\n" +
+               "BOOM!\n\n" +
+               "Il fumo si dirada lentamente.\n" +
+               "Il portello e' divelto: la botola e' APERTA.\n\n" +
+               "Premi AVANTI per continuare...";
+    }
+
     /**
      * Risposte ironiche per comandi impossibili (come suggerisce la guida!)
      */

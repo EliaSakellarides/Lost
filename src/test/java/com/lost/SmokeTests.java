@@ -24,6 +24,7 @@ public class SmokeTests {
         run("enigma radio riparabile", SmokeTests::testRadioRepairPuzzle);
         run("scelte multiple esatte", SmokeTests::testMultipleChoiceRequiresExactOption);
         run("morte a salute zero", SmokeTests::testZeroHealthEndsGame);
+        run("movimento e dinamite alla botola", SmokeTests::testMovementAndDynamiteGating);
         run("salto minigioco avanza", SmokeTests::testMiniGameSkipAdvancesChapter);
         run("la scoperta accetta prendi", SmokeTests::testLaScopertaAcceptsBarePrendi);
         run("mappa ottenuta solo alla scoperta", SmokeTests::testMapAwardedOnlyAfterLaScoperta);
@@ -223,6 +224,43 @@ public class SmokeTests {
             "carica deve elencare i salvataggi a partita finita");
     }
 
+    private static void testMovementAndDynamiteGating() {
+        GameEngine engine = newStartedEngine("Locke");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "C");
+        assertContains(engine.processCommand("A"), "MINI GIOCO");
+        assertContains(engine.processCommand("salta"), "saltato");
+        engine.processCommand("avanti");
+        answerAndContinue(engine, "C");
+
+        // cap7: apre la cassa ma NON raccoglie la dinamite
+        assertContains(engine.processCommand("A"), "DINAMITE");
+        engine.processCommand("avanti");
+        assertEquals("Aprire la Botola", engine.getCurrentChapterTitle(), "capitolo botola");
+
+        // senza esplosivo la botola non si apre
+        String senzaEsplosivo = engine.processCommand("usa dinamite");
+        assertContains(senzaEsplosivo, "Non avete esplosivi");
+        assertEquals("Aprire la Botola", engine.getCurrentChapterTitle(), "il capitolo non deve avanzare");
+
+        // si torna alla Roccia Nera a piedi e si rimedia
+        assertContains(engine.processCommand("vai ovest"), "Giungla");
+        assertContains(engine.processCommand("ovest"), "Roccia Nera");
+        assertContains(engine.processCommand("prendi dinamite"), "Dinamite");
+
+        // la dinamite va usata alla botola, non altrove
+        assertContains(engine.processCommand("usa dinamite"), "BOTOLA");
+
+        assertContains(engine.processCommand("vai est"), "Giungla");
+        assertContains(engine.processCommand("vai est"), "Botola");
+        assertContains(engine.processCommand("usa dinamite"), "APERTA");
+        engine.processCommand("avanti");
+        assertEquals("La Stazione Il Cigno", engine.getCurrentChapterTitle(), "capitolo dopo la botola");
+        assertFalse(engine.getPlayer().hasItem("dinamite"), "la dinamite va consumata");
+    }
+
     private static void testMiniGameSkipAdvancesChapter() {
         GameEngine engine = new GameEngine();
         engine.getAudioManager().toggleMusic();
@@ -349,8 +387,16 @@ public class SmokeTests {
         engine.processCommand("avanti");
 
         answerAndContinue(engine, "C");
-        answerAndContinue(engine, "A");
-        answerAndContinue(engine, "B");
+
+        // cap7: la cassa rivela la dinamite, va raccolta prima di proseguire
+        assertContains(engine.processCommand("A"), "DINAMITE");
+        assertContains(engine.processCommand("prendi dinamite"), "Dinamite");
+        engine.processCommand("avanti");
+
+        // cap8: la botola si apre solo usando davvero la dinamite
+        assertContains(engine.processCommand("usa dinamite"), "APERTA");
+        engine.processCommand("avanti");
+
         answerAndContinue(engine, "A");
         answerAndContinue(engine, "B");
         answerAndContinue(engine, "C");

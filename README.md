@@ -18,6 +18,8 @@ unica chiave per raggiungere un piccolo aereo e lasciare l'isola.
 - 1 minigioco integrato nella storia: tracciamento nella giungla
 - Enigmi semplici basati su oggetti, come la riparazione della radio rotta
 - 8 locazioni esplorabili: Spiaggia dello Schianto, Giungla Oscura, La Botola (Il Cigno), Villaggio degli Altri, Il Tempio, La Roccia Nera, Il Faro, Pista di Atterraggio
+- Movimento libero tra le locazioni con `vai nord/sud/est/ovest` (o la direzione da sola)
+- Oggetti chiave da raccogliere davvero: senza la dinamite della Roccia Nera la botola non si apre
 - Parser comandi con alias multilingua (italiano e inglese) e abbreviazioni rapide
 - Sistema di salvataggio/caricamento su file JSON (slot multipli in `~/.lost/saves/`)
 - Classifica dei migliori tempi salvata su database H2 locale
@@ -80,7 +82,8 @@ Se vuoi eseguire solo gli smoke test senza GUI:
 
 | Comando | Alias | Descrizione |
 |---------|-------|-------------|
-| avanti | continua, prosegui, avanza, vai, next, n | Prosegue nella storia |
+| avanti | continua, prosegui, avanza, next, n | Prosegue nella storia |
+| vai | va, cammina, muoviti, go, walk | Si sposta tra le locazioni (nord/sud/est/ovest) |
 | prendi | raccogli, afferra, piglia, take, grab, pick, p | Raccoglie un oggetto |
 | lascia | posa, metti, drop, abbandona, l | Lascia un oggetto |
 | guarda | osserva, esamina, ispeziona, look, examine, x, g | Esamina oggetto o ambiente |

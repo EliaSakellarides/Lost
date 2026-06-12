@@ -46,7 +46,11 @@ public class CommandParser {
     private void registerAliases() {
         // AVANTI - proseguire nella storia
         register(CommandType.AVANTI,
-            "avanti", "continua", "prosegui", "avanza", "vai", "next", "n");
+            "avanti", "continua", "prosegui", "avanza", "next", "n");
+
+        // VAI - muoversi tra le stanze
+        register(CommandType.VAI,
+            "vai", "va", "cammina", "muoviti", "go", "walk");
 
         // RISPONDI - rispondere a una domanda
         register(CommandType.RISPONDI,
@@ -134,7 +138,18 @@ public class CommandParser {
         String target = parts.length > 1 ? parts[1] : "";
 
         CommandType type = aliasMap.getOrDefault(action, CommandType.SCONOSCIUTO);
+
+        // Una direzione scritta da sola vale come comando di movimento
+        if (type == CommandType.SCONOSCIUTO && target.isEmpty() && isDirection(action)) {
+            return new ParsedCommand(CommandType.VAI, action, action);
+        }
+
         return new ParsedCommand(type, target, action);
+    }
+
+    private boolean isDirection(String word) {
+        return word.equals("nord") || word.equals("sud")
+            || word.equals("est") || word.equals("ovest");
     }
 
     /**
@@ -172,6 +187,7 @@ public class CommandParser {
         appendAliasLine(sb, CommandType.INVENTARIO,"Inventario");
         appendAliasLine(sb, CommandType.STATO,     "Stato");
         appendAliasLine(sb, CommandType.AVANTI,    "Avanti");
+        appendAliasLine(sb, CommandType.VAI,       "Vai");
         appendAliasLine(sb, CommandType.SALVA,     "Salva");
         appendAliasLine(sb, CommandType.CARICA_PARTITA, "Carica");
         appendAliasLine(sb, CommandType.MAPPA,     "Mappa");

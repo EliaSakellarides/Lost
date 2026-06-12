@@ -7,6 +7,8 @@ package com.lost.engine;
 public enum CommandType {
     /** Prosegue nella storia al capitolo/paragrafo successivo. */
     AVANTI,
+    /** Si muove in una direzione (nord/sud/est/ovest). */
+    VAI,
     /** Risponde a una domanda posta dal capitolo corrente. */
     RISPONDI,
     /** Sceglie una delle opzioni proposte (A/B/C). */

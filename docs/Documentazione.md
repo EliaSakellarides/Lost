@@ -60,6 +60,8 @@ l'unica via per lasciare l'isola a bordo di un piccolo aereo.
   Botola/Il Cigno, Villaggio degli Altri, Tempio, Roccia Nera, Faro, Pista)
 - **Parser di comandi** con alias multilingua (italiano/inglese) e
   abbreviazioni rapide
+- **Movimento libero** tra le locazioni (`vai nord/sud/est/ovest`):
+  gli oggetti dimenticati si possono recuperare tornando sui propri passi
 - **Enigma a oggetti**: la riparazione della radio del cockpit
   (batteria + cavo antenna + fusibile)
 - **Minigioco** di tracciamento nella giungla integrato nella storia
@@ -619,8 +621,8 @@ la parola da digitare.
 | 4 | Le Grotte | **C** — Dividere il gruppo |
 | 5 | La Caccia | **A** — poi minigioco di tracciamento |
 | 6 | La Botola | **C** — Cercare un altro modo |
-| 7 | La Roccia Nera | **A** — Aprire la cassa nella stiva |
-| 8 | Aprire la Botola | **B** — Allontanarsi e cercare riparo |
+| 7 | La Roccia Nera | **A** — Aprire la cassa, poi `prendi dinamite` |
+| 8 | Aprire la Botola | `usa dinamite` (se manca, tornare alla Roccia Nera con `vai`) |
 | 9 | La Stazione Il Cigno | **A** — Premere il pulsante |
 | 10 | Il Prigioniero | **B** — No, sta mentendo |
 | 11 | Gli Altri | **C** — Cercare di fuggire |
@@ -646,9 +648,14 @@ pezzi (`usa batteria`, `usa cavo`, `usa fusibile`) si ottiene il
 *trasmettitore riparato*; con `usa trasmettitore` si ascolta una
 trasmissione che anticipa l'esistenza della pista nascosta.
 
+**La dinamite (cap. 7-8):** aprire la cassa nella stiva non basta — bisogna
+raccoglierla (`prendi dinamite`) prima di tornare alla botola. Chi la
+dimentica può tornare alla Roccia Nera in qualsiasi momento: dalla botola,
+`vai ovest`, `vai ovest`, `prendi dinamite` e ritorno.
+
 **Attenzione:** rispondere in modo sbagliato al capitolo 3 costa 25 punti
-salute; a salute zero la partita termina. La dinamite può essere innescata
-(`attiva dinamite`) ma esplode dopo 5 turni: va lasciata (`lascia
+salute; a salute zero la partita termina. La dinamite innescata fuori
+contesto (`attiva dinamite`) esplode dopo 5 turni: va lasciata (`lascia
 dinamite`) prima dello scoppio.
 
 # 7. Compilazione ed esecuzione

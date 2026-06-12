@@ -451,9 +451,10 @@ public class IntroSequence {
         currentScene = 10;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("risveglio_in_giungla.jpg");
+        JPanel imagePanel = scene.createImagePanel("aiuto_sopravvissuti.jpg");
         JTextArea text = scene.createSceneText(
-            "Ti allontani dalla spiaggia per riprendere fiato.\n\n" +
+            "Ti scosti di qualche passo per riprendere fiato.\n" +
+            "Dietro di te, i sopravvissuti si aiutano tra i rottami.\n\n" +
             "Sei ferito, " + playerName + ". Tagli sulle braccia, lividi ovunque.\n" +
             "Un taglio sul braccio sinistro non smette di sanguinare.\n" +
             "Devi curarti con quello che riesci a trovare.\n\n" +
@@ -499,7 +500,8 @@ public class IntroSequence {
     private void showJacketDiscoveryScene() {
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("risveglio_in_giungla.jpg");
+        // Flashback: la bottiglietta arriva dalla scena dell'hostess
+        JPanel imagePanel = scene.createImagePanel("hostess.png");
         JTextArea text = scene.createSceneText(
             "Frughi nelle tasche della giacca.\n\n" +
             "Spiccioli, la carta d'imbarco inzuppata...\n" +

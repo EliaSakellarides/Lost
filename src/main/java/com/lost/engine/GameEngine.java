@@ -868,23 +868,9 @@ public class GameEngine {
 
         if (currentChapterStarted && !currentChapterCompleted && currentChapter < storyChapters.size()) {
             updatePlayerDayByChapter(currentChapter);
-            Level chapter = storyChapters.get(currentChapter);
-            String msg = "CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
-                         ": " + chapter.getTitle() + "\n\n" +
-                         chapter.getPrompt() + "\n\n";
-            if (chapter.hasChoices()) {
-                Map<String, String> choices = chapter.getChoices();
-                msg += "SCELTE: ";
-                if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
-                if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
-                if (choices.containsKey("C")) msg += "C=" + choices.get("C");
-                msg += "\n\nPremi A, B o C";
-            } else {
-                msg += freeAnswerPrompt(chapter);
-            }
-            return msg;
+            return formatChapterDisplay(storyChapters.get(currentChapter), true);
         }
-        
+
         if (currentChapter >= storyChapters.size()) {
             // La vittoria viene gestita in answerChapter/endMiniGame
             return "Hai gia' completato l'avventura su LOST.";
@@ -893,26 +879,41 @@ public class GameEngine {
         Level chapter = storyChapters.get(currentChapter);
         currentChapterCompleted = false;
         currentChapterStarted = true;
-        
+
         updateRoomByChapter(currentChapter);
-        
-        String msg = "CAP. " + (currentChapter + 1) + "/" + storyChapters.size() +
-                     ": " + chapter.getTitle() + "\n\n" +
-                     chapter.getPrompt() + "\n\n";
-        
-        if (chapter.hasChoices()) {
-            Map<String, String> choices = chapter.getChoices();
-            msg += "SCELTE: ";
-            if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
-            if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
-            if (choices.containsKey("C")) msg += "C=" + choices.get("C");
-            msg += "\n\nPremi A, B o C";
-        } else {
-            msg += freeAnswerPrompt(chapter);
-        }
-        
+
+        String msg = formatChapterDisplay(chapter, true);
         addLog(msg);
         return msg;
+    }
+
+    /**
+     * Compone la schermata di un capitolo: intestazione opzionale,
+     * testo narrativo e riga delle scelte (o istruzioni di risposta).
+     * @param chapter capitolo da mostrare
+     * @param withHeader true per includere "CAP. N/M: Titolo"
+     * @return testo pronto per la visualizzazione
+     */
+    private String formatChapterDisplay(Level chapter, boolean withHeader) {
+        StringBuilder msg = new StringBuilder();
+        if (withHeader) {
+            msg.append("CAP. ").append(currentChapter + 1).append("/")
+               .append(storyChapters.size()).append(": ")
+               .append(chapter.getTitle()).append("\n\n");
+        }
+        msg.append(chapter.getPrompt()).append("\n\n");
+
+        if (chapter.hasChoices()) {
+            Map<String, String> choices = chapter.getChoices();
+            msg.append("SCELTE: ");
+            if (choices.containsKey("A")) msg.append("A=").append(choices.get("A")).append("  ");
+            if (choices.containsKey("B")) msg.append("B=").append(choices.get("B")).append("  ");
+            if (choices.containsKey("C")) msg.append("C=").append(choices.get("C"));
+            msg.append("\n\nPremi A, B o C");
+        } else {
+            msg.append(freeAnswerPrompt(chapter));
+        }
+        return msg.toString();
     }
     
     private String answerChapter(String answer) {
@@ -996,19 +997,8 @@ public class GameEngine {
                        "Devi scegliere con calma: A, B o C.";
             }
 
-            String msg = "Risposta sbagliata. Suggerimento: " + chapter.getHint() + "\n\n";
-            msg += chapter.getPrompt() + "\n\n";
-            if (chapter.hasChoices()) {
-                Map<String, String> choices = chapter.getChoices();
-                msg += "Scelte: ";
-                if (choices.containsKey("A")) msg += "A=" + choices.get("A") + "  ";
-                if (choices.containsKey("B")) msg += "B=" + choices.get("B") + "  ";
-                if (choices.containsKey("C")) msg += "C=" + choices.get("C");
-                msg += "\n\nPremi A, B o C";
-            } else {
-                msg += freeAnswerPrompt(chapter);
-            }
-            return msg;
+            return "Risposta sbagliata. Suggerimento: " + chapter.getHint() + "\n\n" +
+                   formatChapterDisplay(chapter, false);
         }
     }
 
@@ -2054,8 +2044,10 @@ public class GameEngine {
             }
         }
 
-        // Stato narrativa
-        this.currentChapter = state.getCurrentChapter();
+        // Stato narrativa (capitolo limitato ai valori validi:
+        // protegge da salvataggi di versioni con piu' capitoli)
+        this.currentChapter = Math.max(0,
+            Math.min(state.getCurrentChapter(), storyChapters.size()));
         this.currentChapterCompleted = state.isCurrentChapterCompleted();
         this.currentChapterStarted = state.isCurrentChapterStarted();
         this.gameRunning = state.isGameRunning();

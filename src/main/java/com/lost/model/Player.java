@@ -74,21 +74,7 @@ public class Player {
     }
 
     private boolean matchesItemName(String actualName, String query) {
-        String actual = normalizeItemName(actualName);
-        String wanted = normalizeItemName(query);
-        return !wanted.isEmpty() && (actual.equals(wanted) || actual.contains(wanted) || wanted.contains(actual));
-    }
-
-    private String normalizeItemName(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.toLowerCase(Locale.ROOT)
-            .replace("'", " ")
-            .replaceAll("\\b(il|lo|la|i|gli|le|un|uno|una|con|sul|sulla|nel|nella|alla|allo)\\b", " ")
-            .replaceAll("[^a-z0-9àèéìòù]+", " ")
-            .trim()
-            .replaceAll("\\s+", " ");
+        return ItemNameMatcher.matches(actualName, query);
     }
     
     /**

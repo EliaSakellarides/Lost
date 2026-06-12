@@ -334,6 +334,13 @@ public class FullScreenGUI extends JFrame {
     }
 
     private void askPlayerName() {
+        // Sipario nero: dietro il menu non deve vedersi la UI del gioco
+        JPanel menuCover = new JPanel();
+        menuCover.setOpaque(true);
+        menuCover.setBackground(Color.BLACK);
+        setGlassPane(menuCover);
+        menuCover.setVisible(true);
+
         JDialog dialog = new JDialog(this, "LOST", true);
         dialog.setUndecorated(true);
         dialog.setLayout(new BorderLayout());
@@ -705,7 +712,8 @@ public class FullScreenGUI extends JFrame {
         completionRecordSaved = true;
         gameStartMillis = System.currentTimeMillis();
 
-        // Chi carica salta l'intro: il tema dell'isola parte subito
+        // Chi carica salta l'intro: via il sipario, il tema dell'isola parte subito
+        getGlassPane().setVisible(false);
         engine.getAudioManager().playBackgroundMusic(IntroSequence.ISLAND_THEME);
 
         currentLocation = engine.getCurrentRoomKey();

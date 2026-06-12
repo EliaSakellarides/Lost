@@ -455,43 +455,25 @@ public class IntroSequence {
         JTextArea text = scene.createSceneText(
             "Ti allontani dalla spiaggia per riprendere fiato.\n\n" +
             "Sei ferito, " + playerName + ". Tagli sulle braccia, lividi ovunque.\n" +
-            "Hai bisogno di curarti.\n\n" +
-            "Nella tasca della giacca senti ancora la bottiglietta di whisky.\n" +
-            "Potrebbe servire come disinfettante.\n\n" +
-            "Come ti curi?");
+            "Un taglio sul braccio sinistro non smette di sanguinare.\n" +
+            "Devi curarti con quello che riesci a trovare.\n\n" +
+            "Cosa fai?");
 
-        JButton whiskyBtn = GuiButtonFactory.create("Usa il whisky sulle ferite",
+        JButton jacketBtn = GuiButtonFactory.create("Fruga nella giacca",
             GameFonts.retroBold(22f), new Color(120, 80, 40), Color.WHITE);
-        JButton bandageBtn = GuiButtonFactory.create("Fasciature di fortuna",
+        JButton luggageBtn = GuiButtonFactory.create("Cerca tra le valigie",
             GameFonts.retroBold(22f), new Color(60, 100, 60), Color.WHITE);
         JButton toughBtn = GuiButtonFactory.create("Stringi i denti",
             GameFonts.retroBold(22f), new Color(80, 80, 80), Color.WHITE);
 
-        whiskyBtn.addActionListener(e -> {
+        jacketBtn.addActionListener(e -> {
             dialog.dispose();
-            showHealResultScene(
-                "DISINFETTARE LE FERITE",
-                "curarsi_con_alcol.jpg",
-                new Color(100, 70, 40), new Color(255, 220, 150),
-                "Apri la bottiglietta di whisky.\n\n" +
-                "Versi l'alcol sulle ferite. BRUCIA TERRIBILMENTE!\n" +
-                "Ma almeno non si infetteranno.\n\n" +
-                "Bevi un sorso per calmare i nervi...\n" +
-                "Ti senti stordito, ma le ferite sono pulite.",
-                "Ferite disinfettate");
+            showJacketDiscoveryScene();
         });
 
-        bandageBtn.addActionListener(e -> {
+        luggageBtn.addActionListener(e -> {
             dialog.dispose();
-            showHealResultScene(
-                "FASCIATURE DI FORTUNA",
-                "aiuto_sopravvissuti.jpg",
-                new Color(50, 80, 50), new Color(200, 255, 200),
-                "Strappi strisce di tessuto dalla camicia.\n\n" +
-                "Fasci le ferite pi\u00F9 profonde alla meglio.\n" +
-                "Non \u00E8 il massimo, ma almeno fermi il sangue.\n\n" +
-                "Mantieni la lucidit\u00E0. Devi restare concentrato.",
-                "Sanguinamento fermato");
+            showLuggageDiscoveryScene();
         });
 
         toughBtn.addActionListener(e -> {
@@ -507,7 +489,75 @@ public class IntroSequence {
                 "Determinazione pura");
         });
 
-        JPanel btnPanel = scene.createButtonPanel(whiskyBtn, bandageBtn, toughBtn);
+        JPanel btnPanel = scene.createButtonPanel(jacketBtn, luggageBtn, toughBtn);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
+        dialog.setVisible(true);
+    }
+
+    // ============ SCENA 11b: Scoperta - la giacca ============
+
+    private void showJacketDiscoveryScene() {
+        JDialog dialog = scene.createFullScreenDialog();
+        JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
+        JPanel imagePanel = scene.createImagePanel("risveglio_in_giungla.jpg");
+        JTextArea text = scene.createSceneText(
+            "Frughi nelle tasche della giacca.\n\n" +
+            "Spiccioli, la carta d'imbarco inzuppata...\n" +
+            "Poi, nella tasca interna, qualcosa di rigido.\n\n" +
+            "La bottiglietta di whisky del volo!\n" +
+            "Te l'aveva lasciata l'hostess, prima della turbolenza.\n\n" +
+            "Alcol puro: brucera', ma disinfetta.");
+
+        JButton useBtn = GuiButtonFactory.create("Disinfetta le ferite",
+            GameFonts.retroBold(22f), new Color(120, 80, 40), Color.WHITE);
+        useBtn.addActionListener(e -> {
+            dialog.dispose();
+            showHealResultScene(
+                "DISINFETTARE LE FERITE",
+                "curarsi_con_alcol.jpg",
+                new Color(100, 70, 40), new Color(255, 220, 150),
+                "Apri la bottiglietta di whisky.\n\n" +
+                "Versi l'alcol sulle ferite. BRUCIA TERRIBILMENTE!\n" +
+                "Ma almeno non si infetteranno.\n\n" +
+                "Bevi un sorso per calmare i nervi...\n" +
+                "Ti senti stordito, ma le ferite sono pulite.",
+                "Ferite disinfettate");
+        });
+
+        JPanel btnPanel = scene.createButtonPanel(useBtn);
+        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
+        dialog.setVisible(true);
+    }
+
+    // ============ SCENA 11c: Scoperta - le valigie ============
+
+    private void showLuggageDiscoveryScene() {
+        JDialog dialog = scene.createFullScreenDialog();
+        JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "spiaggia", screenWidth);
+        JPanel imagePanel = scene.createImagePanel("aereo_distrutto_su_spiaggia.jpg");
+        JTextArea text = scene.createSceneText(
+            "Torni ai margini della spiaggia e frughi tra i bagagli sparsi.\n\n" +
+            "Vestiti, libri fradici, una scarpa spaiata...\n" +
+            "Poi, in un beauty case mezzo sepolto nella sabbia:\n" +
+            "ago, filo e forbicine. Un kit da cucito da viaggio.\n\n" +
+            "Non e' un ospedale, ma puo' bastare.");
+
+        JButton useBtn = GuiButtonFactory.create("Ricuci la ferita",
+            GameFonts.retroBold(22f), new Color(60, 100, 60), Color.WHITE);
+        useBtn.addActionListener(e -> {
+            dialog.dispose();
+            showHealResultScene(
+                "RICUCIRE LA FERITA",
+                "curare_feriti.jpg",
+                new Color(50, 80, 50), new Color(200, 255, 200),
+                "Fai passare il filo nell'ago con le mani che tremano.\n\n" +
+                "Il primo punto e' il peggiore. Poi smetti di contare.\n" +
+                "Il taglio piu' profondo e' chiuso.\n\n" +
+                "Non e' un lavoro elegante, ma terra'.",
+                "Ferita ricucita");
+        });
+
+        JPanel btnPanel = scene.createButtonPanel(useBtn);
         scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
         dialog.setVisible(true);
     }

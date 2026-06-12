@@ -33,7 +33,7 @@ unica chiave per raggiungere un piccolo aereo e lasciare l'isola.
 ## Requisiti
 
 - Java 21 o superiore
-- Maven 3.9+ oppure un JAR locale di Gson
+- Maven 3.9+ oppure i JAR locali di Gson e H2
 
 ## Compilazione e avvio
 
@@ -41,13 +41,14 @@ unica chiave per raggiungere un piccolo aereo e lasciare l'isola.
 
 ```bash
 export GSON_JAR="/percorso/a/gson-2.11.0.jar"
+export H2_JAR="/percorso/a/h2-2.2.222.jar"
 ./scripts/compile.sh
 ./scripts/test.sh
 ./scripts/run.sh
 ```
 
 Gli script compilano solo `src/main/java`, copiano automaticamente `src/main/resources` in `bin/`
-e provano anche a riutilizzare Gson dalla cache locale di Maven (`~/.m2`) se presente.
+e provano anche a riutilizzare Gson e H2 dalla cache locale di Maven (`~/.m2`) se presente.
 Su macOS `./scripts/run.sh` aggiunge automaticamente `-XstartOnFirstThread`, necessario per l'avvio corretto della GUI.
 `./scripts/test.sh` esegue uno smoke test del motore di gioco, dei timer, del save/load,
 della mappatura immagini e della classifica H2.

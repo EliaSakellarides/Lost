@@ -2,15 +2,15 @@
 
 Avventura testuale grafica in Java ispirata alla serie TV LOST.
 Il giocatore interpreta un sopravvissuto del volo Oceanic 815, precipitato su un'isola misteriosa.
-L'obiettivo e' recuperare una tesi perduta che contiene le coordinate per fuggire dall'isola.
+L'obiettivo e' recuperare la mappa DHARMA con le coordinate della pista nascosta e fuggire dall'isola.
 
 ## Trama
 
 Il volo Oceanic 815 si spezza in volo e precipita su un'isola del Pacifico.
 Tra relitti fumanti, giungla ostile, il Mostro di Fumo e il gruppo noto come Gli Altri,
 il protagonista deve sopravvivere, esplorare le stazioni DHARMA e risolvere enigmi
-per trovare la tesi perduta, unica chiave per raggiungere un piccolo aereo nascosto
-sulla pista di atterraggio e lasciare l'isola.
+per trovare la mappa con le coordinate della pista di atterraggio nascosta,
+unica chiave per raggiungere un piccolo aereo e lasciare l'isola.
 
 ## Caratteristiche
 

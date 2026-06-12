@@ -4,8 +4,8 @@ import java.util.*;
 
 /**
  * Capitolo 5 - Caccia nella Giungla
- * 4 step di tracciamento. Ogni step mostra indizi testuali.
- * Il giocatore deve capire la direzione (NORD/SUD/EST/OVEST).
+ * Una fase di tracciamento: il giocatore raccoglie un indizio
+ * e deve capire la direzione (NORD/SUD/EST/OVEST).
  * Bottoni: A = esamina terra, B = ascolta suoni, C = inserisci direzione
  * Fallimento: 3 direzioni sbagliate = preda persa
  */
@@ -14,7 +14,7 @@ public class JungleTrackingGame implements MiniGame {
     private int currentStep;
     private int errors;
     private static final int MAX_ERRORS = 3;
-    private static final int TOTAL_STEPS = 4;
+    private static final int TOTAL_STEPS = 1;
     private boolean examinedGround;
     private boolean listenedSounds;
     private boolean waitingForDirection;
@@ -42,6 +42,7 @@ public class JungleTrackingGame implements MiniGame {
         "Rami che si spezzano verso OVEST!\nLa preda e' molto vicina, puoi quasi sentirla respirare."
     };
 
+    /** Crea il minigioco gia' pronto alla prima fase. */
     public JungleTrackingGame() {
         reset();
     }
@@ -57,7 +58,7 @@ public class JungleTrackingGame implements MiniGame {
                "  CACCIA NELLA GIUNGLA\n" +
                "========================================\n\n" +
                "Devi seguire le tracce del cinghiale!\n" +
-               "In ogni fase, cerca indizi per capire\n" +
+               "Cerca un indizio per capire\n" +
                "la DIREZIONE giusta (NORD/SUD/EST/OVEST).\n\n" +
                "1. Premi ESAMINA oppure ASCOLTA.\n" +
                "2. Leggi l'indizio: dira' una direzione precisa.\n" +
@@ -161,8 +162,7 @@ public class JungleTrackingGame implements MiniGame {
                 return "La preda e' scappata...";
             default:
                 String display = "--- Caccia nella Giungla ---\n" +
-                       "Fase " + (currentStep + 1) + "/" + TOTAL_STEPS +
-                       "  |  Errori: " + errors + "/" + MAX_ERRORS + "\n\n" +
+                       "Errori: " + errors + "/" + MAX_ERRORS + "\n\n" +
                        baseClues[currentStep];
                 if (waitingForDirection) {
                     display += "\n\nIn che direzione vai? (NORD/SUD/EST/OVEST)";

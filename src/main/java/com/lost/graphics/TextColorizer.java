@@ -7,7 +7,10 @@ import java.util.regex.Pattern;
  * Converte testo puro in HTML colorizzato per JTextPane.
  * Regole di colorizzazione basate su parole chiave e dialoghi.
  */
-public class TextColorizer {
+public final class TextColorizer {
+
+    private TextColorizer() {
+    }
 
     // Colori tema LOST
     private static final String DEFAULT_COLOR = "#C8DCC8";
@@ -22,12 +25,17 @@ public class TextColorizer {
     private static final String RED_LIGHT = "#FF8888";
 
     // Parole chiave
-    private static final String[] GOLD_KEYWORDS = {"TESI", "DHARMA", "LOST", "JACOB"};
+    private static final String[] GOLD_KEYWORDS = {"MAPPA", "DHARMA", "LOST", "JACOB", "HYDRA"};
     private static final String[] RED_KEYWORDS = {"MOSTRO", "FUMO", "BOOM"};
 
     // Pattern per dialoghi tra virgolette
     private static final Pattern QUOTE_PATTERN = Pattern.compile("\"([^\"]+)\"");
 
+    /**
+     * Converte testo puro in HTML colorato secondo le regole del tema.
+     * @param plainText testo da colorare
+     * @return documento HTML pronto per il JTextPane
+     */
     public static String colorize(String plainText) {
         if (plainText == null || plainText.isEmpty()) {
             return wrapHtml("");

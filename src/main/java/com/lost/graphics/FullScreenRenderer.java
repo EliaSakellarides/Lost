@@ -27,13 +27,24 @@ public class FullScreenRenderer {
     private int textBoxHeight;
     
     // Colori tema LOST
+    /** Colore di sfondo della finestra. */
     public static final Color BACKGROUND_COLOR = Color.BLACK;
+    /** Sfondo semitrasparente del box di testo. */
     public static final Color TEXT_BOX_COLOR = new Color(0, 0, 0, 235);
+    /** Colore dei bordi (verde giungla). */
     public static final Color BORDER_COLOR = new Color(100, 150, 100);
+    /** Colore del testo principale. */
     public static final Color TEXT_COLOR = new Color(200, 220, 200);
+    /** Colore dei titoli (giallo ambra). */
     public static final Color TITLE_COLOR = new Color(255, 220, 100);
+    /** Colore per le evidenziazioni. */
     public static final Color HIGHLIGHT_COLOR = new Color(100, 200, 100);
-    
+
+    /**
+     * Crea il renderer e calcola il layout iniziale.
+     * @param width larghezza dello schermo in pixel
+     * @param height altezza dello schermo in pixel
+     */
     public FullScreenRenderer(int width, int height) {
         this.screenWidth = width;
         this.screenHeight = height;
@@ -43,6 +54,13 @@ public class FullScreenRenderer {
         this.pixelArtManager = new PixelArtManager(imageWidth, imageHeight);
     }
     
+    /**
+     * Disegna la schermata di gioco: sfondo, immagine della location,
+     * box del testo, barra di stato e logo.
+     * @param g contesto grafico su cui disegnare
+     * @param locationKey chiave dell'immagine da mostrare
+     * @param statusInfo testo della barra di stato
+     */
     public void render(Graphics2D g, String locationKey, String statusInfo) {
         // Sfondo
         g.setColor(BACKGROUND_COLOR);
@@ -86,6 +104,12 @@ public class FullScreenRenderer {
         // Il testo viene ora renderizzato dal JTextPane in FullScreenGUI
     }
 
+    /**
+     * Ricalcola il layout dopo un ridimensionamento della finestra.
+     * Se le dimensioni dell'immagine cambiano, ricarica le immagini.
+     * @param width nuova larghezza in pixel
+     * @param height nuova altezza in pixel
+     */
     public void updateLayout(int width, int height) {
         int oldImageWidth = imageWidth;
         int oldImageHeight = imageHeight;
@@ -246,12 +270,17 @@ public class FullScreenRenderer {
         return Math.max(0, Math.min(100, value));
     }
     
+    /** {@return il gestore delle immagini pixel art} */
     public PixelArtManager getPixelArtManager() {
         return pixelArtManager;
     }
-    
+
+    /** {@return l'altezza del box di testo in pixel} */
     public int getTextBoxHeight() { return textBoxHeight; }
+    /** {@return la larghezza del box di testo in pixel} */
     public int getTextBoxWidth() { return textBoxWidth; }
+    /** {@return la coordinata X del box di testo} */
     public int getTextBoxX() { return textBoxX; }
+    /** {@return la coordinata Y del box di testo} */
     public int getTextBoxY() { return textBoxY; }
 }

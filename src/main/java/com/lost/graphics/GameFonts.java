@@ -14,14 +14,30 @@ public final class GameFonts {
     private GameFonts() {
     }
 
+    /**
+     * Deriva il font retro con stile e dimensione richiesti.
+     * @param style stile AWT (es. Font.PLAIN, Font.BOLD)
+     * @param size dimensione in punti
+     * @return font derivato
+     */
     public static Font retro(int style, float size) {
         return BASE_FONT.deriveFont(style, size);
     }
 
+    /**
+     * Font retro in stile normale.
+     * @param size dimensione in punti
+     * @return font derivato
+     */
     public static Font retroPlain(float size) {
         return retro(Font.PLAIN, size);
     }
 
+    /**
+     * Font retro in grassetto.
+     * @param size dimensione in punti
+     * @return font derivato
+     */
     public static Font retroBold(float size) {
         return retro(Font.BOLD, size);
     }

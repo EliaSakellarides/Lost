@@ -11,11 +11,16 @@ public class AudioManager {
     private boolean musicEnabled;
     private float volume;
     
+    /** Crea il gestore audio con musica abilitata e volume al massimo. */
     public AudioManager() {
         this.musicEnabled = true;
         this.volume = 1.0f;  // Volume al massimo!
     }
     
+    /**
+     * Riproduce un brano in loop continuo.
+     * @param filename nome del file audio in /music/
+     */
     public void playBackgroundMusic(String filename) {
         playBackgroundMusic(filename, true, 0);
     }
@@ -67,6 +72,7 @@ public class AudioManager {
     
     /**
      * Fade out graduale e poi stop
+     * @param durationMs durata del fade out in millisecondi
      */
     public void fadeOutAndStop(int durationMs) {
         if (backgroundMusic == null || !backgroundMusic.isRunning()) return;
@@ -90,6 +96,7 @@ public class AudioManager {
         }, "lost-audio-fade");
     }
     
+    /** Ferma e chiude la clip in riproduzione, se presente. */
     public void stopBackgroundMusic() {
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
             backgroundMusic.stop();
@@ -97,6 +104,10 @@ public class AudioManager {
         }
     }
     
+    /**
+     * Imposta il volume della musica, limitato all'intervallo 0-1.
+     * @param vol volume desiderato (0 = muto, 1 = massimo)
+     */
     public void setVolume(float vol) {
         this.volume = Math.max(0f, Math.min(1f, vol));
         if (backgroundMusic != null) {
@@ -112,6 +123,7 @@ public class AudioManager {
         }
     }
     
+    /** Abilita/disabilita la musica; se disabilitata ferma la riproduzione. */
     public void toggleMusic() {
         musicEnabled = !musicEnabled;
         if (!musicEnabled) {
@@ -125,6 +137,8 @@ public class AudioManager {
         thread.start();
     }
     
+    /** {@return true se la musica e' abilitata} */
     public boolean isMusicEnabled() { return musicEnabled; }
+    /** {@return il volume corrente (0-1)} */
     public float getVolume() { return volume; }
 }

@@ -22,28 +22,47 @@ import java.awt.event.*;
  * Ispirata alla serie TV LOST
  */
 public class FullScreenGUI extends JFrame {
+    /** Motore di gioco interrogato per ogni comando. */
     private GameEngine engine;
+    /** Renderer dell'immagine di scena e del layout grafico. */
     private FullScreenRenderer renderer;
+    /** Pannello centrale con il rendering custom della scena. */
     private GamePanel gamePanel;
 
     // Componenti UI
+    /** Casella di testo per i comandi liberi. */
     private JTextField inputField;
+    /** Bottoni delle scelte rapide A, B e C. */
     private JButton btnA, btnB, btnC;
+    /** Bottone che prosegue la storia. */
     private JButton btnAdvance;
+    /** Bottone che mostra l'inventario. */
     private JButton btnInventory;
+    /** Bottone che mostra lo stato del giocatore. */
     private JButton btnStatus;
+    /** Area HTML del testo narrativo colorato. */
     private JTextPane textPane;
+    /** Scroll del testo narrativo. */
     private JScrollPane textScrollPane;
 
     // Stato display
+    /** Testo correntemente mostrato. */
     private String currentText = "";
+    /** Titolo del capitolo mostrato sopra il testo. */
     private String currentTitle = "";
+    /** Chiave della stanza corrente (per la barra di stato). */
     private String currentLocation = "spiaggia";
+    /** Chiave dell'immagine di scena corrente. */
     private String currentImageKey = "spiaggia";
+    /** True mentre la sequenza introduttiva e' in corso. */
     private boolean introRunning = false;
+    /** Evita di mostrare due volte il dialog di vittoria. */
     private boolean victoryDialogShown = false;
+    /** Evita di mostrare due volte il dialog di game over. */
     private boolean gameOverDialogShown = false;
+    /** Evita di registrare due volte il record di completamento. */
     private boolean completionRecordSaved = false;
+    /** Inizio partita, per il tempo di completamento. */
     private long gameStartMillis = 0L;
 
     // Etichette originali dei bottoni
@@ -52,14 +71,20 @@ public class FullScreenGUI extends JFrame {
     private static final String DEFAULT_BTN_C = "C";
 
     // Dimensioni schermo
+    /** Larghezza iniziale della finestra. */
     private int screenWidth;
+    /** Altezza iniziale della finestra. */
     private int screenHeight;
 
     // Pannello stato permanente
+    /** Barra di stato permanente (salute, sanita', giorno, luogo). */
     private StatusPanelFactory.StatusPanel statusPanel;
+    /** Timer Swing che aggiorna la barra di stato. */
     private Timer statusUpdateTimer;
+    /** Servizio della classifica dei record. */
     private RecordService recordService;
 
+    /** Crea la finestra principale e mostra la schermata del menu. */
     public FullScreenGUI() {
         screenWidth = 1024;
         screenHeight = 768;
@@ -154,7 +179,7 @@ public class FullScreenGUI extends JFrame {
 
         btnAdvance = GuiButtonFactory.create("AVANTI", buttonFont,
             new Color(50, 150, 100), buttonFg);
-        btnAdvance.addActionListener(e -> processInput("avanti"));
+        btnAdvance.addActionListener(e -> submitInputOrAdvance());
 
         inputField = new JTextField(16);
         inputField.setFont(GameFonts.retroPlain(20f));
@@ -220,12 +245,19 @@ public class FullScreenGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Imposta le etichette dei tre pulsanti di scelta.
+     * @param a etichetta del pulsante A
+     * @param b etichetta del pulsante B
+     * @param c etichetta del pulsante C
+     */
     public void setButtonLabels(String a, String b, String c) {
         if (btnA != null) btnA.setText(a);
         if (btnB != null) btnB.setText(b);
         if (btnC != null) btnC.setText(c);
     }
 
+    /** Ripristina le etichette di default dei pulsanti di scelta. */
     public void resetButtonLabels() {
         setButtonLabels(DEFAULT_BTN_A, DEFAULT_BTN_B, DEFAULT_BTN_C);
     }
@@ -237,6 +269,13 @@ public class FullScreenGUI extends JFrame {
         } else {
             resetButtonLabels();
         }
+
+        // Nei capitoli a risposta libera le scelte A/B/C non servono
+        boolean choicesAvailable = engine != null &&
+            (engine.hasMiniGameActive() || engine.currentChapterHasChoices());
+        btnA.setEnabled(choicesAvailable);
+        btnB.setEnabled(choicesAvailable);
+        btnC.setEnabled(choicesAvailable);
     }
 
     private void setupKeyBindings() {
@@ -269,7 +308,7 @@ public class FullScreenGUI extends JFrame {
                             return true;
                         case KeyEvent.VK_ENTER:
                         case KeyEvent.VK_SPACE:
-                            processInput("avanti");
+                            submitInputOrAdvance();
                             return true;
                     }
                 }
@@ -345,18 +384,36 @@ public class FullScreenGUI extends JFrame {
         content.add(Box.createVerticalStrut(25));
         content.add(startBtn);
 
+        content.add(Box.createVerticalStrut(10));
+        JButton loadBtn = GuiButtonFactory.create(" CARICA PARTITA",
+            GameFonts.retroBold(22f),
+            new Color(70, 70, 100), Color.WHITE);
+        loadBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         if (GameSave.hasSaves()) {
-            content.add(Box.createVerticalStrut(10));
-            JButton loadBtn = GuiButtonFactory.create(" CARICA PARTITA",
-                GameFonts.retroBold(22f),
-                new Color(70, 70, 100), Color.WHITE);
-            loadBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
             loadBtn.addActionListener(e -> {
                 dialog.dispose();
                 showLoadDialog();
             });
-            content.add(loadBtn);
+        } else {
+            loadBtn.setEnabled(false);
+            loadBtn.setToolTipText("Nessun salvataggio presente");
         }
+        content.add(loadBtn);
+
+        content.add(Box.createVerticalStrut(10));
+        JPanel menuRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+        menuRow.setBackground(Color.BLACK);
+        JButton recordsBtn = GuiButtonFactory.create("RECORD",
+            GameFonts.retroBold(18f), new Color(60, 90, 60), Color.WHITE);
+        recordsBtn.addActionListener(e -> showRecordsDialog());
+        JButton exitBtn = GuiButtonFactory.create("ESCI",
+            GameFonts.retroBold(18f), new Color(120, 50, 50), Color.WHITE);
+        exitBtn.addActionListener(e -> System.exit(0));
+        menuRow.add(recordsBtn);
+        menuRow.add(exitBtn);
+        menuRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        menuRow.setMaximumSize(new Dimension(400, 60));
+        content.add(menuRow);
 
         JPanel wrapper = new JPanel(new BorderLayout());
         wrapper.setBackground(new Color(100, 150, 100));
@@ -369,6 +426,10 @@ public class FullScreenGUI extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Avvia una nuova partita con il nome indicato.
+     * @param playerName nome del giocatore
+     */
     public void startGame(String playerName) {
         initializeGame(playerName);
     }
@@ -411,6 +472,21 @@ public class FullScreenGUI extends JFrame {
         gamePanel.repaint();
     }
 
+    /**
+     * Invia il testo digitato nella casella se presente,
+     * altrimenti il comando avanti. Cosi' AVANTI e INVIO
+     * non ignorano una risposta gia' scritta.
+     */
+    private void submitInputOrAdvance() {
+        String pending = inputField.getText().trim();
+        if (!pending.isEmpty()) {
+            inputField.setText("");
+            processInput(pending);
+        } else {
+            processInput("avanti");
+        }
+    }
+
     private void processInput(String input) {
         if (engine == null) return;
 
@@ -448,7 +524,7 @@ public class FullScreenGUI extends JFrame {
                 int choice = JOptionPane.showOptionDialog(this,
                     "HAI COMPLETATO LOST!\n\n" +
                     "Sei fuggito dall'isola!\n" +
-                    "La TESI ti ha salvato!\n\n" +
+                    "La mappa DHARMA ti ha riportato a casa!\n\n" +
                     recordLine +
                     "Grazie per aver giocato!",
                     "VITTORIA!",
@@ -624,6 +700,7 @@ public class FullScreenGUI extends JFrame {
             "Premi AVANTI per continuare...";
         currentTitle = "PARTITA CARICATA";
 
+        updateButtonLabelsForMiniGame();
         updateTextDisplay();
         gamePanel.repaint();
     }
@@ -723,6 +800,11 @@ public class FullScreenGUI extends JFrame {
         textScrollPane.setBounds(x, y, w, h);
     }
 
+    /**
+     * Punto di ingresso della GUI: imposta il look and feel
+     * di sistema e crea la finestra sull'EDT.
+     * @param args argomenti da riga di comando (non usati)
+     */
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

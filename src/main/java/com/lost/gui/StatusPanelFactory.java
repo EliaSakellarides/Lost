@@ -9,7 +9,10 @@ import java.awt.*;
 /**
  * Factory per pannelli di stato (barra cuori, sanita, giorno, posizione)
  */
-public class StatusPanelFactory {
+public final class StatusPanelFactory {
+
+    private StatusPanelFactory() {
+    }
 
     /**
      * Pannello di stato permanente aggiornabile
@@ -30,10 +33,16 @@ public class StatusPanelFactory {
             this.locationLabel = locationLabel;
         }
 
+        /** {@return il pannello Swing da inserire nella finestra} */
         public JPanel getPanel() {
             return panel;
         }
 
+        /**
+         * Aggiorna salute, sanita', giorno e posizione visualizzati.
+         * @param engine motore di gioco da cui leggere lo stato
+         * @param currentLocation chiave della stanza corrente
+         */
         public void update(GameEngine engine, String currentLocation) {
             if (engine == null || engine.getPlayer() == null) return;
 
@@ -76,6 +85,11 @@ public class StatusPanelFactory {
         }
     }
 
+    /**
+     * Crea la barra di stato permanente in cima alla finestra.
+     * @param screenWidth larghezza dello schermo
+     * @return il pannello di stato aggiornabile
+     */
     public static StatusPanel createPermanentStatusPanel(int screenWidth) {
         JPanel panel = new JPanel();
         panel.setBackground(Color.BLACK);
@@ -134,6 +148,13 @@ public class StatusPanelFactory {
         return new StatusPanel(panel, heartLabels, sanityBar, dayLabel, locationLabel);
     }
 
+    /**
+     * Crea una barra di stato statica per i dialog delle scene.
+     * @param engine motore di gioco da cui leggere lo stato
+     * @param currentLocation chiave della stanza corrente
+     * @param screenWidth larghezza dello schermo
+     * @return pannello con lo stato del giocatore
+     */
     public static JPanel createDialogStatusBar(GameEngine engine, String currentLocation, int screenWidth) {
         JPanel panel = new JPanel();
         panel.setBackground(Color.BLACK);

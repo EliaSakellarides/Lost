@@ -8,12 +8,21 @@ import javax.swing.*;
  * Lost - Avventura Grafica sull'Isola
  * 
  * Gioco testuale ispirato a LOST (la serie TV)
- * Trova la TESI per fuggire dall'isola con l'aereo!
+ * Trova la mappa della pista nascosta per fuggire dall'isola!
  * 
  * @author Elia Sakellarides
- * @version Alpha 0.1
+ * @version 1.0
  */
-public class Main {
+public final class Main {
+
+    private Main() {
+    }
+
+    /**
+     * Punto di ingresso del gioco: avvia il server dei record,
+     * chiede il nome al giocatore e apre la GUI.
+     * @param args argomenti da riga di comando (non usati)
+     */
     public static void main(String[] args) {
         RecordApiServer.start();
 
@@ -24,22 +33,7 @@ public class Main {
             // Usa quello di default
         }
         
-        SwingUtilities.invokeLater(() -> {
-            // Chiedi il nome al giocatore
-            String playerName = JOptionPane.showInputDialog(null,
-                "OCEANIC FLIGHT 815\n\n" +
-                "Il tuo aereo e' precipitato. Sei vivo.\n" +
-                "Come ti chiami?",
-                "LOST",
-                JOptionPane.QUESTION_MESSAGE);
-            
-            if (playerName == null || playerName.trim().isEmpty()) {
-                playerName = "Jack";
-            }
-            
-            // Avvia il gioco
-            FullScreenGUI gui = new FullScreenGUI();
-            gui.startGame(playerName);
-        });
+        // La GUI mostra il menu iniziale (nuova partita, carica, record)
+        SwingUtilities.invokeLater(FullScreenGUI::new);
     }
 }

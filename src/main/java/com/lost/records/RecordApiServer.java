@@ -11,6 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+/**
+ * Piccola API REST locale che espone la classifica su localhost:8000.
+ * Endpoint: GET/POST /records e GET /records/best.
+ */
 public final class RecordApiServer {
     private static final int PORT = 8000;
     private static final Gson GSON = new Gson();
@@ -19,6 +23,10 @@ public final class RecordApiServer {
     private RecordApiServer() {
     }
 
+    /**
+     * Avvia il server HTTP su un thread daemon.
+     * Se la porta e' occupata il gioco prosegue senza API.
+     */
     public static synchronized void start() {
         if (server != null) {
             return;

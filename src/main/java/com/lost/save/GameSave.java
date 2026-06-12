@@ -29,6 +29,9 @@ public final class GameSave {
 
     /**
      * Salva lo stato corrente del gioco in uno slot
+     * @param engine motore di gioco da salvare
+     * @param slotName nome dello slot di salvataggio
+     * @return true se il salvataggio e' andato a buon fine
      */
     public static boolean save(GameEngine engine, String slotName) {
         try {
@@ -63,6 +66,8 @@ public final class GameSave {
 
     /**
      * Carica uno stato di gioco da uno slot
+     * @param slotName nome dello slot da caricare
+     * @return lo stato caricato, null se lo slot non esiste o e' illeggibile
      */
     public static GameState load(String slotName) {
         try {
@@ -80,6 +85,7 @@ public final class GameSave {
 
     /**
      * Elenca tutti i salvataggi disponibili
+     * @return lista dei metadati dei salvataggi trovati
      */
     public static List<GameSaveInstance> listSaves() {
         List<GameSaveInstance> saves = new ArrayList<>();
@@ -117,6 +123,8 @@ public final class GameSave {
 
     /**
      * Elimina un salvataggio
+     * @param slotName nome dello slot da eliminare
+     * @return true se l'operazione e' andata a buon fine
      */
     public static boolean delete(String slotName) {
         try {
@@ -142,6 +150,7 @@ public final class GameSave {
 
     /**
      * Verifica se esiste almeno un salvataggio
+     * @return true se c'e' almeno un salvataggio disponibile
      */
     public static boolean hasSaves() {
         return !listSaves().isEmpty();
@@ -163,6 +172,12 @@ public final class GameSave {
         Files.writeString(indexFile, GSON.toJson(saves));
     }
 
+    /**
+     * Normalizza il nome di uno slot: rimuove caratteri non sicuri
+     * per il filesystem e limita la lunghezza a 40 caratteri.
+     * @param slotName nome richiesto dall'utente
+     * @return nome sicuro, stringa vuota se non utilizzabile
+     */
     public static String sanitizeSlotName(String slotName) {
         if (slotName == null) {
             return "";

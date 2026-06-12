@@ -7,8 +7,19 @@ import java.awt.event.*;
 /**
  * Factory per creare bottoni stilizzati con hover effect
  */
-public class GuiButtonFactory {
+public final class GuiButtonFactory {
 
+    private GuiButtonFactory() {
+    }
+
+    /**
+     * Crea un bottone con angoli arrotondati ed effetto hover.
+     * @param text etichetta del bottone
+     * @param font font da utilizzare
+     * @param bg colore di sfondo
+     * @param fg colore del testo
+     * @return il bottone stilizzato
+     */
     public static JButton create(String text, Font font, Color bg, Color fg) {
         JButton button = new JButton(text) {
             @Override

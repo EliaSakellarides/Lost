@@ -22,6 +22,14 @@ public class IntroSequence {
     private String playerName;
     private int currentScene = 0;
 
+    /**
+     * Prepara la sequenza introduttiva.
+     * @param parent finestra principale
+     * @param engine motore di gioco
+     * @param screenWidth larghezza dello schermo
+     * @param screenHeight altezza dello schermo
+     * @param onComplete callback eseguita al termine dell'intro
+     */
     public IntroSequence(JFrame parent, GameEngine engine,
                          int screenWidth, int screenHeight, Runnable onComplete) {
         this.parent = parent;
@@ -32,6 +40,10 @@ public class IntroSequence {
         this.onComplete = onComplete;
     }
 
+    /**
+     * Avvia la sequenza dalla prima scena.
+     * @param playerName nome del giocatore mostrato nelle scene
+     */
     public void start(String playerName) {
         this.playerName = playerName;
         showLostIntro();

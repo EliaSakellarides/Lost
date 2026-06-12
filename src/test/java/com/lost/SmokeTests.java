@@ -26,7 +26,7 @@ public class SmokeTests {
         run("morte a salute zero", SmokeTests::testZeroHealthEndsGame);
         run("salto minigioco avanza", SmokeTests::testMiniGameSkipAdvancesChapter);
         run("la scoperta accetta prendi", SmokeTests::testLaScopertaAcceptsBarePrendi);
-        run("tesi ottenuta solo alla scoperta", SmokeTests::testTesiAwardedOnlyAfterLaScoperta);
+        run("mappa ottenuta solo alla scoperta", SmokeTests::testMapAwardedOnlyAfterLaScoperta);
         run("giorno narrativo nello status", SmokeTests::testStatusDayTracksNarrativeDay);
         run("slot salvataggio sanitizzato", SmokeTests::testSaveSlotSanitization);
         run("record H2 migliori tempi", SmokeTests::testRecordServiceStoresBestTimes);
@@ -73,7 +73,7 @@ public class SmokeTests {
             "cap12_raft",
             "cap13_walt",
             "cap13_flashback",
-            "cap14_thesis",
+            "cap14_map",
             "cap15_runway",
             "cap16_prep",
             "cap17_escape",
@@ -254,24 +254,24 @@ public class SmokeTests {
         String response = engine.processCommand("prendi");
 
         assertContains(response, "CORRETTO");
-        assertContains(response, "Hai recuperato la TESI");
-        assertTrue(engine.getPlayer().hasItem("TESI"), "TESI mancante dopo La Scoperta");
+        assertContains(response, "Hai recuperato la mappa");
+        assertTrue(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa mancante dopo La Scoperta");
         assertEquals("La Pista Nascosta", engine.getCurrentChapterTitle(), "capitolo dopo La Scoperta");
     }
 
-    private static void testTesiAwardedOnlyAfterLaScoperta() {
+    private static void testMapAwardedOnlyAfterLaScoperta() {
         GameEngine engine = newStartedEngine("Charlie");
         advanceToFlashback(engine);
 
         assertEquals("Flashback", engine.getCurrentChapterTitle(), "capitolo flashback");
-        assertFalse(engine.getPlayer().hasItem("TESI"), "TESI ottenuta troppo presto");
+        assertFalse(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa ottenuta troppo presto");
 
         answerAndContinue(engine, "A");
         assertEquals("La Scoperta", engine.getCurrentChapterTitle(), "capitolo scoperta");
-        assertFalse(engine.getPlayer().hasItem("TESI"), "TESI ottenuta prima di prenderla");
+        assertFalse(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa ottenuta prima di prenderla");
 
-        assertContains(engine.processCommand("prendi"), "Hai recuperato la TESI");
-        assertTrue(engine.getPlayer().hasItem("TESI"), "TESI non ottenuta alla scoperta");
+        assertContains(engine.processCommand("prendi"), "Hai recuperato la mappa");
+        assertTrue(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa non ottenuta alla scoperta");
     }
 
     private static void testStatusDayTracksNarrativeDay() {

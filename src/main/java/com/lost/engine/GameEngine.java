@@ -52,6 +52,7 @@ public class GameEngine {
     private Map<String, MiniGame> miniGames;
     private boolean miniGameIntroShown;
 
+    /** Crea il motore di gioco con stato vuoto e mini giochi registrati. */
     public GameEngine() {
         this.allRooms = new HashMap<>();
         this.gameLog = new ArrayList<>();
@@ -73,6 +74,7 @@ public class GameEngine {
     /**
      * Inizializza una nuova partita: crea il mondo, i capitoli,
      * posiziona il giocatore sulla spiaggia e avvia la colonna sonora.
+     * @param playerName nome del giocatore
      */
     public void initializeGame(String playerName) {
         player = new Player(playerName);
@@ -413,12 +415,11 @@ public class GameEngine {
             "Flashback",
             "QUELLA NOTTE... UN SOGNO\n\n" +
             "Ti ricordi di quando sei salito sull'aereo.\n" +
-            "L'aeroporto di Sydney era affollato.\n\n" +
-            "Avevi con te una TESI importante...\n" +
-            "Dovevi consegnarla a Los Angeles per la laurea.\n" +
-            "Era il tuo lavoro di anni!\n\n" +
-            "La tesi... DOVE L'HAI MESSA?\n" +
-            "Forse è ancora nei rottami dell'aereo?\n\n" +
+            "L'aeroporto di Sydney era affollato.\n" +
+            "L'altoparlante gracchiava l'ultima chiamata per Los Angeles.\n\n" +
+            "Ti svegli di colpo, con una certezza:\n" +
+            "i documenti DHARMA nel bunker nascondono\n" +
+            "piu' risposte di quante ne abbiate trovate.\n\n" +
             "Nella tasca trovi il biglietto sgualcito: OCEANIC 8_5.\n" +
             "La cifra di mezzo e' illeggibile... ma la somma dei Numeri e' 108.\n\n" +
             "Qual era il numero del volo Oceanic?",
@@ -427,22 +428,21 @@ public class GameEngine {
             "Oceanic Flight 815!"
         ));
         
-        // CAPITOLO 14: LA SCOPERTA DELLA TESI + MINI GIOCO
+        // CAPITOLO 14: LA SCOPERTA DELLA MAPPA
         Level cap14 = new Level(
-            "cap14_thesis",
+            "cap14_map",
             "La Scoperta",
             "NEL BUNKER DHARMA...\n\n" +
             "Esplori la stazione Il Cigno più a fondo.\n" +
             "Trovi una stanza segreta dietro una parete!\n\n" +
             "All'interno... documenti DHARMA!\n" +
-            "Tra le cartelle trovi la tua TESI, protetta in una busta impermeabile.\n" +
-            "Dentro c'e' anche una MAPPA con coordinate scritte a mano.\n\n" +
+            "Tra le cartelle trovi una MAPPA con coordinate scritte a mano.\n\n" +
             "'COORDINATE: PISTA DI ATTERRAGGIO HYDRA'\n" +
             "'Per emergenze. Aereo funzionante.'\n\n" +
             "C'è un AEREO nascosto sull'isola!\n\n" +
-            "Digita 'prendi' per recuperare la TESI e la mappa.",
-            Arrays.asList("prendi", "raccogli", "tesi", "mappa", "ok", "si", "a"),
-            "Prendi la TESI: e' il tuo obiettivo principale."
+            "Digita 'prendi' per recuperare la mappa.",
+            Arrays.asList("prendi", "raccogli", "mappa", "ok", "si", "a"),
+            "Prendi la MAPPA: e' la tua via di fuga."
         );
         storyChapters.add(cap14);
         
@@ -524,7 +524,7 @@ public class GameEngine {
             "Finché non scompare all'orizzonte.\n\n" +
             "L'oceano infinito si stende davanti a te.\n" +
             "Sei LIBERO. Finalmente LIBERO!\n\n" +
-            "E la tua TESI? Ce l'hai fatta!\n\n" +
+            "Ce l'hai fatta davvero.\n\n" +
             "Digita 'fine' per concludere.",
             Arrays.asList("fine", "finito", "ok", "si", "a"),
             "È finita... o forse no?"
@@ -639,8 +639,8 @@ public class GameEngine {
         faro.addItem(new Item("Bussola", "Una vecchia bussola che punta sempre a nord", true,
             Item.ItemType.STRUMENTO, 0, -1));
         
-        // La TESI sarà aggiunta durante il capitolo 13
-        
+        // La mappa della pista Hydra viene consegnata nel capitolo La Scoperta
+
         startRoom = spiaggia;
     }
     
@@ -649,6 +649,8 @@ public class GameEngine {
      * il testo di risposta da mostrare nella GUI.
      * Delega al mini gioco attivo se presente, altrimenti
      * parsa il comando tramite {@link CommandParser}.
+     * @param command input testuale del giocatore
+     * @return testo di risposta da mostrare al giocatore
      */
     public String processCommand(String command) {
         if (!gameRunning) {
@@ -721,7 +723,7 @@ public class GameEngine {
                     break;
 
                 case PRENDI:
-                    if (isCurrentChapter("cap14_thesis")) {
+                    if (isCurrentChapter("cap14_map")) {
                         response = answerChapter(target.isEmpty() ? "prendi" : target);
                         advanceTurn = true;
                         break;
@@ -814,10 +816,20 @@ public class GameEngine {
             }
         }
         
-        return "Non ci sono scelte in questo momento.";
+        return "Questo capitolo non ha scelte A/B/C:\n" +
+               "scrivi la risposta nella casella di testo e premi INVIO.";
+    }
+
+    /** {@return true se il capitolo corrente offre scelte A/B/C} */
+    public boolean currentChapterHasChoices() {
+        return currentChapter < storyChapters.size()
+            && storyChapters.get(currentChapter).hasChoices();
     }
     
-    /** Forza l'avvio del primo capitolo. Usato dalla GUI dopo l'intro. */
+    /**
+     * Forza l'avvio del primo capitolo. Usato dalla GUI dopo l'intro.
+     * @return testo del primo capitolo
+     */
     public String forceStartFirstChapter() {
         currentChapterStarted = false;
         currentChapterCompleted = false;
@@ -839,7 +851,7 @@ public class GameEngine {
                 if (choices.containsKey("C")) msg += "C=" + choices.get("C");
                 msg += "\n\nPremi A, B o C";
             } else {
-                msg += "Scrivi la risposta";
+                msg += "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
             }
             return msg;
         }
@@ -867,7 +879,7 @@ public class GameEngine {
             if (choices.containsKey("C")) msg += "C=" + choices.get("C");
             msg += "\n\nPremi A, B o C";
         } else {
-            msg += "Scrivi la risposta";
+            msg += "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
         }
         
         addLog(msg);
@@ -913,13 +925,13 @@ public class GameEngine {
                 success += "Hai trovato la dinamite nella cassa della Roccia Nera!\n\n";
             }
 
-            // Aggiungi la TESI quando viene davvero recuperata nel bunker.
-            if ("cap14_thesis".equals(chapter.getKey()) && !player.hasItem("TESI")) {
-                Item tesi = new Item("TESI",
-                    "La TESI perduta! Contiene le coordinate per fuggire dall'isola!",
-                    true, Item.ItemType.TESI, 0, -1);
-                player.addItem(tesi);
-                success += "Hai recuperato la TESI e la mappa per la pista Hydra!\n\n";
+            // Consegna la mappa quando viene davvero recuperata nel bunker.
+            if ("cap14_map".equals(chapter.getKey()) && !player.hasItem("Mappa della pista Hydra")) {
+                Item mappaPista = new Item("Mappa della pista Hydra",
+                    "Coordinate della pista nascosta e appunti per far volare il Cessna.",
+                    true, Item.ItemType.DOCUMENTO, 0, -1);
+                player.addItem(mappaPista);
+                success += "Hai recuperato la mappa della pista Hydra!\n\n";
             }
 
             if (currentChapter >= storyChapters.size()) {
@@ -952,7 +964,7 @@ public class GameEngine {
                 if (choices.containsKey("C")) msg += "C=" + choices.get("C");
                 msg += "\n\nPremi A, B o C";
             } else {
-                msg += "Scrivi la risposta";
+                msg += "Questo capitolo non ha scelte: SCRIVI la risposta nella casella di testo in basso e premi INVIO.";
             }
             return msg;
         }
@@ -1070,7 +1082,11 @@ public class GameEngine {
         return result;
     }
 
-    /** Avvia il mini gioco identificato dalla chiave (es. "jungle_tracking"). */
+    /**
+     * Avvia il mini gioco identificato dalla chiave (es. "jungle_tracking").
+     * @param miniGameKey chiave del mini gioco registrato
+     * @return testo introduttivo del mini gioco, o errore se non trovato
+     */
     public String startMiniGame(String miniGameKey) {
         MiniGame game = miniGames.get(miniGameKey);
         if (game == null) return "Mini gioco non trovato: " + miniGameKey;
@@ -1161,10 +1177,12 @@ public class GameEngine {
         }
     }
 
+    /** {@return il mini gioco attualmente in corso, null se nessuno} */
     public MiniGame getActiveMiniGame() {
         return activeMiniGame;
     }
 
+    /** {@return true se c'e' un mini gioco in corso} */
     public boolean hasMiniGameActive() {
         return activeMiniGame != null;
     }
@@ -1306,14 +1324,14 @@ public class GameEngine {
                    "nell'entroterra dell'isola. Questo luogo\n" +
                    "è maledetto. Ho visto il fumo nero...'";
         }
-        if (name.contains("tesi")) {
-            return "LA TESI PERDUTA\n" +
+        if (name.contains("pista")) {
+            return "MAPPA DELLA PISTA HYDRA\n" +
                    "Il documento più importante dell'isola!\n" +
                    "Contiene:\n" +
                    "• Coordinate della pista nascosta\n" +
                    "• Istruzioni pratiche per controllare l'aereo\n" +
                    "• Appunti per preparare carburante, motore e comandi\n" +
-                   "Con questa puoi FUGGIRE e LAUREARTI!";
+                   "Con questa puoi FUGGIRE dall'isola!";
         }
         if (name.contains("kit") || name.contains("medico")) {
             return "KIT DI PRONTO SOCCORSO\n" +
@@ -1666,11 +1684,11 @@ public class GameEngine {
         ending.append("      L I B E R T À \n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
 
-        ending.append("Stringi la TESI tra le mani.\n");
-        ending.append("Quella tesi che ti ha salvato la vita.\n");
-        ending.append("Quella tesi che ti ha mostrato la via.\n\n");
-        
-        ending.append("E ora... puoi finalmente LAUREARTI!\n\n");
+        ending.append("Stringi la mappa DHARMA tra le mani.\n");
+        ending.append("Un pezzo di carta dimenticato in un bunker\n");
+        ending.append("ti ha mostrato la via di casa.\n\n");
+
+        ending.append("E ora... si torna A CASA!\n\n");
         
         ending.append("═══════════════════════════════════════════════════════\n");
         ending.append("           HAI COMPLETATO LOST!\n");
@@ -1697,10 +1715,12 @@ public class GameEngine {
         return ending.toString();
     }
     
+    /** {@return l'ultima riga aggiunta al log di gioco, stringa vuota se nessuna} */
     public String getLastLog() {
         return gameLog.isEmpty() ? "" : gameLog.get(gameLog.size() - 1);
     }
-    
+
+    /** {@return la chiave della stanza corrente del giocatore, "spiaggia" come default} */
     public String getCurrentRoomKey() {
         if (player != null && player.getCurrentRoom() != null) {
             return player.getCurrentRoom().getKey();
@@ -1711,6 +1731,7 @@ public class GameEngine {
     /**
      * Restituisce la chiave dell'immagine da mostrare per il capitolo corrente.
      * Usato dalla GUI per caricare l'immagine corretta.
+     * @return chiave dell'immagine del capitolo corrente
      */
     public String getCurrentChapterImageKey() {
         if (currentChapter >= storyChapters.size()) {
@@ -1722,6 +1743,7 @@ public class GameEngine {
     
     /**
      * Restituisce il numero del capitolo corrente (1-based per display)
+     * @return numero del capitolo corrente, 0 se non ci sono capitoli
      */
     public int getCurrentChapterNumber() {
         if (storyChapters.isEmpty()) {
@@ -1730,6 +1752,7 @@ public class GameEngine {
         return Math.min(currentChapter + 1, storyChapters.size());
     }
 
+    /** {@return il titolo del capitolo corrente, "Completato" a partita vinta} */
     public String getCurrentChapterTitle() {
         if (gameWon) {
             return "Completato";
@@ -1743,16 +1766,23 @@ public class GameEngine {
     
     /**
      * Restituisce il totale dei capitoli
+     * @return numero totale di capitoli della storia
      */
     public int getTotalChapters() {
         return storyChapters.size();
     }
     
+    /** {@return il giocatore corrente} */
     public Player getPlayer() { return player; }
+    /** {@return true se il gioco e' in modalita' narrativa a capitoli} */
     public boolean isNarrativeMode() { return narrativeMode; }
+    /** {@return true se la partita e' stata vinta} */
     public boolean isGameWon() { return gameWon; }
+    /** {@return true se la partita e' in corso} */
     public boolean isGameRunning() { return gameRunning; }
+    /** {@return true se la partita corrente proviene da un salvataggio} */
     public boolean isLoadedFromSave() { return loadedFromSave; }
+    /** {@return il gestore audio del gioco} */
     public AudioManager getAudioManager() { return audioManager; }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1808,21 +1838,34 @@ public class GameEngine {
     }
 
     // Getter per il sistema di salvataggio
+    /** {@return l'indice del capitolo corrente (0-based)} */
     public int getCurrentChapter() { return currentChapter; }
+    /** {@return true se il capitolo corrente e' stato completato} */
     public boolean isCurrentChapterCompleted() { return currentChapterCompleted; }
+    /** {@return true se il capitolo corrente e' stato avviato} */
     public boolean isCurrentChapterStarted() { return currentChapterStarted; }
+    /** {@return true se la Black Rock e' stata esplorata} */
     public boolean isBlackRockExplored() { return blackRockExplored; }
+    /** {@return true se la batteria e' stata installata nella radio} */
     public boolean isRadioBatteryInstalled() { return radioBatteryInstalled; }
+    /** {@return true se l'antenna e' stata installata nella radio} */
     public boolean isRadioAntennaInstalled() { return radioAntennaInstalled; }
+    /** {@return true se il fusibile e' stato installato nella radio} */
     public boolean isRadioFuseInstalled() { return radioFuseInstalled; }
+    /** {@return true se la radio e' stata riparata} */
     public boolean isRadioRepaired() { return radioRepaired; }
+    /** {@return true se il messaggio radio e' stato ricevuto} */
     public boolean isRadioMessageReceived() { return radioMessageReceived; }
+    /** {@return true se la dinamite e' innescata} */
     public boolean isDynamiteActive() { return dynamiteActive; }
+    /** {@return i turni rimanenti prima dell'esplosione della dinamite} */
     public int getDynamiteTimer() { return dynamiteTimer; }
+    /** {@return la mappa di tutte le stanze del mondo di gioco, indicizzate per chiave} */
     public Map<String, Room> getAllRooms() { return allRooms; }
 
     /**
      * Ripristina lo stato del gioco da un GameState caricato
+     * @param state stato salvato da cui ripristinare la partita
      */
     public void loadGameState(GameState state) {
         // Ricrea il mondo e i capitoli
@@ -1921,6 +1964,7 @@ public class GameEngine {
         return response;
     }
 
+    /** {@return true se la partita e' finita per morte del giocatore} */
     public boolean isGameOver() {
         return !gameRunning && !gameWon && player != null && !player.isAlive();
     }

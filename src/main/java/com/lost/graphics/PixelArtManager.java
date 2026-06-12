@@ -72,7 +72,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap12_raft", "cap12_zattera.png");
         IMAGE_FILES.put("cap13_walt", "cap13_mare_aperto.png");
         IMAGE_FILES.put("cap13_flashback", "cap13_flashback_aeroporto.png");
-        IMAGE_FILES.put("cap14_thesis", "cap14_scoperta_tesi.png");
+        IMAGE_FILES.put("cap14_map", "cap14_scoperta_mappa.png");
         IMAGE_FILES.put("cap15_runway", "cap15_pista_nascosta.png");
         IMAGE_FILES.put("cap16_prep", "cap16_preparazione_volo.png");
         IMAGE_FILES.put("cap17_escape", "cap17_fuga_finale.png");
@@ -92,6 +92,11 @@ public class PixelArtManager {
         IMAGE_FILES.put("item_enigmi_radio", "item_enigmi_radio.png");
     }
     
+    /**
+     * Crea il gestore e pre-carica le immagini disponibili.
+     * @param width larghezza di destinazione delle immagini
+     * @param height altezza di destinazione delle immagini
+     */
     public PixelArtManager(int width, int height) {
         this.imageWidth = width;
         this.imageHeight = height;
@@ -147,6 +152,8 @@ public class PixelArtManager {
     /**
      * Ottiene un'immagine per una location.
      * Se non esiste, restituisce un placeholder.
+     * @param locationKey chiave della location
+     * @return immagine della location o placeholder
      */
     public BufferedImage getImage(String locationKey) {
         // Controlla se è già in cache
@@ -211,6 +218,8 @@ public class PixelArtManager {
     
     /**
      * Aggiunge manualmente un'immagine alla cache
+     * @param key chiave con cui registrare l'immagine
+     * @param image immagine da ridimensionare e memorizzare
      */
     public void addImage(String key, BufferedImage image) {
         imageCache.put(key, resizeImage(image, imageWidth, imageHeight));
@@ -218,6 +227,7 @@ public class PixelArtManager {
     
     /**
      * Ricarica un'immagine da file
+     * @param key chiave dell'immagine da ricaricare
      */
     public void reloadImage(String key) {
         String filename = IMAGE_FILES.get(key);
@@ -239,6 +249,8 @@ public class PixelArtManager {
     
     /**
      * Verifica se un'immagine esiste
+     * @param key chiave dell'immagine da cercare
+     * @return true se l'immagine e' in cache o disponibile su file
      */
     public boolean hasImage(String key) {
         if (imageCache.containsKey(key)) return true;

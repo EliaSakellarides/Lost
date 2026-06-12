@@ -46,16 +46,12 @@ retrò, testo colorato e colonna sonora.
 ## 1.1 Trama
 
 Il volo Oceanic 815 si spezza in volo e precipita su un'isola sconosciuta.
-Tra i rottami, il protagonista scopre di aver perso la cosa più importante
-che trasportava: la propria **tesi di laurea**, che — per una serie di
-fortunate coincidenze — contiene anche le coordinate di una pista di
-atterraggio nascosta sull'isola.
 
 Nel corso di 20 capitoli il giocatore deve sopravvivere alla prima notte,
 affrontare il Mostro di Fumo, scoprire le stazioni della DHARMA Initiative,
-diffidare degli Altri, riparare una radio danneggiata e infine recuperare la
-tesi per fuggire dall'isola a bordo di un piccolo aereo... e potersi
-finalmente laureare.
+diffidare degli Altri, riparare una radio danneggiata e infine recuperare
+una **mappa DHARMA** con le coordinate di una pista di atterraggio nascosta:
+l'unica via per lasciare l'isola a bordo di un piccolo aereo.
 
 ## 1.2 Caratteristiche principali
 
@@ -395,7 +391,7 @@ Il progetto usa i principali costrutti OOP visti a lezione:
   (`handleButtonInput`, `getState`) senza conoscere l'implementazione
   concreta (`JungleTrackingGame`).
 - **Enumerazioni**: `CommandType` (i comandi riconosciuti), `Item.ItemType`
-  (cibo, medicina, strumento, documento, tesi), `MiniGameState`.
+  (cibo, medicina, strumento, documento...), `MiniGameState`.
 - **Classi statiche di utilità**: `GameSave`, `GameConverter`,
   `RecordApiServer` espongono solo metodi statici e non sono istanziabili.
 - **Classi annidate**: `CommandParser.ParsedCommand` (risultato del parsing)
@@ -603,7 +599,7 @@ Il progetto include una suite di **14 smoke test** automatizzati
 - la gestione delle scelte multiple e degli input non riconosciuti;
 - il **game over a salute zero**;
 - il salto del minigioco con penalità;
-- l'assegnazione della tesi solo nel capitolo corretto;
+- l'assegnazione della mappa della pista solo nel capitolo corretto;
 - l'avanzamento del giorno narrativo;
 - la sanitizzazione degli slot di salvataggio;
 - il round-trip completo di salvataggio/caricamento;

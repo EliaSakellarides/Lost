@@ -23,6 +23,8 @@ public final class GameConverter {
 
     /**
      * Estrae lo stato corrente dal GameEngine in un GameState serializzabile
+     * @param engine motore di gioco da cui leggere lo stato
+     * @return snapshot serializzabile della partita
      */
     public static GameState extractState(GameEngine engine) {
         GameState state = new GameState();
@@ -76,6 +78,8 @@ public final class GameConverter {
 
     /**
      * Serializza uno stato di gioco in JSON
+     * @param state stato da serializzare
+     * @return rappresentazione JSON dello stato
      */
     public static String toJson(GameState state) {
         return GSON.toJson(state);
@@ -83,6 +87,8 @@ public final class GameConverter {
 
     /**
      * Deserializza un JSON in GameState
+     * @param json stringa JSON da deserializzare
+     * @return stato di gioco ricostruito
      */
     public static GameState fromJson(String json) {
         return GSON.fromJson(json, GameState.class);

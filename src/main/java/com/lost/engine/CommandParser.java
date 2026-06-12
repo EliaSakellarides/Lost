@@ -15,19 +15,29 @@ public class CommandParser {
         private final String target;
         private final String rawAction;
 
+        /**
+         * Crea un comando parsato.
+         * @param type tipo di comando riconosciuto
+         * @param target argomento del comando (puo' essere vuoto)
+         * @param rawAction parola usata dall'utente per l'azione
+         */
         public ParsedCommand(CommandType type, String target, String rawAction) {
             this.type = type;
             this.target = target;
             this.rawAction = rawAction;
         }
 
+        /** {@return il tipo di comando riconosciuto} */
         public CommandType getType() { return type; }
+        /** {@return l'argomento del comando (es. nome oggetto), eventualmente vuoto} */
         public String getTarget() { return target; }
+        /** {@return la parola originale digitata dall'utente per l'azione} */
         public String getRawAction() { return rawAction; }
     }
 
     private final Map<String, CommandType> aliasMap;
 
+    /** Crea il parser e registra tutti gli alias dei comandi. */
     public CommandParser() {
         aliasMap = new HashMap<>();
         registerAliases();
@@ -129,6 +139,8 @@ public class CommandParser {
 
     /**
      * Restituisce tutti gli alias registrati per un dato CommandType.
+     * @param type tipo di comando di cui elencare gli alias
+     * @return lista ordinata degli alias registrati
      */
     public List<String> getAliases(CommandType type) {
         List<String> result = new ArrayList<>();
@@ -143,6 +155,7 @@ public class CommandParser {
 
     /**
      * Testo di aiuto completo con tutti gli alias raggruppati per comando.
+     * @return testo formattato pronto per la visualizzazione
      */
     public String getAliasHelpText() {
         StringBuilder sb = new StringBuilder();

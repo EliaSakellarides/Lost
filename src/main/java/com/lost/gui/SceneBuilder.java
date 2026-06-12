@@ -16,12 +16,22 @@ public class SceneBuilder {
     private final int screenWidth;
     private final int screenHeight;
 
+    /**
+     * Crea il builder per le scene a schermo intero.
+     * @param parent finestra principale a cui agganciare i dialog
+     * @param screenWidth larghezza dello schermo
+     * @param screenHeight altezza dello schermo
+     */
     public SceneBuilder(JFrame parent, int screenWidth, int screenHeight) {
         this.parent = parent;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
     }
 
+    /**
+     * Crea un dialog senza decorazioni grande quanto lo schermo.
+     * @return il dialog pronto da riempire
+     */
     public JDialog createFullScreenDialog() {
         JDialog dialog = new JDialog(parent, false);
         dialog.setUndecorated(true);
@@ -30,6 +40,11 @@ public class SceneBuilder {
         return dialog;
     }
 
+    /**
+     * Crea il pannello immagine della scena (55% dell'altezza).
+     * @param imageFilename nome del file immagine nel classpath
+     * @return pannello che disegna l'immagine ridimensionata
+     */
     public JPanel createImagePanel(String imageFilename) {
         JPanel imagePanel = new JPanel() {
             private Image image;
@@ -57,6 +72,13 @@ public class SceneBuilder {
         return imagePanel;
     }
 
+    /**
+     * Crea la fascia del titolo della scena.
+     * @param title testo del titolo
+     * @param bgColor colore di sfondo
+     * @param fgColor colore del testo
+     * @return pannello con il titolo centrato
+     */
     public JPanel createTitlePanel(String title, Color bgColor, Color fgColor) {
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.setBackground(bgColor);
@@ -67,6 +89,11 @@ public class SceneBuilder {
         return titlePanel;
     }
 
+    /**
+     * Crea l'area di testo narrativo della scena.
+     * @param text testo da mostrare
+     * @return area di testo non editabile con font retro'
+     */
     public JTextArea createSceneText(String text) {
         JTextArea sceneText = new JTextArea();
         sceneText.setEditable(false);
@@ -79,6 +106,11 @@ public class SceneBuilder {
         return sceneText;
     }
 
+    /**
+     * Crea la fascia dei bottoni in fondo alla scena.
+     * @param buttons bottoni da disporre in fila
+     * @return pannello con i bottoni centrati
+     */
     public JPanel createButtonPanel(JButton... buttons) {
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         btnPanel.setBackground(Color.BLACK);
@@ -90,6 +122,11 @@ public class SceneBuilder {
 
     /**
      * Assembla il layout standard di una scena.
+     * @param dialog dialog di destinazione
+     * @param imagePanel pannello immagine in alto
+     * @param titlePanel fascia del titolo, puo essere null
+     * @param sceneText area del testo narrativo
+     * @param buttonPanel fascia dei bottoni
      * @param statusBar opzionale, puo essere null
      */
     public void assembleStandardScene(JDialog dialog, JPanel imagePanel,
@@ -120,6 +157,11 @@ public class SceneBuilder {
         dialog.add(mainPanel);
     }
 
+    /**
+     * Carica un'immagine dalla cartella images del classpath.
+     * @param filename nome del file immagine
+     * @return l'immagine caricata, null se non trovata
+     */
     public static Image loadImageFromClasspath(String filename) {
         try {
             InputStream is = SceneBuilder.class.getResourceAsStream("/images/" + filename);

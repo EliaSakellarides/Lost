@@ -9,7 +9,11 @@ import com.lost.records.RecordService;
 import com.lost.save.GameConverter;
 import com.lost.save.GameSave;
 import com.lost.save.GameState;
+import com.lost.socket.DharmaRadioServer;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.List;
 
 public class SmokeTests {
@@ -31,6 +35,7 @@ public class SmokeTests {
         run("slot salvataggio sanitizzato", SmokeTests::testSaveSlotSanitization);
         run("record H2 migliori tempi", SmokeTests::testRecordServiceStoresBestTimes);
         run("save/load round-trip", SmokeTests::testSaveRoundTripPreservesState);
+        run("radio DHARMA trasmette eventi", SmokeTests::testDharmaRadioBroadcast);
 
         System.out.println();
         System.out.println("Test superati: " + passed);
@@ -199,6 +204,26 @@ public class SmokeTests {
         String wrongChoice = engine.processCommand("B");
         assertContains(wrongChoice, "Risposta sbagliata");
         assertEquals(1, engine.getCurrentChapterNumber(), "capitolo dopo scelta errata");
+    }
+
+    private static void testDharmaRadioBroadcast() throws Exception {
+        DharmaRadioServer.start();
+        try (Socket socket = new Socket("localhost", 4815);
+             BufferedReader in = new BufferedReader(
+                 new InputStreamReader(socket.getInputStream()))) {
+
+            // Le prime due righe sono il messaggio di benvenuto
+            assertContains(in.readLine(), "RADIO DHARMA");
+            in.readLine();
+
+            // Diamo tempo al server di registrare il client, poi trasmettiamo
+            Thread.sleep(100);
+            DharmaRadioServer.broadcast("BOOM! La botola e' stata aperta con la dinamite.");
+
+            String evento = in.readLine();
+            assertContains(evento, "BOOM");
+            assertContains(evento, "botola");
+        }
     }
 
     private static void testMovementAndDynamiteGating() {

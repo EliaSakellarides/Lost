@@ -7,6 +7,7 @@ import com.lost.save.GameState;
 import com.lost.save.GameSave;
 import com.lost.save.GameSaveInstance;
 import com.lost.save.ItemData;
+import com.lost.socket.DharmaRadioServer;
 import java.util.*;
 
 /**
@@ -882,6 +883,9 @@ public class GameEngine {
 
         updateRoomByChapter(currentChapter);
 
+        DharmaRadioServer.broadcast("CAP. " + (currentChapter + 1) + "/" +
+            storyChapters.size() + " - " + chapter.getTitle());
+
         String msg = formatChapterDisplay(chapter, true);
         addLog(msg);
         return msg;
@@ -1035,6 +1039,7 @@ public class GameEngine {
         destination.setVisited(true);
         // Esplorando si vede l'arte della stanza
         eventImageKey = destination.getKey();
+        DharmaRadioServer.broadcast(player.getName() + " si sposta verso " + destination.getName());
         String result = "Ti sposti verso " + direction.trim().toUpperCase() + "...\n\n" +
                         destination.getFullDescription();
         if (destination.isDangerous()) {
@@ -1061,6 +1066,7 @@ public class GameEngine {
             if (item.getName().toLowerCase().contains("dinamite")) {
                 eventImageKey = "scoperta_dinamite";
             }
+            DharmaRadioServer.broadcast(player.getName() + " ha raccolto: " + item.getName());
             return " Hai preso: " + item.getName();
         } else {
             room.addItem(item);
@@ -1706,6 +1712,7 @@ public class GameEngine {
         currentChapterCompleted = true;
         currentChapterStarted = false;
         eventImageKey = "botola_aperta";
+        DharmaRadioServer.broadcast("BOOM! La botola e' stata aperta con la dinamite.");
 
         return "Sistemi i candelotti sul portello e accendi la miccia.\n" +
                "'AL RIPARO!'\n" +
@@ -1810,6 +1817,7 @@ public class GameEngine {
      * l'avventura, ha diritto ad aspettarsi qualcosa di più gratificante"
      */
     private String getEpicEnding() {
+        DharmaRadioServer.broadcast(player.getName() + " e' fuggito dall'isola. FINE.");
         StringBuilder ending = new StringBuilder();
         
         ending.append("\n");

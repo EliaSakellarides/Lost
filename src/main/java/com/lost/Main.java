@@ -2,6 +2,7 @@ package com.lost;
 
 import com.lost.gui.FullScreenGUI;
 import com.lost.records.RecordApiServer;
+import com.lost.socket.DharmaRadioServer;
 import javax.swing.*;
 
 /**
@@ -25,6 +26,7 @@ public final class Main {
      */
     public static void main(String[] args) {
         RecordApiServer.start();
+        DharmaRadioServer.start();
 
         // Imposta look and feel del sistema
         try {

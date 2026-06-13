@@ -24,6 +24,7 @@ unica chiave per raggiungere un piccolo aereo e lasciare l'isola.
 - Sistema di salvataggio/caricamento su file JSON (slot multipli in `~/.lost/saves/`)
 - Classifica dei migliori tempi salvata su database H2 locale
 - API REST locale per consultare e inserire record (`http://localhost:8000/records`)
+- Radio DHARMA: server socket TCP che trasmette gli eventi di partita in tempo reale (`nc localhost 4815`)
 - Testo colorato con HTML via JTextPane (dialoghi, parole chiave, emoji tematiche)
 - Gestione immagini di scena e placeholder tramite `PixelArtManager`
 - Immagini di scena per ogni capitolo

@@ -28,6 +28,7 @@ Autore: **Elia Sakellarides** (progetto individuale)
    - 4.6 [Lambda expressions](#46-lambda-expressions)
    - 4.7 [GUI Swing](#47-gui-swing)
    - 4.8 [Il parser](#48-il-parser)
+   - 4.9 [Socket](#49-socket)
 5. [Test](#5-test)
 6. [Walkthrough](#6-walkthrough)
 7. [Compilazione ed esecuzione](#7-compilazione-ed-esecuzione)
@@ -243,6 +244,7 @@ classDiagram
 | `GameSave` / `GameConverter` / `GameState` | Serializzazione completa dello stato di gioco in JSON (Gson) negli slot in `~/.lost/saves/`. |
 | `RecordRepository` / `RecordService` | Accesso al database H2 dei record (migliori tempi di completamento). |
 | `RecordApiServer` | Espone i record via HTTP/REST su `localhost:8000`. |
+| `DharmaRadioServer` | Radio DHARMA: trasmette gli eventi di partita via socket TCP su `localhost:4815`. |
 | `AudioManager` | Riproduzione asincrona della colonna sonora con fade-out temporizzato. |
 
 #### [Ritorna all'indice](#indice)
@@ -582,13 +584,58 @@ I comandi non riconosciuti ricevono una risposta ironica nello spirito
 delle avventure testuali classiche; solo nei capitoli a risposta libera
 l'input non riconosciuto viene interpretato come tentativo di risposta.
 
+## 4.9 Socket
+
+Oltre all'API REST, il gioco espone la **Radio DHARMA**: un server basato
+su **socket grezzi** (`java.net.ServerSocket`) che trasmette in tempo reale
+gli eventi della partita ai client collegati. La porta scelta è la **4815**
+(i Numeri di LOST). Ci si collega da terminale con `nc localhost 4815`.
+
+La differenza con la REST è didatticamente importante:
+
+- la **REST** (sezione 4.4) è *pull*: il server risponde solo quando viene
+  interrogato (richiesta → risposta → fine);
+- il **socket** è *push*: la connessione resta aperta e il server invia gli
+  eventi appena accadono, senza che il client li chieda.
+
+`DharmaRadioServer` accetta i client su un thread daemon, ne mantiene una
+lista thread-safe (`CopyOnWriteArrayList`) e li aggiorna con `broadcast()`:
+
+```java
+public static synchronized void start() {
+    serverSocket = new ServerSocket();
+    serverSocket.bind(new InetSocketAddress("localhost", PORT));
+    Thread acceptThread = new Thread(DharmaRadioServer::acceptLoop, "dharma-radio");
+    acceptThread.setDaemon(true);
+    acceptThread.start();
+}
+
+public static void broadcast(String message) {
+    if (message == null || message.isBlank() || clients.isEmpty()) return;
+    String line = message.replace("\n", " ").trim();
+    for (Socket client : clients) {
+        if (!sendTo(client, line)) clients.remove(client);
+    }
+}
+```
+
+Il `GameEngine` pubblica gli eventi chiave (inizio capitolo, spostamento
+tra le locazioni, oggetti raccolti, apertura della botola, fuga finale)
+chiamando `DharmaRadioServer.broadcast(...)`. Come l'API REST, il server è
+**fail-safe**: se la porta 4815 è occupata, il gioco prosegue senza la radio.
+
+L'architettura è inoltre predisposta a un'evoluzione **online**: puntando i
+client a un host remoto, la stessa API REST gestirebbe una classifica
+globale e il canale socket trasmetterebbe gli eventi (modalità spettatore,
+notifiche) in tempo reale.
+
 #### [Ritorna all'indice](#indice)
 
 ---
 
 # 5. Test
 
-Il progetto include una suite di **14 smoke test** automatizzati
+Il progetto include una suite di **15 smoke test** automatizzati
 (`src/test/java/com/lost/SmokeTests.java`) eseguibili con
 `./scripts/test.sh` senza GUI (`java.awt.headless=true`). Coprono:
 
@@ -603,7 +650,9 @@ Il progetto include una suite di **14 smoke test** automatizzati
 - l'avanzamento del giorno narrativo;
 - la sanitizzazione degli slot di salvataggio;
 - il round-trip completo di salvataggio/caricamento;
-- la classifica H2 (su database in memoria).
+- la classifica H2 (su database in memoria);
+- la trasmissione degli eventi via socket della Radio DHARMA
+  (connessione TCP reale su localhost e ricezione di un evento).
 
 # 6. Walkthrough
 

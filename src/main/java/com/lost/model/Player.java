@@ -22,7 +22,7 @@ public class Player {
         this.maxInventorySize = 10;
         this.daysOnIsland = 1;
     }
-    
+
     /**
      * Aggiunge un oggetto all'inventario, se c'e' spazio.
      * @param item oggetto da aggiungere
@@ -35,7 +35,7 @@ public class Player {
         inventory.add(item);
         return true;
     }
-    
+
     /**
      * Rimuove un oggetto dall'inventario cercandolo per nome.
      * @param itemName nome (anche parziale) dell'oggetto
@@ -49,7 +49,7 @@ public class Player {
         }
         return null;
     }
-    
+
     /**
      * Cerca un oggetto nell'inventario per nome.
      * @param itemName nome (anche parziale) dell'oggetto
@@ -63,7 +63,7 @@ public class Player {
         }
         return null;
     }
-    
+
     /**
      * Verifica se un oggetto e' nell'inventario.
      * @param itemName nome (anche parziale) dell'oggetto
@@ -76,7 +76,7 @@ public class Player {
     private boolean matchesItemName(String actualName, String query) {
         return ItemNameMatcher.matches(actualName, query);
     }
-    
+
     /**
      * Usa un oggetto dall'inventario. L'effetto dipende dal tipo:
      * CIBO/MEDICINA danno una risposta narrativa, DOCUMENTO mostra testo, ecc.
@@ -112,15 +112,15 @@ public class Player {
             default:
                 result = "Usi " + item.getName() + "...";
         }
-        
+
         if (item.getUsesRemaining() == 0) {
             removeItem(itemName);
             result += "\n(Oggetto esaurito)";
         }
-        
+
         return result;
     }
-    
+
     /**
      * Imposta i giorni trascorsi sull'isola (minimo 1).
      * @param daysOnIsland numero di giorni
@@ -128,7 +128,7 @@ public class Player {
     public void setDaysOnIsland(int daysOnIsland) {
         this.daysOnIsland = Math.max(1, daysOnIsland);
     }
-    
+
     /**
      * Riepilogo testuale dello stato del giocatore.
      * @return testo con giorno, posizione e inventario
@@ -141,7 +141,7 @@ public class Player {
         status += "Inventario: " + inventory.size() + "/" + maxInventorySize + " oggetti";
         return status;
     }
-    
+
     /**
      * Elenco testuale degli oggetti nell'inventario.
      * @return testo formattato dell'inventario
@@ -160,7 +160,7 @@ public class Player {
         }
         return sb.toString();
     }
-    
+
     // Getters e Setters
     /** {@return il nome del giocatore} */
     public String getName() { return name; }

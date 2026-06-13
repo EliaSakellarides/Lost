@@ -13,14 +13,14 @@ import javax.imageio.ImageIO;
  * Carica le immagini da src/main/resources/images tramite classpath.
  */
 public class PixelArtManager {
-    
+
     private Map<String, BufferedImage> imageCache;
     private int imageWidth;
     private int imageHeight;
-    
+
     // Mappatura location -> nome file immagine
     private static final Map<String, String> IMAGE_FILES = new HashMap<>();
-    
+
     static {
         // Scene intro
         IMAGE_FILES.put("hostess", "hostess.png");
@@ -53,7 +53,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("esplorazione", "risveglio_in_giungla.jpg");
         IMAGE_FILES.put("prima_notte", "cap1_prima_notte.png");
         IMAGE_FILES.put("mostro_fumo", "mostro_di_fumo.jpg");
-        
+
         // ═══════════════════════════════════════════════════════════
         // IMMAGINI CAPITOLI - MAPPATE ALLE IMMAGINI ESISTENTI
         // ═══════════════════════════════════════════════════════════
@@ -77,7 +77,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("cap16_prep", "cap16_preparazione_volo.png");
         IMAGE_FILES.put("cap17_escape", "cap17_fuga_finale.png");
         IMAGE_FILES.put("cap18_freedom", "cap18_liberta.png");
-        
+
         // Immagini-evento: momenti chiave che cambiano la scena
         IMAGE_FILES.put("botola_aperta", "cap8_botola_aperta.png");
         IMAGE_FILES.put("caccia_al_cinghiale", "caccia_al_cinghiale.jpg");
@@ -100,7 +100,7 @@ public class PixelArtManager {
         IMAGE_FILES.put("birre_blackrock", "trasporto_birre_black_rock.png");
         IMAGE_FILES.put("item_enigmi_radio", "item_enigmi_radio.png");
     }
-    
+
     /**
      * Crea il gestore e pre-carica le immagini disponibili.
      * @param width larghezza di destinazione delle immagini
@@ -114,7 +114,7 @@ public class PixelArtManager {
         // Pre-carica le immagini esistenti
         preloadImages();
     }
-    
+
     /**
      * Pre-carica tutte le immagini disponibili
      */
@@ -129,7 +129,7 @@ public class PixelArtManager {
         }
         System.out.println(" Caricate " + imageCache.size() + " immagini dal classpath");
     }
-    
+
     /**
      * Carica un'immagine dal classpath
      */
@@ -145,7 +145,7 @@ public class PixelArtManager {
         }
         return null;
     }
-    
+
     /**
      * Ridimensiona un'immagine mantenendo l'aspect ratio
      */
@@ -157,7 +157,7 @@ public class PixelArtManager {
         g.dispose();
         return resized;
     }
-    
+
     /**
      * Ottiene un'immagine per una location.
      * Se non esiste, restituisce un placeholder.
@@ -169,7 +169,7 @@ public class PixelArtManager {
         if (imageCache.containsKey(locationKey)) {
             return imageCache.get(locationKey);
         }
-        
+
         // Prova a caricare da file
         String filename = IMAGE_FILES.get(locationKey);
         if (filename != null) {
@@ -179,22 +179,22 @@ public class PixelArtManager {
                 return img;
             }
         }
-        
+
         // Restituisci placeholder se non trovata
         return createPlaceholder(locationKey);
     }
-    
+
     /**
      * Crea un'immagine placeholder per location mancanti
      */
     private BufferedImage createPlaceholder(String locationKey) {
         BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
-        
+
         // Placeholder volutamente nero: se manca un'immagine non deve cambiare atmosfera.
         Color topColor = Color.BLACK;
         Color bottomColor = new Color(8, 8, 8);
-        
+
         // Gradiente
         GradientPaint gradient = new GradientPaint(
             0, 0, topColor,
@@ -202,7 +202,7 @@ public class PixelArtManager {
         );
         g.setPaint(gradient);
         g.fillRect(0, 0, imageWidth, imageHeight);
-        
+
         // Testo location
         g.setColor(Color.WHITE);
         g.setFont(GameFonts.retroBold(30f));
@@ -211,20 +211,20 @@ public class PixelArtManager {
         int textX = (imageWidth - fm.stringWidth(text)) / 2;
         int textY = imageHeight / 2;
         g.drawString(text, textX, textY);
-        
+
         // Nota per creare immagine
         g.setFont(GameFonts.retroPlain(20f));
         String note = "(Immagine da creare)";
         int noteX = (imageWidth - g.getFontMetrics().stringWidth(note)) / 2;
         g.drawString(note, noteX, textY + 30);
-        
+
         g.dispose();
-        
+
         // Salva in cache per riuso
         imageCache.put(locationKey, img);
         return img;
     }
-    
+
     /**
      * Aggiunge manualmente un'immagine alla cache
      * @param key chiave con cui registrare l'immagine
@@ -233,7 +233,7 @@ public class PixelArtManager {
     public void addImage(String key, BufferedImage image) {
         imageCache.put(key, resizeImage(image, imageWidth, imageHeight));
     }
-    
+
     /**
      * Ricarica un'immagine da file
      * @param key chiave dell'immagine da ricaricare
@@ -247,7 +247,7 @@ public class PixelArtManager {
             }
         }
     }
-    
+
     /**
      * Ricarica tutte le immagini
      */
@@ -255,7 +255,7 @@ public class PixelArtManager {
         imageCache.clear();
         preloadImages();
     }
-    
+
     /**
      * Verifica se un'immagine esiste
      * @param key chiave dell'immagine da cercare
@@ -268,7 +268,7 @@ public class PixelArtManager {
         }
         return false;
     }
-    
+
     /**
      * Lista le immagini mancanti
      */

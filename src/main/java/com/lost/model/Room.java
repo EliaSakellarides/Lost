@@ -14,7 +14,7 @@ public class Room {
     private boolean visited;
     private boolean dangerous;
     private String dangerDescription;
-    
+
     /**
      * Crea una locazione dell'isola.
      * @param key chiave univoca della stanza (es. "spiaggia")
@@ -31,7 +31,7 @@ public class Room {
         this.dangerous = false;
         this.dangerDescription = "";
     }
-    
+
     /**
      * Collega questa stanza a un'altra in una direzione.
      * @param direction direzione dell'uscita (es. "nord")
@@ -71,7 +71,7 @@ public class Room {
         }
         return null;
     }
-    
+
     /**
      * Cerca un oggetto nella stanza per nome senza rimuoverlo.
      * @param itemName nome o parte del nome dell'oggetto
@@ -89,7 +89,7 @@ public class Room {
     private boolean matchesItemName(String actualName, String query) {
         return ItemNameMatcher.matches(actualName, query);
     }
-    
+
     /**
      * Restituisce la descrizione completa della stanza con oggetti visibili e uscite.
      * @return testo descrittivo pronto per la visualizzazione
@@ -98,7 +98,7 @@ public class Room {
         StringBuilder sb = new StringBuilder();
         sb.append(name).append("\n\n");
         sb.append(description).append("\n");
-        
+
         // Mostra oggetti
         if (!items.isEmpty()) {
             sb.append("\nVedi: ");
@@ -108,16 +108,16 @@ public class Room {
             }
             sb.append("\n");
         }
-        
+
         // Mostra uscite
         if (!exits.isEmpty()) {
             sb.append("\nUscite: ");
             sb.append(String.join(", ", exits.keySet()));
         }
-        
+
         return sb.toString();
     }
-    
+
     /**
      * Marca la stanza come pericolosa.
      * @param dangerous true se la stanza e' pericolosa

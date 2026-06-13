@@ -23,11 +23,11 @@ public final class StoryFactory {
      */
     public static List<Level> buildChapters(String playerName) {
         List<Level> chapters = new ArrayList<>();
-        
+
         // ═══════════════════════════════════════════════════════════════
         // CAPITOLI RIVISITATI - Focus su SOPRAVVIVENZA e cronologia LOST
         // ═══════════════════════════════════════════════════════════════
-        
+
         // CAPITOLO 1: LA PRIMA NOTTE
         Map<String, String> cap1Choices = new HashMap<>();
         cap1Choices.put("A", "Accendere un fuoco");
@@ -45,7 +45,7 @@ public final class StoryFactory {
             "A",
             "Il fuoco tiene lontani i predatori e solleva il morale!"
         ));
-        
+
         // CAPITOLO 2: I SOPRAVVISSUTI - Organizzare il campo
         Map<String, String> cap2Choices = new HashMap<>();
         cap2Choices.put("A", "48");
@@ -66,7 +66,7 @@ public final class StoryFactory {
             "A",
             "48 sopravvissuti iniziali!"
         ));
-        
+
         // CAPITOLO 3: IL MOSTRO DI FUMO - Cabina di pilotaggio + morte del pilota
         Map<String, String> cap3Choices = new HashMap<>();
         cap3Choices.put("A", "Corri via!");
@@ -93,7 +93,7 @@ public final class StoryFactory {
             "B",
             "Chi si muove attira il mostro. Restare immobili e' l'unica via."
         ));
-        
+
         // CAPITOLO 4: LE GROTTE - Trovare acqua (NUOVO)
         Map<String, String> cap4Choices = new HashMap<>();
         cap4Choices.put("A", "Trasferirsi alle grotte");
@@ -113,7 +113,7 @@ public final class StoryFactory {
             "C",
             "Dividere il gruppo: alcuni alle grotte per l'acqua, altri sulla spiaggia per i soccorsi!"
         ));
-        
+
         // CAPITOLO 5: LA CACCIA - Trovare cibo + MINI GIOCO
         Map<String, String> cap5Choices = new HashMap<>();
         cap5Choices.put("A", "Cacciare i cinghiali");
@@ -134,7 +134,7 @@ public final class StoryFactory {
         );
         cap5.setMiniGameKey("jungle_tracking");
         chapters.add(cap5);
-        
+
         // CAPITOLO 6: LA BOTOLA - Scoperta (non aperta)
         Map<String, String> cap6Choices = new HashMap<>();
         cap6Choices.put("A", "Provare ad aprirla");
@@ -154,7 +154,7 @@ public final class StoryFactory {
             "C",
             "Serve qualcosa di potente per aprirla... come degli ESPLOSIVI!"
         ));
-        
+
         // CAPITOLO 7: LA ROCCIA NERA - Trovare la dinamite nella stiva
         Map<String, String> cap7Choices = new HashMap<>();
         cap7Choices.put("A", "Aprire la cassa nella stiva");
@@ -175,7 +175,7 @@ public final class StoryFactory {
             "A",
             "La cosa piu' promettente e' quella cassa chiusa nella stiva."
         ));
-        
+
         // CAPITOLO 8: APRIRE LA BOTOLA (azione: serve la dinamite)
         Level cap8 = new Level(
             "cap8_openhatch",
@@ -193,7 +193,7 @@ public final class StoryFactory {
         );
         cap8.setQuickAnswerLabel("USA DINAMITE");
         chapters.add(cap8);
-        
+
         // CAPITOLO 9: IL CIGNO - Desmond + MINI GIOCO
         Map<String, String> cap9Choices = new HashMap<>();
         cap9Choices.put("A", "Premere il pulsante");
@@ -262,7 +262,7 @@ public final class StoryFactory {
             "C",
             "Mai fidarsi degli Altri... cerca un modo per scappare!"
         ));
-        
+
         // CAPITOLO 11: LA FUGA DAGLI ALTRI
         Map<String, String> cap11Choices = new HashMap<>();
         cap11Choices.put("A", "Attraverso la giungla");
@@ -285,7 +285,7 @@ public final class StoryFactory {
             "B",
             "Il fiume ti riporterà al campo... e l'acqua copre le tue tracce!"
         ));
-        
+
         // CAPITOLO 13: LA ZATTERA - Partenza
         Map<String, String> cap12Choices = new HashMap<>();
         cap12Choices.put("A", "Partire con la zattera");
@@ -345,7 +345,7 @@ public final class StoryFactory {
             "A",
             "Oceanic Flight 815!"
         ));
-        
+
         // CAPITOLO 14: LA SCOPERTA DELLA MAPPA
         Level cap14 = new Level(
             "cap14_map",
@@ -364,7 +364,7 @@ public final class StoryFactory {
         );
         cap14.setQuickAnswerLabel("PRENDI");
         chapters.add(cap14);
-        
+
         // CAPITOLO 15: LA PISTA NASCOSTA
         Map<String, String> cap15Choices = new HashMap<>();
         cap15Choices.put("A", "Andare subito");
@@ -388,7 +388,7 @@ public final class StoryFactory {
             "B",
             "Meglio prepararsi: andare subito o portare tutti metterebbe il gruppo in pericolo."
         ));
-        
+
         // CAPITOLO 16: PREPARAZIONE AL VOLO
         Map<String, String> cap16Choices = new HashMap<>();
         cap16Choices.put("A", "Controllare carburante, motore e comandi");
@@ -407,7 +407,7 @@ public final class StoryFactory {
             "A",
             "Prima di decollare bisogna controllare carburante, motore e comandi."
         ));
-        
+
         // CAPITOLO 17: LA FUGA FINALE
         Map<String, String> cap17Choices = new HashMap<>();
         cap17Choices.put("A", "Decollare ORA!");
@@ -430,7 +430,7 @@ public final class StoryFactory {
             "A",
             "Non c'è tempo! DECOLLA!"
         ));
-        
+
         // CAPITOLO 18: LIBERTÀ - FINALE
         Level cap18 = new Level(
             "cap18_freedom",

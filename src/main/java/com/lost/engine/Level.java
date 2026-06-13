@@ -32,7 +32,7 @@ public class Level {
         this.hint = hint;
         this.choices = null;
     }
-    
+
     /**
      * Crea un capitolo a scelte multiple (A/B/C).
      * @param key chiave identificativa del capitolo

@@ -26,14 +26,14 @@ public class GameEngine {
     // Immagine-evento: sostituisce temporaneamente quella del capitolo
     private String eventImageKey;
     private List<String> gameLog;
-    
+
     // Modalità narrativa LOST
     private boolean narrativeMode;
     private List<Level> storyChapters;
     private int currentChapter;
     private boolean currentChapterCompleted;
     private boolean currentChapterStarted;
-    
+
     // Audio manager
     private AudioManager audioManager;
 
@@ -75,7 +75,7 @@ public class GameEngine {
         this.miniGames = new HashMap<>();
         miniGames.put("jungle_tracking", new JungleTrackingGame());
     }
-    
+
     /**
      * Inizializza una nuova partita: crea il mondo, i capitoli
      * e posiziona il giocatore sulla spiaggia.
@@ -110,7 +110,7 @@ public class GameEngine {
         allRooms = WorldFactory.buildWorld();
         startRoom = allRooms.get("spiaggia");
     }
-    
+
     /**
      * Processa un comando testuale del giocatore e restituisce
      * il testo di risposta da mostrare nella GUI.
@@ -275,7 +275,7 @@ public class GameEngine {
 
         return "Comando non riconosciuto. Scrivi 'aiuto' per i comandi.";
     }
-    
+
     private String processChoice(String choice) {
         if (!choice.matches("[ABC]")) {
             return "Scegli A, B o C!";
@@ -317,7 +317,7 @@ public class GameEngine {
         return currentChapter < storyChapters.size()
             && storyChapters.get(currentChapter).hasChoices();
     }
-    
+
     /**
      * Forza l'avvio del primo capitolo. Usato dalla GUI dopo l'intro.
      * @return testo del primo capitolo
@@ -327,7 +327,7 @@ public class GameEngine {
         currentChapterCompleted = false;
         return startNextChapter();
     }
-    
+
     private String startNextChapter() {
         // Tornando alla storia si torna all'immagine del capitolo
         eventImageKey = null;
@@ -384,15 +384,15 @@ public class GameEngine {
         }
         return msg.toString();
     }
-    
+
     private String answerChapter(String answer) {
         if (currentChapter >= storyChapters.size()) {
             return "Hai già completato il gioco!";
         }
-        
+
         Level chapter = storyChapters.get(currentChapter);
         boolean correct = chapter.checkAnswer(answer);
-        
+
         if (correct) {
             // L'apertura della botola e' un'azione: richiede davvero la dinamite
             if ("cap8_openhatch".equals(chapter.getKey())) {
@@ -512,21 +512,21 @@ public class GameEngine {
         }
         return result;
     }
-    
+
     private String takeItemFromRoom(String itemName) {
         Room room = player.getCurrentRoom();
         if (room == null) return "Errore!";
-        
+
         Item item = room.removeItem(itemName);
         if (item == null) {
             return " Non vedo '" + itemName + "' qui.";
         }
-        
+
         if (!item.isTakeable()) {
             room.addItem(item);
             return " Non puoi prendere " + item.getName() + ".";
         }
-        
+
         if (player.addItem(item)) {
             if (item.getName().toLowerCase().contains("dinamite")) {
                 eventImageKey = "scoperta_dinamite";
@@ -538,7 +538,7 @@ public class GameEngine {
             return " Inventario pieno!";
         }
     }
-    
+
     private void updateRoomByChapter(int chapter) {
         String roomKey;
         updatePlayerDayByChapter(chapter);
@@ -559,7 +559,7 @@ public class GameEngine {
             case 17: case 18: case 19: roomKey = "pista"; break;
             default: roomKey = "spiaggia";
         }
-        
+
         if (allRooms.containsKey(roomKey)) {
             player.setCurrentRoom(allRooms.get(roomKey));
         }
@@ -578,7 +578,7 @@ public class GameEngine {
         if (chapter <= 13) return 25;
         return 30;
     }
-    
+
     // ═══════════════════════════════════════════════════════════════
     // SISTEMA MINI GIOCHI
     // ═══════════════════════════════════════════════════════════════
@@ -754,11 +754,11 @@ public class GameEngine {
                " Scrivi 'alias' per tutti i sinonimi\n" +
                "═══════════════════════════════════════";
     }
-    
+
     // ═══════════════════════════════════════════════════════════════
     // NUOVI METODI ISPIRATI ALLA GUIDA COLOMBINI
     // ═══════════════════════════════════════════════════════════════
-    
+
     /**
      * Lascia un oggetto nella stanza corrente
      */
@@ -773,7 +773,7 @@ public class GameEngine {
         player.getCurrentRoom().addItem(item);
         return " Hai lasciato: " + item.getName();
     }
-    
+
     /**
      * Guarda/esamina un oggetto - risposte dettagliate!
      */
@@ -782,28 +782,28 @@ public class GameEngine {
             // Guarda la stanza
             return player.getCurrentRoom().getFullDescription();
         }
-        
+
         // Cerca nell'inventario
         Item item = player.getItem(target);
         if (item == null) {
             // Cerca nella stanza
             item = player.getCurrentRoom().getItem(target);
         }
-        
+
         if (item != null) {
             return getDetailedDescription(item);
         }
-        
+
         // Risposte speciali per elementi dell'ambiente
         return lookAtEnvironment(target);
     }
-    
+
     /**
      * Descrizioni dettagliate oggetti (come consigliato dalla guida)
      */
     private String getDetailedDescription(Item item) {
         String name = item.getName().toLowerCase();
-        
+
         if (name.contains("dinamite")) {
             return "DINAMITE INSTABILE\n" +
                    "Vecchi candelotti dalla Roccia Nera.\n" +
@@ -890,17 +890,17 @@ public class GameEngine {
                    "Essenziale per sopravvivere sull'isola.\n" +
                    "Usa 'bevi acqua' per idratarti.";
         }
-        
+
         // Descrizione generica
         return item.getName().toUpperCase() + "\n" + item.getDescription();
     }
-    
+
     /**
      * Guarda elementi dell'ambiente (non oggetti)
      */
     private String lookAtEnvironment(String target) {
         target = target.toLowerCase();
-        
+
         // Risposte atmosferiche per l'ambiente
         if (target.contains("cielo") || target.contains("sky")) {
             return "Il cielo è stranamente luminoso.\n" +
@@ -956,14 +956,14 @@ public class GameEngine {
                    "Guidati da Ben Linus.\n" +
                    "Non fidarti di loro.";
         }
-        
+
         // Risposte ironiche per comandi strani (come suggerito dalla guida!)
         if (target.contains("me") || target.contains("stesso")) {
             return " Ti guardi: sei un sopravvissuto.\n" +
                    "Sporco, stanco, ma ancora vivo.\n" +
                    "Ce la farai!";
         }
-        
+
         return " Non noti nulla di particolare riguardo a '" + target + "'.";
     }
 
@@ -1103,7 +1103,7 @@ public class GameEngine {
         }
         return false;
     }
-    
+
     /**
      * Mangia o bevi qualcosa
      */
@@ -1120,7 +1120,7 @@ public class GameEngine {
         }
         return player.useItem(target);
     }
-    
+
     /**
      * Attiva un oggetto (es. dinamite)
      */
@@ -1128,7 +1128,7 @@ public class GameEngine {
         if (target.isEmpty()) {
             return " Cosa vuoi attivare?";
         }
-        
+
         if (target.toLowerCase().contains("dinamite")) {
             if (isCurrentChapter("cap8_openhatch")) {
                 return useDynamiteOnHatch();
@@ -1148,10 +1148,10 @@ public class GameEngine {
                    "Hai 5 turni per metterti al sicuro!\n" +
                    " Lasciala con 'lascia dinamite' e SCAPPA!";
         }
-        
+
         return " Non puoi attivare '" + target + "'.";
     }
-    
+
     /**
      * Apre la botola con la dinamite (capitolo 8).
      * Richiede di avere davvero la dinamite nell'inventario e di trovarsi
@@ -1193,7 +1193,7 @@ public class GameEngine {
      */
     private String getIronicResponse(String command) {
         command = command.toLowerCase();
-        
+
         if (command.contains("mangia") && command.contains("roccia")) {
             return " Hmm, no. Non sei COSÌ affamato... ancora.";
         }
@@ -1223,10 +1223,10 @@ public class GameEngine {
             return " L'albero non risponde.\n" +
                    "(Forse la sanità mentale sta calando...)";
         }
-        
+
         return " Non capisco cosa vuoi fare.";
     }
-    
+
     /**
      * Processa i timer ad ogni turno (come nella guida Colombini)
      */
@@ -1243,7 +1243,7 @@ public class GameEngine {
 
         return events.toString();
     }
-    
+
     /**
      * Esplosione dinamite
      */
@@ -1271,20 +1271,20 @@ public class GameEngine {
             return message;
         }
     }
-    
+
     private void addLog(String message) {
         gameLog.add(message);
     }
-    
+
     /**
      * FINALE EPICO - Come suggerisce la guida Colombini:
-     * "Dopo che uno ha speso sangue, sudore e lacrime per risolvere 
+     * "Dopo che uno ha speso sangue, sudore e lacrime per risolvere
      * l'avventura, ha diritto ad aspettarsi qualcosa di più gratificante"
      */
     private String getEpicEnding() {
         DharmaRadioServer.broadcast(player.getName() + " e' fuggito dall'isola. FINE.");
         StringBuilder ending = new StringBuilder();
-        
+
         ending.append("\n");
         ending.append("═══════════════════════════════════════════════════════\n");
         ending.append("      L I B E R T À \n");
@@ -1295,30 +1295,30 @@ public class GameEngine {
         ending.append("ti ha mostrato la via di casa.\n\n");
 
         ending.append("E ora... si torna A CASA!\n\n");
-        
+
         ending.append("═══════════════════════════════════════════════════════\n");
         ending.append("           HAI COMPLETATO LOST!\n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
-        
+
         // Statistiche finali
         ending.append("LE TUE STATISTICHE:\n");
         ending.append("   Giorni sull'isola: ").append(player.getDaysOnIsland()).append("\n");
         ending.append("   Oggetti raccolti: ").append(player.getInventory().size()).append("\n\n");
-        
+
         ending.append("═══════════════════════════════════════════════════════\n");
         ending.append("   \"L'isola non ha finito con te, ").append(player.getName()).append(".\"\n");
         ending.append("                           - Jacob\n");
         ending.append("═══════════════════════════════════════════════════════\n\n");
-        
+
         ending.append("               GRAZIE PER AVER GIOCATO!\n\n");
-        
+
         ending.append("        Ispirato alla Guida Colombini\n");
         ending.append("        'Avventure - Guida pratica alla creazione\n");
         ending.append("         di giochi di avventura' (Jackson, 1985)\n");
-        
+
         return ending.toString();
     }
-    
+
     /** {@return l'ultima riga aggiunta al log di gioco, stringa vuota se nessuna} */
     public String getLastLog() {
         return gameLog.isEmpty() ? "" : gameLog.get(gameLog.size() - 1);
@@ -1331,7 +1331,7 @@ public class GameEngine {
         }
         return "spiaggia";
     }
-    
+
     /**
      * Restituisce la chiave dell'immagine da mostrare per il capitolo corrente.
      * Usato dalla GUI per caricare l'immagine corretta.
@@ -1354,7 +1354,7 @@ public class GameEngine {
     public String getCurrentSceneImageKey() {
         return eventImageKey != null ? eventImageKey : getCurrentChapterImageKey();
     }
-    
+
     /**
      * Restituisce il numero del capitolo corrente (1-based per display)
      * @return numero del capitolo corrente, 0 se non ci sono capitoli
@@ -1377,7 +1377,7 @@ public class GameEngine {
         int safeIndex = Math.max(0, Math.min(currentChapter, storyChapters.size() - 1));
         return storyChapters.get(safeIndex).getTitle();
     }
-    
+
     /**
      * Restituisce il totale dei capitoli
      * @return numero totale di capitoli della storia
@@ -1385,7 +1385,7 @@ public class GameEngine {
     public int getTotalChapters() {
         return storyChapters.size();
     }
-    
+
     /** {@return il giocatore corrente} */
     public Player getPlayer() { return player; }
     /** {@return true se il gioco e' in modalita' narrativa a capitoli} */

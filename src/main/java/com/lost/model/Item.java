@@ -4,7 +4,7 @@ package com.lost.model;
  * Rappresenta un oggetto nel gioco
  */
 public class Item {
-    
+
     /** Categorie di oggetti del gioco. */
     public enum ItemType {
         /** Oggetto generico senza effetti particolari. */
@@ -22,7 +22,7 @@ public class Item {
         /** Strumento utilizzabile (torcia, radio, ecc.). */
         STRUMENTO
     }
-    
+
     private String name;
     private String description;
     private boolean takeable;
@@ -55,14 +55,14 @@ public class Item {
     public Item(String name, String description, boolean takeable) {
         this(name, description, takeable, ItemType.GENERICO, -1);
     }
-    
+
     /** Consuma un uso dell'oggetto, se ne restano. */
     public void use() {
         if (usesRemaining > 0) {
             usesRemaining--;
         }
     }
-    
+
     // Getters
     /** {@return il nome dell'oggetto} */
     public String getName() { return name; }

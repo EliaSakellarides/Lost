@@ -12,13 +12,13 @@ public class AudioManager {
     private float volume;
     private String lastFilename;
     private boolean lastLoop;
-    
+
     /** Crea il gestore audio con musica abilitata e volume al massimo. */
     public AudioManager() {
         this.musicEnabled = true;
         this.volume = 1.0f;  // Volume al massimo!
     }
-    
+
     /**
      * Riproduce un brano in loop continuo.
      * @param filename nome del file audio in /music/
@@ -26,7 +26,7 @@ public class AudioManager {
     public void playBackgroundMusic(String filename) {
         playBackgroundMusic(filename, true, 0);
     }
-    
+
     /**
      * Riproduce musica con opzioni
      * @param filename nome del file audio
@@ -40,25 +40,25 @@ public class AudioManager {
         this.lastLoop = loop;
 
         if (!musicEnabled) return;
-        
+
         try {
             stopBackgroundMusic();
-            
+
             // Cerca il file audio dal classpath
             InputStream audioStream = getClass().getResourceAsStream("/music/" + filename);
-            
+
             if (audioStream != null) {
                 AudioInputStream ais = AudioSystem.getAudioInputStream(
                     new BufferedInputStream(audioStream));
                 backgroundMusic = AudioSystem.getClip();
                 backgroundMusic.open(ais);
                 setVolume(volume);
-                
+
                 if (loop) {
                     backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
                 }
                 backgroundMusic.start();
-                
+
                 // Ferma dopo N millisecondi se specificato
                 if (stopAfterMs > 0) {
                     startDaemonThread(() -> {
@@ -76,25 +76,25 @@ public class AudioManager {
             System.out.println("Audio non disponibile: " + e.getMessage());
         }
     }
-    
+
     /**
      * Fade out graduale e poi stop
      * @param durationMs durata del fade out in millisecondi
      */
     public void fadeOutAndStop(int durationMs) {
         if (backgroundMusic == null || !backgroundMusic.isRunning()) return;
-        
+
         startDaemonThread(() -> {
             try {
                 float originalVolume = volume;
                 int steps = 20;
                 int stepDelay = durationMs / steps;
-                
+
                 for (int i = steps; i >= 0; i--) {
                     setVolume(originalVolume * i / steps);
                     Thread.sleep(stepDelay);
                 }
-                
+
                 stopBackgroundMusic();
                 setVolume(originalVolume); // Ripristina volume per prossima volta
             } catch (Exception e) {
@@ -102,7 +102,7 @@ public class AudioManager {
             }
         }, "lost-audio-fade");
     }
-    
+
     /** Ferma e chiude la clip in riproduzione, se presente. */
     public void stopBackgroundMusic() {
         if (backgroundMusic != null) {
@@ -113,7 +113,7 @@ public class AudioManager {
             backgroundMusic = null;
         }
     }
-    
+
     /**
      * Imposta il volume della musica, limitato all'intervallo 0-1.
      * @param vol volume desiderato (0 = muto, 1 = massimo)
@@ -122,7 +122,7 @@ public class AudioManager {
         this.volume = Math.max(0f, Math.min(1f, vol));
         if (backgroundMusic != null) {
             try {
-                FloatControl gainControl = (FloatControl) 
+                FloatControl gainControl = (FloatControl)
                     backgroundMusic.getControl(FloatControl.Type.MASTER_GAIN);
                 float range = gainControl.getMaximum() - gainControl.getMinimum();
                 float gain = (range * volume) + gainControl.getMinimum();
@@ -132,7 +132,7 @@ public class AudioManager {
             }
         }
     }
-    
+
     /** Abilita/disabilita la musica; se disabilitata ferma la riproduzione. */
     public void toggleMusic() {
         setMusicEnabled(!musicEnabled);
@@ -160,7 +160,7 @@ public class AudioManager {
         thread.setDaemon(true);
         thread.start();
     }
-    
+
     /** {@return true se la musica e' abilitata} */
     public boolean isMusicEnabled() { return musicEnabled; }
     /** {@return il volume corrente (0-1)} */

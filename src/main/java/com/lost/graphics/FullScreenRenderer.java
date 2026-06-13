@@ -17,7 +17,7 @@ public class FullScreenRenderer {
     private int screenWidth;
     private int screenHeight;
     private PixelArtManager pixelArtManager;
-    
+
     // Layout
     private int imageWidth;
     private int imageHeight;
@@ -25,7 +25,7 @@ public class FullScreenRenderer {
     private int textBoxY;
     private int textBoxWidth;
     private int textBoxHeight;
-    
+
     // Colori tema LOST
     /** Colore di sfondo della finestra. */
     public static final Color BACKGROUND_COLOR = Color.BLACK;
@@ -49,11 +49,11 @@ public class FullScreenRenderer {
         this.screenWidth = width;
         this.screenHeight = height;
         calculateLayout(width, height);
-        
+
         // Inizializza il gestore delle immagini
         this.pixelArtManager = new PixelArtManager(imageWidth, imageHeight);
     }
-    
+
     /**
      * Disegna la schermata di gioco: sfondo, immagine della location,
      * box del testo, barra di stato e logo.
@@ -90,7 +90,7 @@ public class FullScreenRenderer {
         // Logo LOST in alto
         renderLogo(g);
     }
-    
+
     private void renderTextBox(Graphics2D g) {
         // Sfondo semitrasparente
         g.setColor(TEXT_BOX_COLOR);
@@ -139,19 +139,19 @@ public class FullScreenRenderer {
         this.textBoxX = (width - textBoxWidth) / 2;
         this.textBoxY = IMAGE_TOP_MARGIN + imageHeight + IMAGE_TEXT_GAP;
     }
-    
+
     private void renderStatusBar(Graphics2D g, String statusInfo) {
         int barHeight = 50;
         int barY = screenHeight - barHeight;
-        
+
         // Sfondo barra
         g.setColor(Color.BLACK);
         g.fillRect(0, barY, screenWidth, barHeight);
-        
+
         // Linea superiore
         g.setColor(BORDER_COLOR);
         g.drawLine(0, barY, screenWidth, barY);
-        
+
         // Formato: "Giorno 1 | SPIAGGIA"
         int day = 1;
         String location = "";
@@ -171,7 +171,7 @@ public class FullScreenRenderer {
 
         g.setColor(new Color(150, 200, 150));
         g.drawString(location, 150, barY + 22);
-        
+
         // === ISTRUZIONI ===
         g.setFont(GameFonts.retroPlain(15f));
         String instructions = "[A/B/C] Scegli | [INVIO] Avanti";
@@ -180,7 +180,7 @@ public class FullScreenRenderer {
         g.setColor(new Color(120, 120, 120));
         g.drawString(instructions, screenWidth - instWidth - 15, barY + 20);
     }
-    
+
     private void renderLogo(Graphics2D g) {
         // Logo "LOST" stilizzato
         g.setColor(new Color(50, 60, 50));

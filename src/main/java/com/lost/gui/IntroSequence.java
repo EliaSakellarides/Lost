@@ -434,7 +434,7 @@ public class IntroSequence {
         dialog.setVisible(true);
     }
 
-    // ==================== SCENA 11: Giungla - prima scelta ====================
+    // ==================== SCENA 11: Giungla - disinfezione col whisky ====================
 
     private void showJungleHealScene() {
         if (currentScene != 9) return;
@@ -443,140 +443,53 @@ public class IntroSequence {
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
         JPanel imagePanel = scene.createImagePanel("cura_generale.jpg");
         JTextArea text = scene.createSceneText(
-            "Ti scosti di qualche passo per riprendere fiato.\n" +
-            "Dietro di te, i sopravvissuti si aiutano tra i rottami.\n\n" +
-            "Sei ferito, " + playerName + ". Tagli sulle braccia, lividi ovunque.\n" +
-            "Un taglio sul braccio sinistro non smette di sanguinare.\n" +
-            "Devi curarti con quello che riesci a trovare.\n\n" +
-            "Cosa fai?");
+            "Ti scosti di qualche passo per riprendere fiato.\n\n" +
+            "Sei ferito, " + playerName + ". Un taglio profondo sul braccio\n" +
+            "sinistro non smette di sanguinare.\n\n" +
+            "Nella tasca della giacca senti ancora la bottiglietta di whisky\n" +
+            "del volo. La apri e ne versi un po' sulla ferita.\n" +
+            "BRUCIA TERRIBILMENTE... ma almeno non si infettera'.");
 
-        JButton jacketBtn = GuiButtonFactory.create("Fruga nella giacca",
-            GameFonts.retroBold(22f), new Color(120, 80, 40), Color.WHITE);
-        JButton luggageBtn = GuiButtonFactory.create("Cerca tra le valigie",
-            GameFonts.retroBold(22f), new Color(60, 100, 60), Color.WHITE);
-        JButton toughBtn = GuiButtonFactory.create("Stringi i denti",
-            GameFonts.retroBold(22f), new Color(80, 80, 80), Color.WHITE);
+        // Il whisky viene consumato per disinfettare la ferita
+        engine.getPlayer().removeItem("whisky");
 
-        jacketBtn.addActionListener(e -> {
-            transition(dialog, this::showJacketDiscoveryScene);
-        });
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            GameFonts.retroBold(24f), new Color(120, 80, 40), Color.WHITE);
+        continueBtn.addActionListener(e -> transition(dialog, this::showKateScene));
 
-        luggageBtn.addActionListener(e -> {
-            transition(dialog, this::showLuggageDiscoveryScene);
-        });
-
-        toughBtn.addActionListener(e -> {
-            transition(dialog, () -> showHealResultScene(
-                "STRINGI I DENTI",
-                "risveglio_in_giungla.jpg",
-                new Color(60, 60, 80), new Color(200, 200, 255),
-                "Non hai tempo per questo. Ci sono cose pi\u00F9 importanti.\n\n" +
-                "Il dolore \u00E8 solo nella testa. Puoi farcela.\n" +
-                "Stringi i denti e ti rialzi.\n\n" +
-                "Sei pi\u00F9 determinato che mai a sopravvivere.",
-                "Determinazione pura"));
-        });
-
-        JPanel btnPanel = scene.createButtonPanel(jacketBtn, luggageBtn, toughBtn);
+        JPanel btnPanel = scene.createButtonPanel(continueBtn);
         scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
         dialog.setVisible(true);
     }
 
-    // ============ SCENA 11b: Scoperta - la giacca ============
+    // ==================== SCENA 12: Kate cuce la ferita ====================
 
-    private void showJacketDiscoveryScene() {
+    private void showKateScene() {
+        if (currentScene != 10) return;
+        currentScene = 11;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("aiuto_sopravvissuti.jpg");
+        JPanel imagePanel = scene.createImagePanel("cura_kate.jpg");
         JTextArea text = scene.createSceneText(
-            "Frughi nelle tasche della giacca.\n\n" +
-            "Spiccioli, la carta d'imbarco inzuppata...\n" +
-            "Poi, nella tasca interna, qualcosa di rigido.\n\n" +
-            "La bottiglietta di whisky del volo!\n" +
-            "Te l'aveva lasciata l'hostess, prima della turbolenza.\n\n" +
-            "Alcol puro: brucera', ma disinfetta.");
+            "Una donna si inginocchia accanto a te.\n" +
+            "\"Fermo. Da solo non ci arrivi.\"\n\n" +
+            "Si presenta: si chiama Kate. Prende ago e filo da un\n" +
+            "beauty case recuperato tra i bagagli e ti cuce il taglio\n" +
+            "con mani sorprendentemente sicure.\n\n" +
+            "Stringi i denti. Il primo punto e' il peggiore,\n" +
+            "poi smetti di contare. La ferita e' chiusa.\n\n" +
+            "\"Benvenuto sull'isola.\"");
 
-        JButton useBtn = GuiButtonFactory.create("Disinfetta le ferite",
-            GameFonts.retroBold(22f), new Color(120, 80, 40), Color.WHITE);
-        useBtn.addActionListener(e -> {
-            transition(dialog, () -> showHealResultScene(
-                "DISINFETTARE LE FERITE",
-                "curarsi_con_alcol.jpg",
-                new Color(100, 70, 40), new Color(255, 220, 150),
-                "Apri la bottiglietta di whisky.\n\n" +
-                "Versi l'alcol sulle ferite. BRUCIA TERRIBILMENTE!\n" +
-                "Ma almeno non si infetteranno.\n\n" +
-                "Bevi un sorso per calmare i nervi...\n" +
-                "Ti senti stordito, ma le ferite sono pulite.",
-                "Ferite disinfettate"));
-        });
-
-        JPanel btnPanel = scene.createButtonPanel(useBtn);
-        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
-        dialog.setVisible(true);
-    }
-
-    // ============ SCENA 11c: Scoperta - le valigie ============
-
-    private void showLuggageDiscoveryScene() {
-        JDialog dialog = scene.createFullScreenDialog();
-        JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "spiaggia", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("rovista_bagagli.jpg");
-        JTextArea text = scene.createSceneText(
-            "Torni ai margini della spiaggia e frughi tra i bagagli sparsi.\n\n" +
-            "Vestiti, libri fradici, una scarpa spaiata...\n" +
-            "Poi, in un beauty case mezzo sepolto nella sabbia:\n" +
-            "ago, filo e forbicine. Un kit da cucito da viaggio.\n\n" +
-            "Non e' un ospedale, ma puo' bastare.");
-
-        JButton useBtn = GuiButtonFactory.create("Ricuci la ferita",
-            GameFonts.retroBold(22f), new Color(60, 100, 60), Color.WHITE);
-        useBtn.addActionListener(e -> {
-            transition(dialog, () -> showHealResultScene(
-                "RICUCIRE LA FERITA",
-                "curarsi_con_alcol.jpg",
-                new Color(50, 80, 50), new Color(200, 255, 200),
-                "Fai passare il filo nell'ago con le mani che tremano.\n\n" +
-                "Il primo punto e' il peggiore. Poi smetti di contare.\n" +
-                "Il taglio piu' profondo e' chiuso.\n\n" +
-                "Non e' un lavoro elegante, ma terra'.",
-                "Ferita ricucita"));
-        });
-
-        JPanel btnPanel = scene.createButtonPanel(useBtn);
-        scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
-        dialog.setVisible(true);
-    }
-
-    // ==================== SCENA 12: Risultato cura ====================
-
-    private void showHealResultScene(String title, String imageName,
-            Color titleBg, Color titleFg, String description, String statsText) {
-        JDialog dialog = scene.createFullScreenDialog();
-        JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        JPanel imagePanel = scene.createImagePanel(imageName);
-        JPanel titlePanel = scene.createTitlePanel(title, titleBg, titleFg);
-        JTextArea text = scene.createSceneText(description);
-
-        JLabel statsLabel = new JLabel(statsText, SwingConstants.CENTER);
-        statsLabel.setFont(GameFonts.retroBold(22f));
-        statsLabel.setForeground(new Color(200, 200, 100));
-
-        JButton continueBtn = GuiButtonFactory.create("Continua",
-            GameFonts.retroBold(24f), titleBg, Color.WHITE);
+        JButton continueBtn = GuiButtonFactory.create("Continua...",
+            GameFonts.retroBold(24f), new Color(60, 100, 60), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            if (currentScene != 10) return;
-            currentScene = 11;
+            if (currentScene != 11) return;
+            currentScene = 12;
             onComplete.run();
             scene.closeIntroDialog();
         });
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        btnPanel.setBackground(Color.BLACK);
-        btnPanel.add(statsLabel);
-        btnPanel.add(Box.createHorizontalStrut(30));
-        btnPanel.add(continueBtn);
-
+        JPanel btnPanel = scene.createButtonPanel(continueBtn);
         scene.assembleStandardScene(dialog, imagePanel, null, text, btnPanel, statusBar);
         dialog.setVisible(true);
     }

@@ -242,7 +242,8 @@ public class SmokeTests {
         engine.loadGameState(rotto);
         assertFalse(engine.isGameRunning(), "stato incoerente: gameRunning va normalizzato a false");
         assertTrue(engine.isGameWon(), "stato incoerente: gameWon va normalizzato a true");
-        assertTrue(engine.getCurrentChapterNumber() <= engine.getTotalChapters(), "capitolo clampato");
+        assertEquals(engine.getTotalChapters(), engine.getCurrentChapterNumber(),
+            "capitolo oltre la fine clampato all'ultimo");
 
         // Controprova: un save normale a meta' partita NON deve essere alterato
         GameState valido = new GameState();

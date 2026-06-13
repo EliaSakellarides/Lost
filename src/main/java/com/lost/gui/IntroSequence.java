@@ -53,6 +53,11 @@ public class IntroSequence {
         showLostIntro();
     }
 
+    private void transition(Window currentWindow, Runnable nextScene) {
+        nextScene.run();
+        SwingUtilities.invokeLater(currentWindow::dispose);
+    }
+
     // ==================== SCENA 1: Animazione LOST ====================
 
     private void showLostIntro() {
@@ -120,8 +125,7 @@ public class IntroSequence {
                 currentScene = 1;
                 done[0] = true;
                 animTimer.stop();
-                introWindow.dispose();
-                showIntroImages();
+                transition(introWindow, this::showIntroImages);
             }
 
             introPanel.repaint();
@@ -144,8 +148,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(40, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showHostessScene();
+            transition(dialog, this::showHostessScene);
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
@@ -193,6 +196,7 @@ public class IntroSequence {
         };
         imagePanel.setPreferredSize(new Dimension(screenWidth, (int)(screenHeight * 0.55)));
         imagePanel.setBackground(Color.BLACK);
+        imagePanel.setOpaque(true);
 
         JTextArea sceneText = scene.createSceneText(
             "Un'hostess si avvicina con il carrello delle bevande.\n\n" +
@@ -212,8 +216,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(120, 80, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showTurbulenceScene();
+            transition(dialog, this::showTurbulenceScene);
         });
 
         JPanel buttonPanel = scene.createButtonPanel(continueBtn);
@@ -227,6 +230,8 @@ public class IntroSequence {
         textPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.BLACK);
+        topPanel.setOpaque(true);
         topPanel.add(imagePanel, BorderLayout.CENTER);
 
         mainPanel.add(topPanel, BorderLayout.CENTER);
@@ -243,6 +248,10 @@ public class IntroSequence {
         itemDialog.setUndecorated(true);
         itemDialog.setSize(500, 300);
         itemDialog.setLocationRelativeTo(parent);
+        itemDialog.setBackground(Color.BLACK);
+        itemDialog.getRootPane().setBackground(Color.BLACK);
+        itemDialog.getLayeredPane().setBackground(Color.BLACK);
+        itemDialog.getContentPane().setBackground(Color.BLACK);
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.BLACK);
@@ -282,8 +291,7 @@ public class IntroSequence {
         itemDialog.setVisible(true);
 
         Timer closeTimer = new Timer(2000, e -> {
-            itemDialog.dispose();
-            showTurbulenceScene();
+            transition(itemDialog, this::showTurbulenceScene);
         });
         closeTimer.setRepeats(false);
         closeTimer.start();
@@ -305,8 +313,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showPlaneBreakingScene();
+            transition(dialog, this::showPlaneBreakingScene);
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
@@ -329,8 +336,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(100, 50, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showEyeOpeningScene();
+            transition(dialog, this::showEyeOpeningScene);
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
@@ -354,8 +360,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(60, 60, 90), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showJungleAwakeningScene();
+            transition(dialog, this::showJungleAwakeningScene);
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
@@ -378,8 +383,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(50, 80, 50), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showFollowVincentScene();
+            transition(dialog, this::showFollowVincentScene);
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
@@ -402,8 +406,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Segui Vincent",
             GameFonts.retroBold(24f), new Color(80, 70, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showBeachCrashScene();
+            transition(dialog, this::showBeachCrashScene);
         });
 
         JPanel btnPanel = scene.createButtonPanel(continueBtn);
@@ -432,8 +435,7 @@ public class IntroSequence {
         JButton continueBtn = GuiButtonFactory.create("Continua...",
             GameFonts.retroBold(24f), new Color(80, 60, 40), Color.WHITE);
         continueBtn.addActionListener(e -> {
-            dialog.dispose();
-            showJungleHealScene();
+            transition(dialog, this::showJungleHealScene);
         });
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -468,18 +470,15 @@ public class IntroSequence {
             GameFonts.retroBold(22f), new Color(80, 80, 80), Color.WHITE);
 
         jacketBtn.addActionListener(e -> {
-            dialog.dispose();
-            showJacketDiscoveryScene();
+            transition(dialog, this::showJacketDiscoveryScene);
         });
 
         luggageBtn.addActionListener(e -> {
-            dialog.dispose();
-            showLuggageDiscoveryScene();
+            transition(dialog, this::showLuggageDiscoveryScene);
         });
 
         toughBtn.addActionListener(e -> {
-            dialog.dispose();
-            showHealResultScene(
+            transition(dialog, () -> showHealResultScene(
                 "STRINGI I DENTI",
                 "risveglio_in_giungla.jpg",
                 new Color(60, 60, 80), new Color(200, 200, 255),
@@ -487,7 +486,7 @@ public class IntroSequence {
                 "Il dolore \u00E8 solo nella testa. Puoi farcela.\n" +
                 "Stringi i denti e ti rialzi.\n\n" +
                 "Sei pi\u00F9 determinato che mai a sopravvivere.",
-                "Determinazione pura");
+                "Determinazione pura"));
         });
 
         JPanel btnPanel = scene.createButtonPanel(jacketBtn, luggageBtn, toughBtn);
@@ -500,8 +499,7 @@ public class IntroSequence {
     private void showJacketDiscoveryScene() {
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        // Flashback: la bottiglietta arriva dalla scena dell'hostess
-        JPanel imagePanel = scene.createImagePanel("hostess.png");
+        JPanel imagePanel = scene.createImagePanel("curare_feriti.jpg");
         JTextArea text = scene.createSceneText(
             "Frughi nelle tasche della giacca.\n\n" +
             "Spiccioli, la carta d'imbarco inzuppata...\n" +
@@ -513,8 +511,7 @@ public class IntroSequence {
         JButton useBtn = GuiButtonFactory.create("Disinfetta le ferite",
             GameFonts.retroBold(22f), new Color(120, 80, 40), Color.WHITE);
         useBtn.addActionListener(e -> {
-            dialog.dispose();
-            showHealResultScene(
+            transition(dialog, () -> showHealResultScene(
                 "DISINFETTARE LE FERITE",
                 "curarsi_con_alcol.jpg",
                 new Color(100, 70, 40), new Color(255, 220, 150),
@@ -523,7 +520,7 @@ public class IntroSequence {
                 "Ma almeno non si infetteranno.\n\n" +
                 "Bevi un sorso per calmare i nervi...\n" +
                 "Ti senti stordito, ma le ferite sono pulite.",
-                "Ferite disinfettate");
+                "Ferite disinfettate"));
         });
 
         JPanel btnPanel = scene.createButtonPanel(useBtn);
@@ -547,8 +544,7 @@ public class IntroSequence {
         JButton useBtn = GuiButtonFactory.create("Ricuci la ferita",
             GameFonts.retroBold(22f), new Color(60, 100, 60), Color.WHITE);
         useBtn.addActionListener(e -> {
-            dialog.dispose();
-            showHealResultScene(
+            transition(dialog, () -> showHealResultScene(
                 "RICUCIRE LA FERITA",
                 "curare_feriti.jpg",
                 new Color(50, 80, 50), new Color(200, 255, 200),
@@ -556,7 +552,7 @@ public class IntroSequence {
                 "Il primo punto e' il peggiore. Poi smetti di contare.\n" +
                 "Il taglio piu' profondo e' chiuso.\n\n" +
                 "Non e' un lavoro elegante, ma terra'.",
-                "Ferita ricucita");
+                "Ferita ricucita"));
         });
 
         JPanel btnPanel = scene.createButtonPanel(useBtn);

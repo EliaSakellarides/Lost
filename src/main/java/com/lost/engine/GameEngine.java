@@ -422,6 +422,20 @@ public class GameEngine {
                 return success + miniGameResult;
             }
 
+            // Consegna la mappa PRIMA di avanzare: se l'inventario e' pieno
+            // il capitolo resta attivo, cosi' 'lascia' e 'prendi' continuano
+            // a funzionare e la mappa non puo' andare persa.
+            if ("cap14_map".equals(chapter.getKey()) && !player.hasItem("Mappa della pista Hydra")) {
+                Item mappaPista = new Item("Mappa della pista Hydra",
+                    "Coordinate della pista nascosta e appunti per far volare il Cessna.",
+                    true, Item.ItemType.DOCUMENTO, -1);
+                if (!player.addItem(mappaPista)) {
+                    return success + "Trovi la mappa della pista Hydra, ma hai le mani piene.\n" +
+                           "Lascia un oggetto ('lascia [nome]') e riprova con 'prendi'.";
+                }
+                success += "Hai recuperato la mappa della pista Hydra!\n\n";
+            }
+
             completeChapter();
 
             // La cassa della Roccia Nera rivela la dinamite: sta al
@@ -442,19 +456,6 @@ public class GameEngine {
                 case "cap11_escape_others": eventImageKey = "fuga_dal_fumo_nero"; break;
                 case "cap13_walt": eventImageKey = "spari_e_fuoco"; break;
                 default: break;
-            }
-
-            // Consegna la mappa quando viene davvero recuperata nel bunker.
-            if ("cap14_map".equals(chapter.getKey()) && !player.hasItem("Mappa della pista Hydra")) {
-                Item mappaPista = new Item("Mappa della pista Hydra",
-                    "Coordinate della pista nascosta e appunti per far volare il Cessna.",
-                    true, Item.ItemType.DOCUMENTO, -1);
-                if (player.addItem(mappaPista)) {
-                    success += "Hai recuperato la mappa della pista Hydra!\n\n";
-                } else {
-                    success += "Trovi la mappa della pista Hydra, ma non riesci a portarla via.\n" +
-                               "(Inventario pieno: libera spazio e riprova con 'prendi'.)\n\n";
-                }
             }
 
             if (currentChapter >= storyChapters.size()) {

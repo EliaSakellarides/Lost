@@ -36,6 +36,7 @@ public class SmokeTests {
         run("record H2 migliori tempi", SmokeTests::testRecordServiceStoresBestTimes);
         run("save/load round-trip", SmokeTests::testSaveRoundTripPreservesState);
         run("radio DHARMA trasmette eventi", SmokeTests::testDharmaRadioBroadcast);
+        run("mappa non persa con inventario pieno", SmokeTests::testMapNotLostWhenInventoryFull);
 
         System.out.println();
         System.out.println("Test superati: " + passed);
@@ -224,6 +225,31 @@ public class SmokeTests {
             assertContains(evento, "BOOM");
             assertContains(evento, "botola");
         }
+    }
+
+    private static void testMapNotLostWhenInventoryFull() {
+        GameEngine engine = newStartedEngine("Desmond");
+        advanceToLaScoperta(engine);
+        assertEquals("La Scoperta", engine.getCurrentChapterTitle(), "capitolo prima della mappa");
+
+        // Riempio l'inventario a 10 oggetti
+        while (engine.getPlayer().getInventory().size() < 10) {
+            engine.getPlayer().addItem(new Item(
+                "Zavorra" + engine.getPlayer().getInventory().size(),
+                "riempitivo", true, Item.ItemType.GENERICO, -1));
+        }
+
+        // Con l'inventario pieno la mappa NON va presa e il capitolo NON avanza
+        String pieno = engine.processCommand("prendi");
+        assertContains(pieno, "mani piene");
+        assertEquals("La Scoperta", engine.getCurrentChapterTitle(), "il capitolo non deve avanzare");
+        assertFalse(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa non deve essere presa");
+
+        // Dopo aver liberato spazio, la mappa si recupera e il capitolo avanza
+        engine.processCommand("lascia Zavorra9");
+        assertContains(engine.processCommand("prendi"), "recuperato la mappa");
+        assertTrue(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa recuperata");
+        assertEquals("La Pista Nascosta", engine.getCurrentChapterTitle(), "capitolo avanzato");
     }
 
     private static void testMovementAndDynamiteGating() {

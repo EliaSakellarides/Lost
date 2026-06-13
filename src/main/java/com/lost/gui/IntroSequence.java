@@ -441,7 +441,7 @@ public class IntroSequence {
         currentScene = 10;
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "giungla", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("curare_feriti.jpg");
+        JPanel imagePanel = scene.createImagePanel("cura_generale.jpg");
         JTextArea text = scene.createSceneText(
             "Ti scosti di qualche passo per riprendere fiato.\n" +
             "Dietro di te, i sopravvissuti si aiutano tra i rottami.\n\n" +
@@ -521,7 +521,7 @@ public class IntroSequence {
     private void showLuggageDiscoveryScene() {
         JDialog dialog = scene.createFullScreenDialog();
         JPanel statusBar = StatusPanelFactory.createDialogStatusBar(engine, "spiaggia", screenWidth);
-        JPanel imagePanel = scene.createImagePanel("aereo_distrutto_su_spiaggia.jpg");
+        JPanel imagePanel = scene.createImagePanel("rovista_bagagli.jpg");
         JTextArea text = scene.createSceneText(
             "Torni ai margini della spiaggia e frughi tra i bagagli sparsi.\n\n" +
             "Vestiti, libri fradici, una scarpa spaiata...\n" +

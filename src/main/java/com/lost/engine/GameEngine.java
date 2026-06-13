@@ -106,8 +106,8 @@ public class GameEngine {
         storyChapters = StoryFactory.buildChapters(player.getName());
     }
 
-    /** Segna il capitolo corrente come concluso e pronto ad avanzare. */
-    private void completeChapter() {
+    /** Conclude il capitolo corrente e passa al successivo. */
+    private void advanceChapter() {
         currentChapter++;
         currentChapterCompleted = true;
         currentChapterStarted = false;
@@ -203,7 +203,8 @@ public class GameEngine {
 
                 case PRENDI:
                     if (isCurrentChapter("cap14_map")) {
-                        response = answerChapter(target.isEmpty() ? "prendi" : target);
+                        // Al capitolo della scoperta qualunque "prendi [...]" raccoglie la mappa
+                        response = answerChapter("prendi");
                         advanceTurn = true;
                         break;
                     }
@@ -436,7 +437,7 @@ public class GameEngine {
                 success += "Hai recuperato la mappa della pista Hydra!\n\n";
             }
 
-            completeChapter();
+            advanceChapter();
 
             // La cassa della Roccia Nera rivela la dinamite: sta al
             // giocatore raccoglierla prima di tornare alla botola.
@@ -613,7 +614,7 @@ public class GameEngine {
             // Skip senza penalita': si perde solo la caccia
             activeMiniGame = null;
             miniGameIntroShown = false;
-            completeChapter();
+            advanceChapter();
             return "Hai saltato il mini gioco.\n" +
                    "Locke scuote la testa: stasera niente carne fresca.\n\n" +
                    "Premi AVANTI per continuare la storia...";
@@ -668,12 +669,12 @@ public class GameEngine {
         if (mgState == MiniGameState.WON) {
             result = getMiniGameVictoryText(miniGameKey);
             // Completa il capitolo corrente
-            completeChapter();
+            advanceChapter();
         } else {
             result = getMiniGameDefeatText(miniGameKey);
             // Offri retry o skip
             result += "\n\nIl gioco continua comunque.\n";
-            completeChapter();
+            advanceChapter();
         }
 
         activeMiniGame = null;
@@ -1179,7 +1180,7 @@ public class GameEngine {
         player.removeItem("dinamite");
         dynamiteActive = false;
         dynamiteTimer = 0;
-        completeChapter();
+        advanceChapter();
         eventImageKey = "botola_aperta";
         DharmaRadioServer.broadcast("BOOM! La botola e' stata aperta con la dinamite.");
 

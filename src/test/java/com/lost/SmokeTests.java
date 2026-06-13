@@ -378,11 +378,9 @@ public class SmokeTests {
         assertFalse(wrong.contains("CORRETTO"),
             "una risposta senza senso non deve superare il capitolo");
 
-        String response = engine.processCommand("prendi");
-
-        assertContains(response, "CORRETTO");
-        assertContains(response, "Hai recuperato la mappa");
-        assertTrue(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa mancante dopo La Scoperta");
+        // Anche "prendi mappa" (con target) deve raccogliere, non dare "sbagliata"
+        assertContains(engine.processCommand("prendi mappa"), "Hai recuperato la mappa");
+        assertTrue(engine.getPlayer().hasItem("Mappa della pista Hydra"), "mappa presa con 'prendi mappa'");
         assertEquals("La Pista Nascosta", engine.getCurrentChapterTitle(), "capitolo dopo La Scoperta");
     }
 

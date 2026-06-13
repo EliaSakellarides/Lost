@@ -44,6 +44,9 @@ public class SceneBuilder {
         dialog.setUndecorated(true);
         dialog.setSize(screenWidth, screenHeight);
         dialog.setLocationRelativeTo(parent);
+        // Sfondo nero da subito: evita il flash grigio del content pane
+        // di default nell'istante prima che la scena venga disegnata.
+        dialog.getContentPane().setBackground(Color.BLACK);
         return dialog;
     }
 

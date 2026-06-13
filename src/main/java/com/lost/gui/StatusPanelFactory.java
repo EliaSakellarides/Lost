@@ -2,6 +2,7 @@ package com.lost.gui;
 
 import com.lost.engine.GameEngine;
 import com.lost.graphics.GameFonts;
+import com.lost.model.Item;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,11 +22,14 @@ public final class StatusPanelFactory {
         private final JPanel panel;
         private final JLabel dayLabel;
         private final JLabel locationLabel;
+        private final JPanel inventoryPanel;
+        private String lastInventorySignature = "";
 
-        StatusPanel(JPanel panel, JLabel dayLabel, JLabel locationLabel) {
+        StatusPanel(JPanel panel, JLabel dayLabel, JLabel locationLabel, JPanel inventoryPanel) {
             this.panel = panel;
             this.dayLabel = dayLabel;
             this.locationLabel = locationLabel;
+            this.inventoryPanel = inventoryPanel;
         }
 
         /** {@return il pannello Swing da inserire nella finestra} */
@@ -34,7 +38,9 @@ public final class StatusPanelFactory {
         }
 
         /**
-         * Aggiorna giorno e posizione visualizzati.
+         * Aggiorna giorno, posizione e inventario visualizzati.
+         * L'inventario viene ridisegnato solo quando cambia, per evitare
+         * sfarfallii a ogni tick del timer.
          * @param engine motore di gioco da cui leggere lo stato
          * @param currentLocation chiave della stanza corrente
          */
@@ -43,6 +49,37 @@ public final class StatusPanelFactory {
 
             dayLabel.setText("Giorno " + engine.getPlayer().getDaysOnIsland());
             locationLabel.setText(currentLocation.toUpperCase());
+            updateInventory(engine);
+        }
+
+        private void updateInventory(GameEngine engine) {
+            java.util.List<Item> items = engine.getPlayer().getInventory();
+            StringBuilder sig = new StringBuilder();
+            for (Item it : items) {
+                sig.append(it.getName()).append('|');
+            }
+            if (sig.toString().equals(lastInventorySignature)) {
+                return; // inventario invariato: niente da ridisegnare
+            }
+            lastInventorySignature = sig.toString();
+
+            inventoryPanel.removeAll();
+            for (Item it : items) {
+                ImageIcon icon = ItemIcons.iconFor(it);
+                JLabel label;
+                if (icon != null) {
+                    label = new JLabel(icon);
+                } else {
+                    // Finche' l'icona non esiste, mostra il nome breve
+                    label = new JLabel(it.getName());
+                    label.setFont(GameFonts.retroPlain(16f));
+                    label.setForeground(new Color(200, 220, 200));
+                }
+                label.setToolTipText(it.getName());
+                inventoryPanel.add(label);
+            }
+            inventoryPanel.revalidate();
+            inventoryPanel.repaint();
         }
     }
 
@@ -72,7 +109,19 @@ public final class StatusPanelFactory {
         locationLabel.setForeground(new Color(150, 220, 150));
         panel.add(locationLabel);
 
-        return new StatusPanel(panel, dayLabel, locationLabel);
+        panel.add(Box.createHorizontalStrut(25));
+
+        // === INVENTARIO (icone degli oggetti raccolti) ===
+        JLabel bagLabel = new JLabel("Zaino:");
+        bagLabel.setFont(GameFonts.retroPlain(18f));
+        bagLabel.setForeground(new Color(150, 150, 150));
+        panel.add(bagLabel);
+
+        JPanel inventoryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        inventoryPanel.setBackground(Color.BLACK);
+        panel.add(inventoryPanel);
+
+        return new StatusPanel(panel, dayLabel, locationLabel, inventoryPanel);
     }
 
     /**

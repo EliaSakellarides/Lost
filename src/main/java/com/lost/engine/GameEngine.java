@@ -106,6 +106,13 @@ public class GameEngine {
         storyChapters = StoryFactory.buildChapters(player.getName());
     }
 
+    /** Segna il capitolo corrente come concluso e pronto ad avanzare. */
+    private void completeChapter() {
+        currentChapter++;
+        currentChapterCompleted = true;
+        currentChapterStarted = false;
+    }
+
     private void createWorld() {
         allRooms = WorldFactory.buildWorld();
         startRoom = allRooms.get("spiaggia");
@@ -415,9 +422,7 @@ public class GameEngine {
                 return success + miniGameResult;
             }
 
-            currentChapter++;
-            currentChapterCompleted = true;
-            currentChapterStarted = false;
+            completeChapter();
 
             // La cassa della Roccia Nera rivela la dinamite: sta al
             // giocatore raccoglierla prima di tornare alla botola.
@@ -444,8 +449,12 @@ public class GameEngine {
                 Item mappaPista = new Item("Mappa della pista Hydra",
                     "Coordinate della pista nascosta e appunti per far volare il Cessna.",
                     true, Item.ItemType.DOCUMENTO, -1);
-                player.addItem(mappaPista);
-                success += "Hai recuperato la mappa della pista Hydra!\n\n";
+                if (player.addItem(mappaPista)) {
+                    success += "Hai recuperato la mappa della pista Hydra!\n\n";
+                } else {
+                    success += "Trovi la mappa della pista Hydra, ma non riesci a portarla via.\n" +
+                               "(Inventario pieno: libera spazio e riprova con 'prendi'.)\n\n";
+                }
             }
 
             if (currentChapter >= storyChapters.size()) {
@@ -603,9 +612,7 @@ public class GameEngine {
             // Skip senza penalita': si perde solo la caccia
             activeMiniGame = null;
             miniGameIntroShown = false;
-            currentChapter++;
-            currentChapterCompleted = true;
-            currentChapterStarted = false;
+            completeChapter();
             return "Hai saltato il mini gioco.\n" +
                    "Locke scuote la testa: stasera niente carne fresca.\n\n" +
                    "Premi AVANTI per continuare la storia...";
@@ -660,16 +667,12 @@ public class GameEngine {
         if (mgState == MiniGameState.WON) {
             result = getMiniGameVictoryText(miniGameKey);
             // Completa il capitolo corrente
-            currentChapter++;
-            currentChapterCompleted = true;
-            currentChapterStarted = false;
+            completeChapter();
         } else {
             result = getMiniGameDefeatText(miniGameKey);
             // Offri retry o skip
             result += "\n\nIl gioco continua comunque.\n";
-            currentChapter++;
-            currentChapterCompleted = true;
-            currentChapterStarted = false;
+            completeChapter();
         }
 
         activeMiniGame = null;
@@ -1173,9 +1176,7 @@ public class GameEngine {
         }
 
         player.removeItem("dinamite");
-        currentChapter++;
-        currentChapterCompleted = true;
-        currentChapterStarted = false;
+        completeChapter();
         eventImageKey = "botola_aperta";
         DharmaRadioServer.broadcast("BOOM! La botola e' stata aperta con la dinamite.");
 
@@ -1492,6 +1493,9 @@ public class GameEngine {
         Room room = allRooms.get(state.getCurrentRoomKey());
         if (room != null) {
             player.setCurrentRoom(room);
+        } else {
+            // Chiave di stanza non valida: ripieghiamo sulla spiaggia iniziale
+            player.setCurrentRoom(startRoom);
         }
 
         // Inventario

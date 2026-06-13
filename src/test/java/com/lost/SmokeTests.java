@@ -37,6 +37,8 @@ public class SmokeTests {
         run("save/load round-trip", SmokeTests::testSaveRoundTripPreservesState);
         run("radio DHARMA trasmette eventi", SmokeTests::testDharmaRadioBroadcast);
         run("mappa non persa con inventario pieno", SmokeTests::testMapNotLostWhenInventoryFull);
+        run("caricamento normalizza save incoerente", SmokeTests::testLoadNormalizesInconsistentSave);
+        run("dinamite pulita dopo apertura botola", SmokeTests::testDynamiteStateClearedAfterHatch);
 
         System.out.println();
         System.out.println("Test superati: " + passed);
@@ -225,6 +227,58 @@ public class SmokeTests {
             assertContains(evento, "BOOM");
             assertContains(evento, "botola");
         }
+    }
+
+    private static void testLoadNormalizesInconsistentSave() {
+        // Save "rotto": capitolo oltre la fine ma ancora in corso
+        GameState rotto = new GameState();
+        rotto.setPlayerName("Test");
+        rotto.setCurrentChapter(999);
+        rotto.setGameRunning(true);
+        rotto.setGameWon(false);
+        rotto.setDaysOnIsland(30);
+        GameEngine engine = new GameEngine();
+        engine.getAudioManager().toggleMusic();
+        engine.loadGameState(rotto);
+        assertFalse(engine.isGameRunning(), "stato incoerente: gameRunning va normalizzato a false");
+        assertTrue(engine.isGameWon(), "stato incoerente: gameWon va normalizzato a true");
+        assertTrue(engine.getCurrentChapterNumber() <= engine.getTotalChapters(), "capitolo clampato");
+
+        // Controprova: un save normale a meta' partita NON deve essere alterato
+        GameState valido = new GameState();
+        valido.setPlayerName("Mid");
+        valido.setCurrentChapter(5);
+        valido.setGameRunning(true);
+        valido.setGameWon(false);
+        valido.setDaysOnIsland(8);
+        GameEngine engine2 = new GameEngine();
+        engine2.getAudioManager().toggleMusic();
+        engine2.loadGameState(valido);
+        assertTrue(engine2.isGameRunning(), "save valido deve restare in corso");
+        assertFalse(engine2.isGameWon(), "save valido non deve risultare vinto");
+    }
+
+    private static void testDynamiteStateClearedAfterHatch() {
+        GameEngine engine = newStartedEngine("Locke");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "A");
+        answerAndContinue(engine, "B");
+        answerAndContinue(engine, "C");
+        assertContains(engine.processCommand("A"), "MINI GIOCO");
+        assertContains(engine.processCommand("salta"), "saltato");
+        engine.processCommand("avanti");
+        answerAndContinue(engine, "C");
+        assertContains(engine.processCommand("A"), "DINAMITE");
+        engine.processCommand("prendi dinamite");
+        engine.processCommand("avanti");
+        assertContains(engine.processCommand("usa dinamite"), "APERTA");
+        assertFalse(engine.isDynamiteActive(), "stato dinamite azzerato dopo l'apertura");
+        assertEquals(0, engine.getDynamiteTimer(), "timer dinamite azzerato");
+        // Nessun BOOM fantasma nei turni successivi
+        for (int i = 0; i < 6; i++) {
+            assertFalse(engine.processCommand("guarda").contains("BOOM"), "nessun secondo BOOM");
+        }
+        assertTrue(engine.isGameRunning(), "il gioco prosegue, niente morte fantasma");
     }
 
     private static void testMapNotLostWhenInventoryFull() {

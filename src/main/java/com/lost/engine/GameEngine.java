@@ -1177,6 +1177,8 @@ public class GameEngine {
         }
 
         player.removeItem("dinamite");
+        dynamiteActive = false;
+        dynamiteTimer = 0;
         completeChapter();
         eventImageKey = "botola_aperta";
         DharmaRadioServer.broadcast("BOOM! La botola e' stata aperta con la dinamite.");
@@ -1532,6 +1534,13 @@ public class GameEngine {
         this.gameWon = state.isGameWon();
         // Un salvataggio non in corso e non vinto e' una partita finita male
         this.playerDead = !state.isGameRunning() && !state.isGameWon();
+        // Un capitolo oltre la fine indica una partita gia' conclusa: normalizza lo stato.
+        if (currentChapter >= storyChapters.size() && gameRunning) {
+            gameRunning = false;
+            gameWon = true;
+            playerDead = false;
+            currentChapterCompleted = true;
+        }
         this.narrativeMode = true;
 
         // Flag eventi

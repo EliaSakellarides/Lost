@@ -359,7 +359,7 @@ public final class StoryFactory {
             "'Per emergenze. Aereo funzionante.'\n\n" +
             "C'è un AEREO nascosto sull'isola!\n\n" +
             "Premi PRENDI per recuperare la mappa.",
-            Arrays.asList("prendi", "raccogli", "mappa", "ok", "si", "a"),
+            Arrays.asList("prendi", "raccogli", "ok", "si", "a"),
             "Prendi la MAPPA: e' la tua via di fuga."
         );
         cap14.setQuickAnswerLabel("PRENDI");

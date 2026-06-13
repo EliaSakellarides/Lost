@@ -235,6 +235,8 @@ classDiagram
 | Classe | Responsabilità |
 |---|---|
 | `GameEngine` | Cuore del gioco: gestisce la progressione tra i 20 capitoli, il mondo (stanze e oggetti), i timer di gioco, il game over e la vittoria. |
+| `StoryFactory` | Costruisce l'elenco ordinato dei 20 capitoli: isola il contenuto narrativo dalla logica del motore. |
+| `WorldFactory` | Costruisce le 8 locazioni dell'isola, le connessioni e gli oggetti: isola la definizione del mondo dal motore. |
 | `CommandParser` | Traduce l'input dell'utente in un `CommandType` canonico tramite una mappa di alias (sinonimi italiani, inglesi e abbreviazioni). |
 | `Level` | Un capitolo della storia: testo, scelte multiple o risposte libere accettate, suggerimento, eventuale minigioco collegato. |
 | `Player` | Stato del giocatore: giorni sull'isola, inventario, stanza corrente. |

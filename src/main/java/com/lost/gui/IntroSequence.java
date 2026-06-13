@@ -55,7 +55,12 @@ public class IntroSequence {
 
     private void transition(Window currentWindow, Runnable nextScene) {
         nextScene.run();
-        SwingUtilities.invokeLater(currentWindow::dispose);
+        // Chiude la finestra precedente solo se NON e' la finestra persistente
+        // dell'intro (es. il JWindow dell'animazione iniziale). Tra le scene il
+        // dialog persistente resta aperto e cambia solo contenuto: niente flash.
+        if (currentWindow != scene.getPersistentDialog()) {
+            SwingUtilities.invokeLater(currentWindow::dispose);
+        }
     }
 
     // ==================== SCENA 1: Animazione LOST ====================
@@ -237,7 +242,11 @@ public class IntroSequence {
         mainPanel.add(topPanel, BorderLayout.CENTER);
         mainPanel.add(textPanel, BorderLayout.SOUTH);
 
-        dialog.add(mainPanel);
+        // Sostituisce il contenuto della finestra persistente (come le altre scene)
+        dialog.setContentPane(mainPanel);
+        dialog.getContentPane().setBackground(Color.BLACK);
+        dialog.revalidate();
+        dialog.repaint();
         dialog.setVisible(true);
     }
 
@@ -580,7 +589,7 @@ public class IntroSequence {
             if (currentScene != 10) return;
             currentScene = 11;
             onComplete.run();
-            dialog.dispose();
+            scene.closeIntroDialog();
         });
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));

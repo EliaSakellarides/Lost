@@ -22,6 +22,8 @@ public class SceneBuilder {
     private final JFrame parent;
     private final int screenWidth;
     private final int screenHeight;
+    /** Unica finestra riutilizzata da tutte le scene dell'intro. */
+    private JDialog persistentDialog;
 
     /**
      * Crea il builder per le scene a schermo intero.
@@ -40,15 +42,33 @@ public class SceneBuilder {
      * @return il dialog pronto da riempire
      */
     public JDialog createFullScreenDialog() {
-        JDialog dialog = new JDialog(parent, false);
-        dialog.setUndecorated(true);
-        dialog.setSize(screenWidth, screenHeight);
-        dialog.setLocationRelativeTo(parent);
-        dialog.setBackground(Color.BLACK);
-        dialog.getRootPane().setBackground(Color.BLACK);
-        dialog.getLayeredPane().setBackground(Color.BLACK);
-        dialog.getContentPane().setBackground(Color.BLACK);
-        return dialog;
+        // Una sola finestra per tutta l'intro: le scene cambiano solo il
+        // contenuto (setContentPane), senza mai aprire o chiudere finestre.
+        // Cosi' sparisce il bordino bianco nelle transizioni.
+        if (persistentDialog == null) {
+            persistentDialog = new JDialog(parent, false);
+            persistentDialog.setUndecorated(true);
+            persistentDialog.setSize(screenWidth, screenHeight);
+            persistentDialog.setLocationRelativeTo(parent);
+            persistentDialog.setBackground(Color.BLACK);
+            persistentDialog.getRootPane().setBackground(Color.BLACK);
+            persistentDialog.getLayeredPane().setBackground(Color.BLACK);
+            persistentDialog.getContentPane().setBackground(Color.BLACK);
+        }
+        return persistentDialog;
+    }
+
+    /** {@return la finestra persistente dell'intro, null se non creata} */
+    public JDialog getPersistentDialog() {
+        return persistentDialog;
+    }
+
+    /** Chiude la finestra dell'intro al termine della sequenza. */
+    public void closeIntroDialog() {
+        if (persistentDialog != null) {
+            persistentDialog.dispose();
+            persistentDialog = null;
+        }
     }
 
     /**
@@ -200,7 +220,12 @@ public class SceneBuilder {
         mainPanel.add(textPanel, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        dialog.add(mainPanel);
+        // Sostituisce il contenuto della finestra persistente senza
+        // chiuderla/riaprirla: transizione fluida tra le scene.
+        dialog.setContentPane(mainPanel);
+        dialog.getContentPane().setBackground(Color.BLACK);
+        dialog.revalidate();
+        dialog.repaint();
     }
 
     /**

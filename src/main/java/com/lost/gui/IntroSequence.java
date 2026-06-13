@@ -168,9 +168,6 @@ public class IntroSequence {
         currentScene = 3;
         JDialog dialog = scene.createFullScreenDialog();
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(Color.BLACK);
-
         // Immagine hostess (caricamento custom per fallback jpg/png)
         JPanel imagePanel = new JPanel() {
             private Image hostessImage;
@@ -225,28 +222,10 @@ public class IntroSequence {
         });
 
         JPanel buttonPanel = scene.createButtonPanel(continueBtn);
-        buttonPanel.setBackground(Color.BLACK);
 
-        JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.setBackground(Color.BLACK);
-        textPanel.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
-        textPanel.add(sceneText, BorderLayout.CENTER);
-        sceneText.setBackground(Color.BLACK);
-        textPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(Color.BLACK);
-        topPanel.setOpaque(true);
-        topPanel.add(imagePanel, BorderLayout.CENTER);
-
-        mainPanel.add(topPanel, BorderLayout.CENTER);
-        mainPanel.add(textPanel, BorderLayout.SOUTH);
-
-        // Sostituisce il contenuto della finestra persistente (come le altre scene)
-        dialog.setContentPane(mainPanel);
-        dialog.getContentPane().setBackground(Color.BLACK);
-        dialog.revalidate();
-        dialog.repaint();
+        // Stessa struttura delle altre scene: immagine fissa in alto, testo
+        // sotto (scrollabile). Cosi' l'immagine non si rimpicciolisce col testo.
+        scene.assembleStandardScene(dialog, imagePanel, null, sceneText, buttonPanel, null);
         dialog.setVisible(true);
     }
 

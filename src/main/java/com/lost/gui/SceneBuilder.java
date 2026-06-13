@@ -150,6 +150,7 @@ public class SceneBuilder {
         timer.addActionListener(e -> {
             index[0] = Math.min(fullText.length(), index[0] + INTRO_CHARS_PER_TICK);
             area.setText(fullText.substring(0, index[0]));
+            area.setCaretPosition(area.getDocument().getLength()); // segue il testo
             if (index[0] >= fullText.length()) {
                 timer.stop();
             }
@@ -214,7 +215,15 @@ public class SceneBuilder {
         JPanel textPanel = new JPanel(new BorderLayout());
         textPanel.setBackground(Color.BLACK);
         textPanel.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
-        textPanel.add(sceneText, BorderLayout.CENTER);
+        // Scroll trasparente: i testi lunghi non vengono tagliati e si possono
+        // scorrere; l'effetto macchina da scrivere segue il testo verso il basso.
+        JScrollPane textScroll = new JScrollPane(sceneText);
+        textScroll.setOpaque(false);
+        textScroll.getViewport().setOpaque(false);
+        textScroll.setBorder(null);
+        textScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        textScroll.getVerticalScrollBar().setPreferredSize(new Dimension(6, 0));
+        textPanel.add(textScroll, BorderLayout.CENTER);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(textPanel, BorderLayout.CENTER);

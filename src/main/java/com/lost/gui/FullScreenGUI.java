@@ -72,10 +72,10 @@ public class FullScreenGUI extends JFrame {
     private String typewriterFullText = "";
     /** Quanti caratteri del testo sono gia' visibili. */
     private int typewriterIndex = 0;
-    /** Caratteri rivelati a ogni tick del timer. */
-    private static final int TYPEWRITER_CHARS_PER_TICK = 3;
-    /** Millisecondi tra un tick e l'altro. */
-    private static final int TYPEWRITER_TICK_MS = 16;
+    /** Caratteri rivelati a ogni tick: 1 alla volta per un effetto fluido. */
+    private static final int TYPEWRITER_CHARS_PER_TICK = 1;
+    /** Millisecondi tra un tick e l'altro (ritmo piacevole, non a scatti). */
+    private static final int TYPEWRITER_TICK_MS = 18;
 
     // Etichette originali dei bottoni
     private static final String DEFAULT_BTN_A = "A";

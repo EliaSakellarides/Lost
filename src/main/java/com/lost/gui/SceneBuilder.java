@@ -44,8 +44,9 @@ public class SceneBuilder {
         dialog.setUndecorated(true);
         dialog.setSize(screenWidth, screenHeight);
         dialog.setLocationRelativeTo(parent);
-        // Sfondo nero da subito: evita il flash grigio del content pane
-        // di default nell'istante prima che la scena venga disegnata.
+        dialog.setBackground(Color.BLACK);
+        dialog.getRootPane().setBackground(Color.BLACK);
+        dialog.getLayeredPane().setBackground(Color.BLACK);
         dialog.getContentPane().setBackground(Color.BLACK);
         return dialog;
     }
@@ -175,24 +176,29 @@ public class SceneBuilder {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.BLACK);
 
-        if (statusBar != null) {
-            mainPanel.add(statusBar, BorderLayout.NORTH);
-        }
-
-        JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.setBackground(Color.BLACK);
-        textPanel.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
-        textPanel.add(sceneText, BorderLayout.CENTER);
-        textPanel.add(buttonPanel, BorderLayout.SOUTH);
-
+        // Zona superiore a dimensione fissa: barra di stato + immagine + titolo.
+        // Sta in NORTH, quindi usa la sua dimensione preferita (immagine al 55%)
+        // e NON si ridimensiona quando il testo sotto si riempie.
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.BLACK);
+        if (statusBar != null) {
+            topPanel.add(statusBar, BorderLayout.NORTH);
+        }
         topPanel.add(imagePanel, BorderLayout.CENTER);
         if (titlePanel != null) {
             topPanel.add(titlePanel, BorderLayout.SOUTH);
         }
 
-        mainPanel.add(topPanel, BorderLayout.CENTER);
-        mainPanel.add(textPanel, BorderLayout.SOUTH);
+        // Il testo occupa lo spazio rimanente (fisso): l'effetto macchina da
+        // scrivere lo riempie senza spostare immagine o bottoni.
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.setBackground(Color.BLACK);
+        textPanel.setBorder(BorderFactory.createEmptyBorder(15, 50, 15, 50));
+        textPanel.add(sceneText, BorderLayout.CENTER);
+
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(textPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.add(mainPanel);
     }

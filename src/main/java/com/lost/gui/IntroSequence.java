@@ -546,7 +546,7 @@ public class IntroSequence {
         useBtn.addActionListener(e -> {
             transition(dialog, () -> showHealResultScene(
                 "RICUCIRE LA FERITA",
-                "curare_feriti.jpg",
+                "curarsi_con_alcol.jpg",
                 new Color(50, 80, 50), new Color(200, 255, 200),
                 "Fai passare il filo nell'ago con le mani che tremano.\n\n" +
                 "Il primo punto e' il peggiore. Poi smetti di contare.\n" +
